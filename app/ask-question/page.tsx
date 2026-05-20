@@ -4,9 +4,16 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+
+interface AnsweredQuestion {
+  id: string
+  participant_name: string
+  question: string
+  answer: string
+}
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -35,6 +42,53 @@ export default function AskQuestionPage() {
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
+  const [answeredQuestions, setAnsweredQuestions] = useState<AnsweredQuestion[]>([])
+  const [loadingAnswers, setLoadingAnswers] = useState(true)
+
+  useEffect(() => {
+    const fetchAnsweredQuestions = async () => {
+      try {
+        const supabase = createClient()
+        const { data, error } = await supabase
+          .from('user_questions')
+          .select('id, participant_name, question, answer')
+          .eq('is_answered', true)
+          .order('answered_at', { ascending: false })
+
+        if (error) throw error
+        setAnsweredQuestions(data || [])
+      } catch (err) {
+        console.error('Error fetching answered questions:', err)
+        setAnsweredQuestions([])
+      } finally {
+        setLoadingAnswers(false)
+      }
+    }
+
+    fetchAnsweredQuestions()
+
+    // Set up real-time subscription
+    const supabase = createClient()
+    const channel = supabase
+      .channel('answered_questions')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_questions',
+          filter: 'is_answered=eq.true',
+        },
+        () => {
+          fetchAnsweredQuestions()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      channel.unsubscribe()
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -191,21 +245,57 @@ export default function AskQuestionPage() {
             </motion.form>
           )}
 
-          {/* FAQ Section */}
+          {/* Answered Questions Section */}
           <motion.div className="mt-16 mb-12" variants={itemVariants}>
             <h2 className="font-edu text-2xl font-700 text-primary mb-6">
               Answered Questions
             </h2>
-            <div className="space-y-4">
-              <div className="bg-white/30 backdrop-blur-md rounded-2xl border border-accent/20 p-6">
-                <h3 className="font-edu text-lg font-700 text-primary mb-2">
-                  How long will the ceremony last?
-                </h3>
-                <p className="text-foreground/80 font-comic">
-                  The ceremony typically lasts about 2-3 hours. You can participate at your own pace.
+            {loadingAnswers ? (
+              <div className="text-center py-8">
+                <div className="w-8 h-8 border-4 border-accent border-t-primary rounded-full animate-spin mx-auto mb-2" />
+                <p className="text-foreground/70 font-comic">Loading answered questions...</p>
+              </div>
+            ) : answeredQuestions.length === 0 ? (
+              <div className="bg-white/30 backdrop-blur-md rounded-2xl border border-accent/20 p-6 text-center">
+                <p className="text-foreground/70 font-comic">
+                  No answered questions yet. Be the first to ask!
                 </p>
               </div>
-            </div>
+            ) : (
+              <div className="space-y-4">
+                {answeredQuestions.map((item, index) => (
+                  <motion.div
+                    key={item.id}
+                    className="bg-white/30 backdrop-blur-md rounded-2xl border border-accent/20 p-6 hover:border-accent/40 transition-all"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                  >
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-1">
+                        <span className="text-primary text-sm font-700">Q</span>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-edu text-lg font-700 text-primary mb-2">
+                          {item.question}
+                        </h3>
+                        <p className="text-sm text-foreground/60 font-comic mb-4">
+                          —{item.participant_name}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3 ml-11">
+                      <div className="w-6 h-6 rounded-full bg-accent/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <span className="text-accent text-xs font-700">A</span>
+                      </div>
+                      <p className="text-foreground/80 font-comic leading-relaxed">
+                        {item.answer}
+                      </p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </motion.div>
         </motion.div>
       </div>

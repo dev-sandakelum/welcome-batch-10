@@ -37,35 +37,49 @@ export default function AdminQuestionsPage() {
     display_order: 0,
   })
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
+  const fetchQuestions = async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const supabase = createClient()
+      const { data, error: fetchError } = await supabase
+        .from('questions')
+        .select('*')
+        .order('display_order', { ascending: true })
+
+      if (fetchError) {
+        console.error('Fetch error:', fetchError)
+        setError(`Failed to load questions: ${fetchError.message}`)
+        setQuestions([])
+        return
+      }
+
+      console.log('Successfully fetched questions:', data)
+      setQuestions(data || [])
+      setError(null)
+    } catch (err) {
+      console.error('Unexpected error:', err)
+      setError('An unexpected error occurred')
+      setQuestions([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
   useEffect(() => {
-    const checkAuthAndFetch = async () => {
-      try {
-        // Check for admin token in localStorage
-        const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null
-
-        if (!token) {
-          router.push('/admin/login')
-          return
-        }
-
-        const supabase = createClient()
-        const { data, error } = await supabase
-          .from('questions')
-          .select('*')
-          .order('display_order', { ascending: true })
-
-        if (error) throw error
-        setQuestions(data || [])
-      } catch (error) {
-        console.error('[v0] Error fetching questions:', error)
-      } finally {
-        setLoading(false)
+    const checkAuth = async () => {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('adminToken') : null
+      if (!token) {
+        router.push('/admin/login')
+      } else {
+        await fetchQuestions()
       }
     }
 
-    checkAuthAndFetch()
+    checkAuth()
   }, [router])
 
   const handleSave = async (e: React.FormEvent) => {
@@ -97,13 +111,7 @@ export default function AdminQuestionsPage() {
         if (error) throw error
       }
 
-      // Refresh list
-      const { data } = await supabase
-        .from('questions')
-        .select('*')
-        .order('display_order', { ascending: true })
-
-      setQuestions(data || [])
+      // Reset form and refresh list
       setShowForm(false)
       setEditingId(null)
       setFormData({
@@ -116,8 +124,11 @@ export default function AdminQuestionsPage() {
         category: '',
         display_order: 0,
       })
-    } catch (error) {
-      console.error('[v0] Error saving question:', error)
+      
+      // Refresh questions list
+      await fetchQuestions()
+    } catch (err) {
+      console.error('Error saving question:', err)
       alert('Error saving question')
     } finally {
       setSaving(false)
@@ -206,6 +217,23 @@ export default function AdminQuestionsPage() {
             </Button>
           )}
         </motion.header>
+
+        {/* Error Message */}
+        {error && (
+          <motion.div
+            className="bg-red-500/10 border-2 border-red-500/30 rounded-2xl p-4 mb-6 text-red-700"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <p className="font-lora">{error}</p>
+            <Button
+              onClick={() => fetchQuestions()}
+              className="mt-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm"
+            >
+              Try Again
+            </Button>
+          </motion.div>
+        )}
 
         {/* Form */}
         {showForm && (
@@ -297,6 +325,23 @@ export default function AdminQuestionsPage() {
                         display_order: parseInt(e.target.value),
                       })
                     }
+                    className="rounded-xl font-lora"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-playfair font-600 text-primary mb-2">
+                    Category
+                  </label>
+                  <Input
+                    type="text"
+                    value={formData.category || ''}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        category: e.target.value,
+                      })
+                    }
+                    placeholder="e.g., Science, History"
                     className="rounded-xl font-lora"
                   />
                 </div>

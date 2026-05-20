@@ -150,7 +150,7 @@ export default function AdminDashboardPage() {
           transition={{ delay: 0.2 }}
         >
           {statItems.map((item, index) => (
-            <Link key={item.href} href={item.href}>
+            <Link key={`${item.label}-${index}`} href={item.href}>
               <motion.div
                 className="bg-white/40 backdrop-blur-md border-2 border-accent/30 rounded-2xl p-6 hover:border-accent/60 transition-all cursor-pointer"
                 initial={{ opacity: 0, y: 20 }}

@@ -6,59 +6,77 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
-interface Question {
+interface UserQuestion {
   id: string
-  question_text: string
-  option_a: string
-  option_b: string
-  option_c: string
-  option_d: string
-  display_order?: number
+  participant_name: string
+  question: string
+  answer?: string
+  is_answered: boolean
+  asked_at: string
+  answered_at?: string
 }
 
 export default function QAPage() {
-  const [questions, setQuestions] = useState<Question[]>([])
+  const [questions, setQuestions] = useState<UserQuestion[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({})
-  const [submitted, setSubmitted] = useState(false)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetchQuestions = async () => {
+    const fetchAnsweredQuestions = async () => {
       try {
+        setLoading(true)
         const supabase = createClient()
-        const { data, error } = await supabase
-          .from('questions')
-          .select('*')
-          .order('display_order', { ascending: true })
-          .limit(5)
+        
+        // Fetch with explicit column selection and error handling
+        const { data, error, status } = await supabase
+          .from('user_questions')
+          .select('id, participant_name, question, answer, answered_at')
+          .eq('is_answered', true)
+          .order('answered_at', { ascending: false })
 
-        if (error) throw error
+        console.log('Query status:', status)
+        console.log('Query error:', error)
+        console.log('Fetched data:', data)
+
+        if (error) {
+          console.error('Supabase error:', error)
+          throw error
+        }
+
         setQuestions(data || [])
       } catch (error) {
-        console.error('[v0] Error fetching questions:', error)
+        console.error('[v0] Error fetching Q&A:', error)
+        setQuestions([])
       } finally {
         setLoading(false)
       }
     }
 
-    fetchQuestions()
+    fetchAnsweredQuestions()
 
-    // Poll for new questions every 15 seconds
-    const pollInterval = setInterval(fetchQuestions, 15000)
-    return () => clearInterval(pollInterval)
+    // Subscribe to real-time changes
+    const supabase = createClient()
+    const subscription = supabase
+      .channel('user_questions_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'user_questions',
+          filter: 'is_answered=eq.true',
+        },
+        (payload) => {
+          console.log('Real-time update received:', payload)
+          fetchAnsweredQuestions()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
-
-  const handleAnswer = (questionId: string, answer: string) => {
-    setSelectedAnswers((prev) => ({
-      ...prev,
-      [questionId]: answer,
-    }))
-  }
-
-  const handleSubmit = async () => {
-    // Store responses and redirect to results
-    setSubmitted(true)
-  }
 
   if (loading) {
     return (
@@ -90,84 +108,102 @@ export default function QAPage() {
             </Button>
           </Link>
           <h1 className="font-playfair text-4xl md:text-5xl font-700 text-primary mb-2">
-            Interactive Q&A
+            Frequently Asked Questions
           </h1>
           <p className="text-foreground/70 font-lora text-lg">
-            Share your thoughts on these questions
+            See answers to questions from other participants
           </p>
         </motion.header>
 
-        {/* Questions */}
-        <motion.div
-          className="space-y-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-        >
-          {questions.length === 0 ? (
-            <div className="bg-white/40 backdrop-blur-md rounded-2xl p-8 text-center border-2 border-accent/20">
-              <p className="text-foreground/70 font-lora text-lg">
-                No questions available yet. Check back soon! 🙏
-              </p>
-            </div>
-          ) : (
-            questions.map((question, index) => (
-              <motion.div
-                key={question.id}
-                className="bg-white/40 backdrop-blur-md border-2 border-accent/30 rounded-2xl p-6 hover:border-accent/60 transition-colors"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 + 0.3 }}
-              >
-                <h3 className="font-playfair text-xl font-600 text-primary mb-4">
-                  {question.question_text}
-                </h3>
+        {/* Loading State */}
+        {loading && (
+          <div className="bg-white/40 backdrop-blur-md rounded-2xl p-8 text-center border-2 border-accent/20">
+            <div className="w-12 h-12 border-4 border-accent border-t-primary rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-foreground font-lora">Loading Q&A...</p>
+          </div>
+        )}
 
-                <div className="space-y-3">
-                  {[
-                    { key: 'A', text: question.option_a },
-                    { key: 'B', text: question.option_b },
-                    { key: 'C', text: question.option_c },
-                    { key: 'D', text: question.option_d },
-                  ].map(({ key, text }) => (
-                    <button
-                      key={key}
-                      onClick={() => handleAnswer(question.id, key)}
-                      className={`w-full p-4 text-left rounded-xl font-lora transition-all ${
-                        selectedAnswers[question.id] === key
-                          ? 'bg-accent text-accent-foreground border-2 border-accent'
-                          : 'bg-white/50 hover:bg-white/70 border-2 border-accent/20'
-                      }`}
-                    >
-                      <span className="font-600">{key}.</span> {text}
-                    </button>
-                  ))}
-                </div>
-              </motion.div>
-            ))
-          )}
-        </motion.div>
-
-        {/* Submit Button */}
-        {questions.length > 0 && (
+        {/* Q&A List */}
+        {!loading && (
           <motion.div
-            className="mt-8 flex gap-4"
+            className="space-y-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            {questions.length === 0 ? (
+              <div className="bg-white/40 backdrop-blur-md rounded-2xl p-8 text-center border-2 border-accent/20">
+                <p className="text-foreground/70 font-lora text-lg">
+                  No answered questions yet. Check back soon! 🙏
+                </p>
+              </div>
+            ) : (
+              questions.map((question, index) => (
+                <motion.div
+                  key={question.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 + 0.3 }}
+                >
+                  <button
+                    onClick={() =>
+                      setExpandedId(expandedId === question.id ? null : question.id)
+                    }
+                    className="w-full bg-white/40 backdrop-blur-md border-2 border-accent/30 rounded-2xl p-6 hover:border-accent/60 transition-all text-left"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <h3 className="font-playfair text-lg font-600 text-primary mb-2">
+                          {question.question}
+                        </h3>
+                        <p className="text-sm text-foreground/60 font-lora">
+                          Asked by {question.participant_name}
+                        </p>
+                      </div>
+                      <div className="text-2xl flex-shrink-0">
+                        {expandedId === question.id ? '▼' : '▶'}
+                      </div>
+                    </div>
+
+                    {/* Answer - Expanded */}
+                    <AnimatePresence>
+                      {expandedId === question.id && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="mt-4 pt-4 border-t border-accent/30">
+                            <p className="text-sm font-playfair font-600 text-accent mb-2">
+                              Answer:
+                            </p>
+                            <p className="text-foreground font-lora leading-relaxed">
+                              {question.answer || 'No answer provided yet.'}
+                            </p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </button>
+                </motion.div>
+              ))
+            )}
+          </motion.div>
+        )}
+
+        {/* Ask Question Link */}
+        {!loading && (
+          <motion.div
+            className="mt-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
+            transition={{ delay: 0.5 }}
           >
-            <Button
-              onClick={handleSubmit}
-              className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-playfair text-lg py-6"
-            >
-              Submit Answers! 🎉
-            </Button>
-            <Link href="/" className="flex-1">
-              <Button
-                variant="outline"
-                className="w-full border-accent text-primary hover:bg-accent/10 rounded-2xl font-playfair text-lg py-6"
-              >
-                Skip for now
+            <Link href="/ask-question">
+              <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-playfair text-lg py-6">
+                Got a question? Ask it now! 💭
               </Button>
             </Link>
           </motion.div>
