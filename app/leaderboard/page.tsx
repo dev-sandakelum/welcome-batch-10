@@ -66,7 +66,7 @@ export default function LeaderboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#FDF5E6] to-[#F5E6D3]">
+    <main className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-5 py-8">
         {/* Header */}
         <motion.header
@@ -78,7 +78,7 @@ export default function LeaderboardPage() {
           <Link href="/">
             <Button
               variant="ghost"
-              className="text-primary hover:bg-accent/10 mb-4"
+              className="text-primary hover:bg-card mb-4 rounded-xl"
             >
               ← Back
             </Button>
@@ -98,7 +98,7 @@ export default function LeaderboardPage() {
           </div>
         ) : scores.length === 0 ? (
           <motion.div
-            className="bg-white/40 backdrop-blur-md border-2 border-accent/20 rounded-2xl p-8 text-center"
+            className="bg-card backdrop-blur-md border-2 border-border rounded-3xl p-8 text-center card-shadow"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
@@ -106,14 +106,14 @@ export default function LeaderboardPage() {
               No scores yet. Be the first to take the quiz! 🎯
             </p>
             <Link href="/quiz">
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-playfair">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-playfair shadow-lg">
                 Take the Quiz
               </Button>
             </Link>
           </motion.div>
         ) : (
           <motion.div
-            className="space-y-2"
+            className="space-y-3"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -126,20 +126,20 @@ export default function LeaderboardPage() {
                 <motion.div
                   key={score.id}
                   variants={itemVariants}
-                  className={`relative bg-white/40 backdrop-blur-md border-2 rounded-2xl p-5 transition-all ${
+                  className={`relative bg-card backdrop-blur-md border-2 rounded-3xl p-5 transition-all card-shadow ${
                     isTopThree
-                      ? 'border-accent/60 shadow-lg'
-                      : 'border-accent/20 hover:border-accent/40'
+                      ? 'border-accent/60'
+                      : 'border-border hover:border-accent/40'
                   }`}
                   whileHover={{ scale: 1.01, x: 5 }}
                 >
                   {/* Shimmer effect for rank 1 */}
                   {index === 0 && (
                     <div
-                      className="absolute inset-0 rounded-2xl opacity-20"
+                      className="absolute inset-0 rounded-3xl opacity-20"
                       style={{
                         background:
-                          'linear-gradient(45deg, transparent 30%, rgba(255,215,0,0.3) 50%, transparent 70%)',
+                          'linear-gradient(45deg, transparent 30%, rgba(207,181,59,0.4) 50%, transparent 70%)',
                         backgroundSize: '200% 200%',
                         animation: 'shimmer 2s infinite',
                       }}
@@ -172,9 +172,9 @@ export default function LeaderboardPage() {
                   </div>
 
                   {/* Score bar */}
-                  <div className="mt-3 w-full bg-white/50 rounded-full h-2 overflow-hidden">
+                  <div className="mt-3 w-full bg-muted/30 rounded-full h-2 overflow-hidden">
                     <motion.div
-                      className="bg-gradient-to-r from-accent to-primary h-full"
+                      className="gradient-maroon-gold h-full"
                       initial={{ width: 0 }}
                       animate={{
                         width: `${score.percentage}%`,
@@ -196,7 +196,7 @@ export default function LeaderboardPage() {
           transition={{ delay: 0.5 }}
         >
           <Link href="/quiz">
-            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-playfair text-lg px-8 py-6">
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-playfair text-lg px-8 py-6 shadow-lg">
               Take the Quiz
             </Button>
           </Link>
@@ -205,17 +205,12 @@ export default function LeaderboardPage() {
 
       {/* Shimmer keyframe animation */}
       <style jsx>{`
-        @keyframes goldShimmer {
+        @keyframes shimmer {
           0% {
             backgroundPosition: -1000px 0;
-            box-shadow: -1000px 0 50px rgba(207, 181, 59, 0.4);
-          }
-          50% {
-            box-shadow: 0 0 50px rgba(207, 181, 59, 0.6);
           }
           100% {
             backgroundPosition: 1000px 0;
-            box-shadow: 1000px 0 50px rgba(207, 181, 59, 0.4);
           }
         }
       `}</style>

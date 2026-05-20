@@ -70,10 +70,11 @@ export default function Landing() {
   if (!mounted) return null
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#FDF5E6] to-[#F5E6D3] text-foreground overflow-hidden">
-      {/* Decorative circles background */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+    <main className="min-h-screen bg-background text-foreground overflow-hidden relative">
+      {/* Decorative elements inspired by the design */}
+      <div className="absolute top-0 left-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+      <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-secondary/10 rounded-full blur-2xl" />
 
       <div className="relative z-10">
         {/* Header */}
@@ -93,8 +94,8 @@ export default function Landing() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
               >
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 border border-accent/30">
-                  <span className="inline-block w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-card border-2 border-border shadow-md">
+                  <span className="inline-block w-2 h-2 bg-accent rounded-full animate-pulse" />
                   Live — {visitorCount} {visitorCount === 1 ? 'person' : 'people'} here
                 </span>
               </motion.div>
@@ -103,7 +104,7 @@ export default function Landing() {
           <Link href="/admin/login">
             <Button
               variant="outline"
-              className="text-sm border-accent text-primary hover:bg-accent/10"
+              className="text-sm border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-xl transition-all"
             >
               Admin
             </Button>
@@ -140,7 +141,7 @@ export default function Landing() {
               >
                 <Button
                   size="lg"
-                  className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-2xl font-edu text-lg"
+                  className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-2xl font-edu text-lg shadow-lg border-2 border-secondary/30"
                 >
                   Ask a Question 💭
                 </Button>
@@ -155,7 +156,7 @@ export default function Landing() {
               >
                 <Button
                   size="lg"
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-edu text-lg"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-edu text-lg shadow-lg border-2 border-primary/30"
                 >
                   Take the Quiz 🧠
                 </Button>
@@ -170,7 +171,7 @@ export default function Landing() {
               >
                 <Button
                   size="lg"
-                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground rounded-2xl font-edu text-lg"
+                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground rounded-2xl font-edu text-lg shadow-lg border-2 border-accent/30"
                 >
                   Leaderboard 🏆
                 </Button>
@@ -185,7 +186,7 @@ export default function Landing() {
               >
                 <Button
                   size="lg"
-                  className="w-full bg-amber-600 hover:bg-amber-700 text-white rounded-2xl font-edu text-lg"
+                  className="w-full gradient-maroon-gold hover:opacity-90 text-white rounded-2xl font-edu text-lg shadow-lg border-2 border-primary/30"
                 >
                   Give Feedback ⭐
                 </Button>
@@ -195,7 +196,7 @@ export default function Landing() {
 
           {/* Features */}
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-16 w-full max-w-3xl"
+            className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 w-full max-w-4xl"
             variants={itemVariants}
           >
             {[
@@ -217,14 +218,14 @@ export default function Landing() {
             ].map((feature, index) => (
               <motion.div
                 key={index}
-                className="relative group rounded-2xl overflow-hidden"
+                className="relative group rounded-3xl overflow-hidden"
                 variants={itemVariants}
                 whileHover={{ y: -8, transition: { duration: 0.2 } }}
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-accent/30 via-accent/0 to-accent/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="bg-white/40 backdrop-blur-md border-2 border-accent/30 group-hover:border-accent/60 rounded-2xl p-5 text-center transition-all duration-300 relative z-10">
-                  <div className="text-4xl mb-3">{feature.icon}</div>
-                  <h3 className="font-edu text-lg font-600 text-primary mb-1">
+                <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-transparent to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="bg-card backdrop-blur-md border-2 border-border group-hover:border-accent/60 rounded-3xl p-6 text-center transition-all duration-300 relative z-10 card-shadow">
+                  <div className="text-5xl mb-4">{feature.icon}</div>
+                  <h3 className="font-edu text-xl font-600 text-primary mb-2">
                     {feature.title}
                   </h3>
                   <p className="text-sm text-foreground/70 font-comic">

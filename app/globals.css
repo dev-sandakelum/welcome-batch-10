@@ -4,74 +4,111 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: 45 35% 96%;
-  --foreground: 15 25% 20%;
-  --card: 45 35% 97%;
-  --card-foreground: 15 25% 20%;
-  --popover: 45 35% 97%;
-  --popover-foreground: 15 25% 20%;
-  --primary: 13 50% 45%;
-  --primary-foreground: 45 35% 97%;
-  --secondary: 33 90% 55%;
-  --secondary-foreground: 15 25% 20%;
-  --muted: 45 15% 75%;
-  --muted-foreground: 15 25% 40%;
-  --accent: 33 85% 50%;
-  --accent-foreground: 15 25% 20%;
-  --destructive: 0 80% 45%;
-  --destructive-foreground: 45 35% 97%;
-  --border: 45 20% 85%;
-  --input: 45 25% 92%;
-  --ring: 33 85% 50%;
-  --chart-1: 13 50% 45%;
-  --chart-2: 33 90% 55%;
-  --chart-3: 215 80% 45%;
-  --chart-4: 45 30% 60%;
-  --chart-5: 15 60% 50%;
-  --radius: 1rem;
-  --sidebar: 45 35% 97%;
-  --sidebar-foreground: 15 25% 20%;
-  --sidebar-primary: 13 50% 45%;
-  --sidebar-primary-foreground: 45 35% 97%;
-  --sidebar-accent: 33 85% 50%;
-  --sidebar-accent-foreground: 15 25% 20%;
-  --sidebar-border: 45 20% 85%;
-  --sidebar-ring: 33 85% 50%;
+  /* Beige/Cream background inspired by the design */
+  --background: 40 30% 92%;
+  --foreground: 0 15% 20%;
+  
+  /* Card with soft purple/lavender tint */
+  --card: 260 35% 88%;
+  --card-foreground: 0 15% 20%;
+  
+  --popover: 260 35% 88%;
+  --popover-foreground: 0 15% 20%;
+  
+  /* Maroon as primary color */
+  --primary: 0 50% 35%;
+  --primary-foreground: 40 30% 95%;
+  
+  /* Gold as secondary color */
+  --secondary: 45 85% 55%;
+  --secondary-foreground: 0 15% 20%;
+  
+  /* Brown muted tones */
+  --muted: 30 20% 70%;
+  --muted-foreground: 30 15% 40%;
+  
+  /* Gold accent */
+  --accent: 45 90% 50%;
+  --accent-foreground: 0 15% 20%;
+  
+  --destructive: 0 70% 50%;
+  --destructive-foreground: 40 30% 95%;
+  
+  /* Soft borders with purple tint */
+  --border: 260 25% 75%;
+  --input: 260 30% 85%;
+  --ring: 45 90% 50%;
+  
+  /* Chart colors: maroon, gold, brown variations */
+  --chart-1: 0 50% 35%;
+  --chart-2: 45 85% 55%;
+  --chart-3: 30 40% 45%;
+  --chart-4: 260 40% 60%;
+  --chart-5: 15 50% 50%;
+  
+  /* Increased border radius for rounded cards */
+  --radius: 1.5rem;
+  
+  --sidebar: 260 35% 88%;
+  --sidebar-foreground: 0 15% 20%;
+  --sidebar-primary: 0 50% 35%;
+  --sidebar-primary-foreground: 40 30% 95%;
+  --sidebar-accent: 45 90% 50%;
+  --sidebar-accent-foreground: 0 15% 20%;
+  --sidebar-border: 260 25% 75%;
+  --sidebar-ring: 45 90% 50%;
 }
 
 .dark {
-  --background: 15 25% 15%;
-  --foreground: 45 35% 95%;
-  --card: 15 25% 20%;
-  --card-foreground: 45 35% 95%;
-  --popover: 15 25% 20%;
-  --popover-foreground: 45 35% 95%;
-  --primary: 33 90% 55%;
-  --primary-foreground: 15 25% 15%;
-  --secondary: 45 25% 45%;
-  --secondary-foreground: 45 35% 95%;
-  --muted: 15 25% 35%;
-  --muted-foreground: 45 20% 70%;
-  --accent: 33 85% 50%;
-  --accent-foreground: 15 25% 15%;
-  --destructive: 0 80% 45%;
-  --destructive-foreground: 0 80% 55%;
-  --border: 15 25% 30%;
-  --input: 15 25% 25%;
-  --ring: 33 85% 50%;
-  --chart-1: 33 90% 55%;
-  --chart-2: 13 50% 45%;
-  --chart-3: 45 30% 60%;
-  --chart-4: 215 80% 45%;
-  --chart-5: 15 60% 50%;
-  --sidebar: 15 25% 20%;
-  --sidebar-foreground: 45 35% 95%;
-  --sidebar-primary: 33 90% 55%;
-  --sidebar-primary-foreground: 15 25% 15%;
-  --sidebar-accent: 33 85% 50%;
-  --sidebar-accent-foreground: 45 35% 95%;
-  --sidebar-border: 15 25% 30%;
-  --sidebar-ring: 33 85% 50%;
+  /* Dark mode with deep maroon/brown background */
+  --background: 0 20% 12%;
+  --foreground: 40 30% 90%;
+  
+  /* Dark purple-tinted cards */
+  --card: 260 25% 18%;
+  --card-foreground: 40 30% 90%;
+  
+  --popover: 260 25% 18%;
+  --popover-foreground: 40 30% 90%;
+  
+  /* Gold as primary in dark mode */
+  --primary: 45 85% 55%;
+  --primary-foreground: 0 20% 12%;
+  
+  /* Maroon as secondary in dark mode */
+  --secondary: 0 45% 40%;
+  --secondary-foreground: 40 30% 90%;
+  
+  /* Brown muted tones */
+  --muted: 30 15% 30%;
+  --muted-foreground: 40 20% 65%;
+  
+  /* Gold accent */
+  --accent: 45 90% 50%;
+  --accent-foreground: 0 20% 12%;
+  
+  --destructive: 0 70% 50%;
+  --destructive-foreground: 40 30% 90%;
+  
+  --border: 260 20% 28%;
+  --input: 260 20% 22%;
+  --ring: 45 90% 50%;
+  
+  /* Chart colors for dark mode */
+  --chart-1: 45 85% 55%;
+  --chart-2: 0 50% 45%;
+  --chart-3: 30 40% 50%;
+  --chart-4: 260 40% 55%;
+  --chart-5: 15 50% 55%;
+  
+  --sidebar: 260 25% 18%;
+  --sidebar-foreground: 40 30% 90%;
+  --sidebar-primary: 45 85% 55%;
+  --sidebar-primary-foreground: 0 20% 12%;
+  --sidebar-accent: 45 90% 50%;
+  --sidebar-accent-foreground: 0 20% 12%;
+  --sidebar-border: 260 20% 28%;
+  --sidebar-ring: 45 90% 50%;
 }
 
 @theme inline {
@@ -154,7 +191,7 @@
   }
 }
 
-/* Shimmer animation for cards */
+/* Shimmer animation for cards with gold shimmer */
 @keyframes shimmer {
   0% {
     background-position: -1000px 0;
@@ -168,14 +205,14 @@
   background: linear-gradient(
     90deg,
     rgba(207, 181, 59, 0) 0%,
-    rgba(207, 181, 59, 0.2) 50%,
+    rgba(207, 181, 59, 0.3) 50%,
     rgba(207, 181, 59, 0) 100%
   );
   background-size: 1000px 100%;
   animation: shimmer 2s infinite;
 }
 
-/* Pulse animation for live indicator */
+/* Pulse animation for live indicator with gold glow */
 @keyframes pulse-glow {
   0%,
   100% {
@@ -186,4 +223,37 @@
     opacity: 0.8;
     box-shadow: 0 0 0 8px rgba(207, 181, 59, 0);
   }
+}
+
+/* Floating animation for decorative elements */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Gradient backgrounds inspired by the design */
+.gradient-maroon-gold {
+  background: linear-gradient(135deg, hsl(0 50% 35%) 0%, hsl(45 85% 55%) 100%);
+}
+
+.gradient-purple-card {
+  background: linear-gradient(135deg, hsl(260 40% 85%) 0%, hsl(260 35% 88%) 100%);
+}
+
+/* Card shadow with purple tint */
+.card-shadow {
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
+}
+
+/* Enhanced rounded corners for cards */
+.rounded-card {
+  border-radius: 1.5rem;
 }

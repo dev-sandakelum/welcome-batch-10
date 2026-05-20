@@ -148,7 +148,7 @@ export default function QuizPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-gradient-to-b from-[#FDF5E6] to-[#F5E6D3] flex items-center justify-center">
+      <main className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-accent border-t-primary rounded-full animate-spin mx-auto mb-4" />
           <p className="text-foreground font-lora">Loading quiz questions...</p>
@@ -158,7 +158,7 @@ export default function QuizPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#FDF5E6] to-[#F5E6D3]">
+    <main className="min-h-screen bg-background">
       <div className="max-w-3xl mx-auto px-5 py-8">
         <motion.header
           className="mb-8"
@@ -169,7 +169,7 @@ export default function QuizPage() {
           <Link href="/">
             <Button
               variant="ghost"
-              className="text-primary hover:bg-accent/10 mb-4"
+              className="text-primary hover:bg-card mb-4 rounded-xl"
             >
               ← Back
             </Button>
@@ -190,7 +190,7 @@ export default function QuizPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="bg-white/40 backdrop-blur-md border-2 border-accent/30 rounded-2xl p-8"
+              className="bg-card backdrop-blur-md border-2 border-border rounded-3xl p-8 card-shadow"
             >
               <h2 className="font-playfair text-2xl font-600 text-primary mb-4">
                 Ready to test your knowledge?
@@ -210,7 +210,7 @@ export default function QuizPage() {
                     placeholder="Enter your name"
                     value={participantName}
                     onChange={(e) => setParticipantName(e.target.value)}
-                    className="rounded-xl text-base font-lora"
+                    className="rounded-xl text-base font-lora border-2"
                   />
                 </div>
                 <div>
@@ -222,7 +222,7 @@ export default function QuizPage() {
                     placeholder="your@email.com"
                     value={participantEmail}
                     onChange={(e) => setParticipantEmail(e.target.value)}
-                    className="rounded-xl text-base font-lora"
+                    className="rounded-xl text-base font-lora border-2"
                   />
                 </div>
               </div>
@@ -234,7 +234,7 @@ export default function QuizPage() {
                 <Button
                   onClick={handleStartQuiz}
                   disabled={!participantName.trim()}
-                  className="w-full bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground rounded-2xl font-playfair text-lg py-6"
+                  className="w-full bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground rounded-2xl font-playfair text-lg py-6 shadow-lg"
                 >
                   Start Quiz! 🎮
                 </Button>
@@ -252,7 +252,7 @@ export default function QuizPage() {
             >
               {/* Progress */}
               <motion.div
-                className="mb-6 bg-white/40 backdrop-blur-md rounded-2xl p-4 border-2 border-accent/20"
+                className="mb-6 bg-card backdrop-blur-md rounded-2xl p-4 border-2 border-border card-shadow"
                 animate={
                   timeLeft === 0 && answered
                     ? { x: [-8, 8, -8, 8, 0] }
@@ -287,7 +287,7 @@ export default function QuizPage() {
                     {timeLeft}s
                   </motion.span>
                 </div>
-                <div className="w-full bg-white/50 rounded-full h-2 overflow-hidden">
+                <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
                   <motion.div
                     className={`h-full rounded-full ${
                       timeLeft <= 10 ? 'bg-red-500' : 'bg-accent'
@@ -301,7 +301,7 @@ export default function QuizPage() {
 
               {/* Question */}
               <motion.div
-                className="bg-white/40 backdrop-blur-md border-2 border-accent/30 rounded-2xl p-6 mb-6"
+                className="bg-card backdrop-blur-md border-2 border-border rounded-3xl p-6 mb-6 card-shadow"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 key={currentQuestionIndex}
@@ -328,14 +328,14 @@ export default function QuizPage() {
                         key={key}
                         onClick={() => handleAnswer(key)}
                         disabled={answered}
-                        className={`w-full p-4 text-left rounded-xl font-lora transition-all ${
+                        className={`w-full p-4 text-left rounded-2xl font-lora transition-all ${
                           showCorrect
                             ? 'bg-green-500 text-white border-2 border-green-600'
                             : showIncorrect
                             ? 'bg-red-500 text-white border-2 border-red-600'
                             : isSelected
                             ? 'bg-accent text-accent-foreground border-2 border-accent'
-                            : 'bg-white/50 hover:bg-white/70 border-2 border-accent/20'
+                            : 'bg-background hover:bg-muted/30 border-2 border-border'
                         }`}
                         whileHover={!answered ? { scale: 1.02 } : {}}
                         whileTap={!answered ? { scale: 0.98 } : {}}
@@ -355,7 +355,7 @@ export default function QuizPage() {
                 >
                   <Button
                     onClick={handleNextQuestion}
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-playfair text-lg py-6"
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-playfair text-lg py-6 shadow-lg"
                   >
                     {currentQuestionIndex < questions.length - 1
                       ? 'Next Question →'
@@ -373,7 +373,7 @@ export default function QuizPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              className="bg-white/40 backdrop-blur-md border-2 border-accent/30 rounded-2xl p-8 text-center"
+              className="bg-card backdrop-blur-md border-2 border-border rounded-3xl p-8 text-center card-shadow"
             >
               <div className="mb-6">
                 <div className="text-6xl mb-4 font-playfair font-700 text-primary">
@@ -398,14 +398,14 @@ export default function QuizPage() {
 
               <div className="flex flex-col gap-4">
                 <Link href="/feedback" className="w-full">
-                  <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground rounded-2xl font-playfair text-lg py-6">
+                  <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground rounded-2xl font-playfair text-lg py-6 shadow-lg">
                     Share Feedback
                   </Button>
                 </Link>
                 <Link href="/leaderboard" className="w-full">
                   <Button
                     variant="outline"
-                    className="w-full border-accent text-primary hover:bg-accent/10 rounded-2xl font-playfair text-lg py-6"
+                    className="w-full border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-2xl font-playfair text-lg py-6"
                   >
                     View Leaderboard
                   </Button>
@@ -413,7 +413,7 @@ export default function QuizPage() {
                 <Link href="/" className="w-full">
                   <Button
                     variant="ghost"
-                    className="w-full text-primary hover:bg-primary/10 rounded-2xl font-playfair text-lg py-6"
+                    className="w-full text-primary hover:bg-card rounded-2xl font-playfair text-lg py-6"
                   >
                     Back to Home
                   </Button>
