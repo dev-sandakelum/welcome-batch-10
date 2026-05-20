@@ -148,9 +148,12 @@ export default function QuizPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-accent border-t-primary rounded-full animate-spin mx-auto mb-4" />
+      <main className="min-h-screen flex items-center justify-center relative">
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-accent/20 rounded-full blur-[100px] animate-pulse" />
+        <div className="text-center relative z-10">
+          <div className="w-12 h-12 border-4 border-accent border-t-primary rounded-full animate-spin mx-auto mb-4" style={{
+            boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)'
+          }} />
           <p className="text-foreground font-lora">Loading quiz questions...</p>
         </div>
       </main>
@@ -158,8 +161,12 @@ export default function QuizPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="max-w-3xl mx-auto px-5 py-8">
+    <main className="min-h-screen relative">
+      {/* Ultra 3D background effects */}
+      <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-accent/20 rounded-full blur-[100px] animate-pulse" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary/20 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1.5s' }} />
+      
+      <div className="max-w-3xl mx-auto px-5 py-8 relative z-10">
         <motion.header
           className="mb-8"
           initial={{ opacity: 0, y: -20 }}
@@ -169,15 +176,20 @@ export default function QuizPage() {
           <Link href="/">
             <Button
               variant="ghost"
-              className="text-primary hover:bg-card mb-4 rounded-xl"
+              className="text-primary hover:bg-card mb-4 rounded-xl btn-3d"
             >
               ← Back
             </Button>
           </Link>
-          <h1 className="font-playfair text-4xl md:text-5xl font-700 text-primary mb-2">
+          <h1 className="font-playfair text-4xl md:text-5xl font-700 mb-2 neon-text" style={{
+            background: 'linear-gradient(135deg, hsl(45 95% 70%) 0%, hsl(45 100% 55%) 50%, hsl(0 65% 45%) 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
+          }}>
             Knowledge Quiz
           </h1>
-          <p className="text-foreground/70 font-lora text-lg">
+          <p className="text-foreground/80 font-lora text-lg">
             30 seconds per question
           </p>
         </motion.header>
@@ -190,19 +202,24 @@ export default function QuizPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="bg-card backdrop-blur-md border-2 border-border rounded-3xl p-8 card-shadow"
+              className="gradient-glass-card backdrop-blur-xl rounded-3xl p-8 card-shadow-3d glow-border"
             >
-              <h2 className="font-playfair text-2xl font-600 text-primary mb-4">
+              <h2 className="font-playfair text-2xl font-600 mb-4 neon-text" style={{
+                background: 'linear-gradient(135deg, hsl(45 95% 70%) 0%, hsl(0 65% 45%) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text'
+              }}>
                 Ready to test your knowledge?
               </h2>
-              <p className="text-foreground/70 font-lora mb-6">
+              <p className="text-foreground/80 font-lora mb-6">
                 You&apos;ll have 30 seconds to answer each of {questions.length} questions.
                 Answer correctly to earn points!
               </p>
 
               <div className="space-y-4 mb-6">
                 <div>
-                  <label className="block text-sm font-playfair font-600 text-primary mb-2">
+                  <label className="block text-sm font-playfair font-600 text-accent mb-2">
                     Your Name (required)
                   </label>
                   <Input
@@ -210,11 +227,11 @@ export default function QuizPage() {
                     placeholder="Enter your name"
                     value={participantName}
                     onChange={(e) => setParticipantName(e.target.value)}
-                    className="rounded-xl text-base font-lora border-2"
+                    className="rounded-xl text-base font-lora border-2 border-accent/50 bg-background/50 backdrop-blur-sm focus:border-accent focus:ring-2 focus:ring-accent/50"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-playfair font-600 text-primary mb-2">
+                  <label className="block text-sm font-playfair font-600 text-accent mb-2">
                     Email (optional)
                   </label>
                   <Input
@@ -222,19 +239,19 @@ export default function QuizPage() {
                     placeholder="your@email.com"
                     value={participantEmail}
                     onChange={(e) => setParticipantEmail(e.target.value)}
-                    className="rounded-xl text-base font-lora border-2"
+                    className="rounded-xl text-base font-lora border-2 border-accent/50 bg-background/50 backdrop-blur-sm focus:border-accent focus:ring-2 focus:ring-accent/50"
                   />
                 </div>
               </div>
 
               <motion.div
-                whileHover={{ scale: 1.03 }}
+                whileHover={{ scale: 1.03, y: -2 }}
                 whileTap={{ scale: 0.97 }}
               >
                 <Button
                   onClick={handleStartQuiz}
                   disabled={!participantName.trim()}
-                  className="w-full bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground rounded-2xl font-playfair text-lg py-6 shadow-lg"
+                  className="w-full bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground rounded-2xl font-playfair text-lg py-6 btn-3d"
                 >
                   Start Quiz! 🎮
                 </Button>

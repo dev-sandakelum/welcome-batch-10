@@ -70,33 +70,33 @@ export default function Landing() {
   if (!mounted) return null
 
   return (
-    <main className="min-h-screen bg-background text-foreground overflow-hidden relative">
-      {/* Decorative elements inspired by the design */}
-      <div className="absolute top-0 left-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
-      <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-secondary/10 rounded-full blur-2xl" />
+    <main className="min-h-screen text-foreground overflow-hidden relative">
+      {/* Ultra 3D decorative elements with maroon/gold glow */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-accent/30 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/30 rounded-full blur-[120px] translate-x-1/2 translate-y-1/2 animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-secondary/20 rounded-full blur-[100px]" style={{ animation: 'float 6s ease-in-out infinite' }} />
 
       <div className="relative z-10">
         {/* Header */}
         <motion.header
-          className="flex justify-between items-center p-5 md:p-6 max-w-7xl mx-auto"
+          className="flex justify-between items-center p-5 md:p-6 max-w-7xl mx-auto relative z-10"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4 }}
         >
           <div className="flex items-center gap-4">
-            <h1 className="font-edu text-2xl md:text-3xl font-700 text-primary">
+            <h1 className="font-edu text-2xl md:text-3xl font-700 text-primary neon-text">
               Welcome Ceremony
             </h1>
             {visitorCount > 0 && (
               <motion.div
-                className="text-sm font-comic text-foreground/70"
+                className="text-sm font-comic text-foreground/90"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
               >
-                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-card border-2 border-border shadow-md">
-                  <span className="inline-block w-2 h-2 bg-accent rounded-full animate-pulse" />
-                  Live — {visitorCount} {visitorCount === 1 ? 'person' : 'people'} here
+                <span className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl gradient-glass-card card-shadow-3d">
+                  <span className="inline-block w-2 h-2 bg-accent rounded-full" style={{ animation: 'pulse-glow 1.5s ease-in-out infinite' }} />
+                  <span className="font-semibold">Live — {visitorCount} {visitorCount === 1 ? 'person' : 'people'} here</span>
                 </span>
               </motion.div>
             )}
@@ -104,7 +104,7 @@ export default function Landing() {
           <Link href="/admin/login">
             <Button
               variant="outline"
-              className="text-sm border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-xl transition-all"
+              className="text-sm border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-xl transition-all btn-3d"
             >
               Admin
             </Button>
@@ -113,17 +113,22 @@ export default function Landing() {
 
         {/* Main content */}
         <motion.div
-          className="flex flex-col items-center justify-center min-h-[calc(100vh-120px)] px-5 py-12"
+          className="flex flex-col items-center justify-center min-h-[calc(100vh-120px)] px-5 py-12 relative z-10"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
           {/* Title */}
           <motion.div className="text-center max-w-2xl" variants={itemVariants}>
-            <h2 className="font-licorice text-5xl md:text-7xl font-700 mb-4 text-primary">
+            <h2 className="font-licorice text-5xl md:text-7xl font-700 mb-4 neon-text" style={{
+              background: 'linear-gradient(135deg, hsl(45 95% 70%) 0%, hsl(45 100% 55%) 50%, hsl(0 65% 45%) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
               You&apos;re in!
             </h2>
-            <p className="text-lg md:text-xl text-foreground/80 mb-8 font-comic">
+            <p className="text-lg md:text-xl text-foreground/90 mb-8 font-comic">
               Join us for an interactive welcome ceremony. Ask questions, test your knowledge, and share your feedback!
             </p>
           </motion.div>
@@ -135,13 +140,13 @@ export default function Landing() {
           >
             <Link href="/ask-question" className="w-full md:w-auto">
               <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.05, y: -4 }}
+                whileTap={{ scale: 0.95 }}
                 className="w-full"
               >
                 <Button
                   size="lg"
-                  className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-2xl font-edu text-lg shadow-lg border-2 border-secondary/30"
+                  className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground rounded-2xl font-edu text-lg btn-3d"
                 >
                   Ask a Question 💭
                 </Button>
@@ -150,13 +155,13 @@ export default function Landing() {
 
             <Link href="/quiz" className="w-full md:w-auto">
               <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.05, y: -4 }}
+                whileTap={{ scale: 0.95 }}
                 className="w-full"
               >
                 <Button
                   size="lg"
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-edu text-lg shadow-lg border-2 border-primary/30"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-edu text-lg btn-3d"
                 >
                   Take the Quiz 🧠
                 </Button>
@@ -165,13 +170,13 @@ export default function Landing() {
 
             <Link href="/leaderboard" className="w-full md:w-auto">
               <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.05, y: -4 }}
+                whileTap={{ scale: 0.95 }}
                 className="w-full"
               >
                 <Button
                   size="lg"
-                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground rounded-2xl font-edu text-lg shadow-lg border-2 border-accent/30"
+                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground rounded-2xl font-edu text-lg btn-3d"
                 >
                   Leaderboard 🏆
                 </Button>
@@ -180,13 +185,13 @@ export default function Landing() {
 
             <Link href="/feedback" className="w-full md:w-auto">
               <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                whileHover={{ scale: 1.05, y: -4 }}
+                whileTap={{ scale: 0.95 }}
                 className="w-full"
               >
                 <Button
                   size="lg"
-                  className="w-full gradient-maroon-gold hover:opacity-90 text-white rounded-2xl font-edu text-lg shadow-lg border-2 border-primary/30"
+                  className="w-full gradient-maroon-gold hover:opacity-90 text-white rounded-2xl font-edu text-lg"
                 >
                   Give Feedback ⭐
                 </Button>
@@ -220,15 +225,15 @@ export default function Landing() {
                 key={index}
                 className="relative group rounded-3xl overflow-hidden"
                 variants={itemVariants}
-                whileHover={{ y: -8, transition: { duration: 0.2 } }}
+                whileHover={{ y: -12, scale: 1.03, transition: { duration: 0.3 } }}
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-transparent to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="bg-card backdrop-blur-md border-2 border-border group-hover:border-accent/60 rounded-3xl p-6 text-center transition-all duration-300 relative z-10 card-shadow">
-                  <div className="text-5xl mb-4">{feature.icon}</div>
-                  <h3 className="font-edu text-xl font-600 text-primary mb-2">
+                <div className="absolute inset-0 bg-gradient-to-br from-accent/30 via-transparent to-primary/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="gradient-glass-card backdrop-blur-xl rounded-3xl p-6 text-center transition-all duration-300 relative z-10 card-shadow-3d glow-border">
+                  <div className="text-5xl mb-4 float-animation" style={{ animationDelay: `${index * 0.2}s` }}>{feature.icon}</div>
+                  <h3 className="font-edu text-xl font-600 text-accent mb-2 neon-text">
                     {feature.title}
                   </h3>
-                  <p className="text-sm text-foreground/70 font-comic">
+                  <p className="text-sm text-foreground/80 font-comic">
                     {feature.description}
                   </p>
                 </div>
