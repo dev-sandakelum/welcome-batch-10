@@ -162,6 +162,28 @@
   
   body {
     @apply bg-background text-foreground;
+    background-image: url('/bg/1.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+  
+  /* Mobile-optimized background */
+  @media (max-width: 768px) {
+    body {
+      background-attachment: scroll;
+      background-size: cover;
+      background-position: center top;
+    }
+  }
+  
+  /* Extra small devices */
+  @media (max-width: 480px) {
+    body {
+      background-size: auto 100%;
+      background-position: center top;
+    }
   }
   
   /* Smooth animations for reduced motion preferences */

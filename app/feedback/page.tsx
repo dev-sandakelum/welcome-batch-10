@@ -52,8 +52,12 @@ export default function FeedbackPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#FDF5E6] to-[#F5E6D3]">
-      <div className="max-w-2xl mx-auto px-5 py-8">
+    <main className="min-h-screen bg-background text-foreground relative">
+      {/* Background decorative elements */}
+      <div className="absolute top-0 left-0 w-64 h-64 md:w-96 md:h-96 bg-accent/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute bottom-0 right-0 w-64 h-64 md:w-96 md:h-96 bg-primary/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+      
+      <div className="relative z-10 max-w-2xl mx-auto px-5 py-8">
         {/* Header */}
         <motion.header
           className="mb-8"
@@ -64,15 +68,15 @@ export default function FeedbackPage() {
           <Link href="/">
             <Button
               variant="ghost"
-              className="text-primary hover:bg-accent/10 mb-4"
+              className="text-primary hover:bg-primary/10 mb-4 font-edu"
             >
               ← Back
             </Button>
           </Link>
-          <h1 className="font-playfair text-4xl md:text-5xl font-700 text-primary mb-2">
+          <h1 className="font-edu text-4xl md:text-5xl font-700 text-primary mb-2">
             Share Your Feedback
           </h1>
-          <p className="text-foreground/70 font-lora text-lg">
+          <p className="text-foreground/70 font-comic text-lg">
             Help us improve the welcome ceremony
           </p>
         </motion.header>
@@ -80,7 +84,7 @@ export default function FeedbackPage() {
         {!submitted ? (
           <motion.form
             onSubmit={handleSubmit}
-            className="bg-white/40 backdrop-blur-md border-2 border-accent/30 rounded-2xl p-8"
+            className="bg-card/90 backdrop-blur-md border-2 border-border rounded-3xl p-6 sm:p-8 shadow-2xl"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
@@ -88,7 +92,7 @@ export default function FeedbackPage() {
             {/* Name */}
             <ScrollFade delay={0}>
               <div className="mb-6">
-                <label className="block text-sm font-playfair font-600 text-primary mb-2">
+                <label className="block text-sm font-edu font-600 text-primary mb-2">
                   Your Name (required)
                 </label>
                 <Input
@@ -96,7 +100,7 @@ export default function FeedbackPage() {
                   placeholder="Enter your name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="rounded-xl text-base font-lora"
+                  className="rounded-xl text-base font-comic border-2 border-border focus:border-primary"
                   required
                 />
               </div>
@@ -105,7 +109,7 @@ export default function FeedbackPage() {
             {/* Email */}
             <ScrollFade delay={0.1}>
               <div className="mb-6">
-                <label className="block text-sm font-playfair font-600 text-primary mb-2">
+                <label className="block text-sm font-edu font-600 text-primary mb-2">
                   Email (optional)
                 </label>
                 <Input
@@ -113,7 +117,7 @@ export default function FeedbackPage() {
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="rounded-xl text-base font-lora"
+                  className="rounded-xl text-base font-comic border-2 border-border focus:border-primary"
                 />
               </div>
             </ScrollFade>
@@ -198,22 +202,30 @@ export default function FeedbackPage() {
             {/* Submit Button */}
             <ScrollFade delay={0.4}>
             <motion.div
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              whileHover={{ scale: !name.trim() || rating === 0 || loading ? 1 : 1.03 }}
+              whileTap={{ scale: !name.trim() || rating === 0 || loading ? 1 : 0.97 }}
             >
               <Button
                 type="submit"
                 disabled={!name.trim() || rating === 0 || loading}
-                className="w-full bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground rounded-2xl font-playfair text-lg py-6"
+                className="w-full gradient-maroon-gold hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-2xl font-edu text-lg py-6 shadow-lg border-2 border-primary/30 transition-all"
               >
-                {loading ? 'Sending...' : 'Submit Feedback! 🎉'}
+                {loading ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="animate-spin">⏳</span> Sending...
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    Submit Feedback! 🎉
+                  </span>
+                )}
               </Button>
             </motion.div>
             </ScrollFade>
           </motion.form>
         ) : (
           <motion.div
-            className="bg-white/40 backdrop-blur-md border-2 border-accent/30 rounded-2xl p-8 text-center"
+            className="bg-card/90 backdrop-blur-md border-2 border-border rounded-3xl p-6 sm:p-8 text-center shadow-2xl"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
           >
