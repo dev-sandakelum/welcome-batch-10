@@ -1,0 +1,6 @@
+{
+  "name": "10th Batch Welcoming Ceremony",
+  "description": "An interactive, playful Neobrutalist community website for the incoming 10th Batch Welcoming Ceremony. Features a timed trivia challenge, real-time leaderboard score tracking, feedback forms, and an active community Q&A hub.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
