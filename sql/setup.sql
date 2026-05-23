@@ -65,26 +65,38 @@ ALTER TABLE questions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE quiz_scores ENABLE ROW LEVEL SECURITY;
 ALTER TABLE feedback ENABLE ROW LEVEL SECURITY;
 
--- Questions: Anyone can read, anyone can insert
+-- Questions: Anyone can read and insert, anyone can update and delete
 CREATE POLICY "Anyone can view questions" ON questions
     FOR SELECT USING (true);
 
 CREATE POLICY "Anyone can submit questions" ON questions
     FOR INSERT WITH CHECK (true);
 
--- Quiz Scores: Anyone can read and insert
+CREATE POLICY "Anyone can update questions" ON questions
+    FOR UPDATE USING (true);
+
+CREATE POLICY "Anyone can delete questions" ON questions
+    FOR DELETE USING (true);
+
+-- Quiz Scores: Anyone can read, insert, and delete
 CREATE POLICY "Anyone can view quiz scores" ON quiz_scores
     FOR SELECT USING (true);
 
 CREATE POLICY "Anyone can submit quiz scores" ON quiz_scores
     FOR INSERT WITH CHECK (true);
 
--- Feedback: Anyone can read and insert
+CREATE POLICY "Anyone can delete quiz scores" ON quiz_scores
+    FOR DELETE USING (true);
+
+-- Feedback: Anyone can read, insert, and delete
 CREATE POLICY "Anyone can view feedback" ON feedback
     FOR SELECT USING (true);
 
 CREATE POLICY "Anyone can submit feedback" ON feedback
     FOR INSERT WITH CHECK (true);
+
+CREATE POLICY "Anyone can delete feedback" ON feedback
+    FOR DELETE USING (true);
 
 -- ============================================
 -- Functions and Triggers

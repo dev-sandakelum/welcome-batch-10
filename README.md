@@ -4,12 +4,21 @@ A beautiful, interactive welcome portal for new university students built with N
 
 ## Features
 
+### Public Features
 - 🏠 **Home Page** - Elegant landing page with smooth scroll sections
 - 🧠 **Interactive Quiz** - Test your knowledge about the university
 - 🏆 **Leaderboard** - See top quiz performers
 - ❓ **Q&A System** - Ask questions and get answers from seniors
 - 💌 **Feedback System** - Share your experience with ratings
 - 🎨 **Beautiful UI** - Royal purple and gold theme with smooth animations
+
+### Admin Features
+- 🔐 **Secure Login** - Protected admin panel with authentication
+- 📊 **Dashboard** - View statistics and analytics
+- 📝 **Question Management** - Answer, edit, and delete questions
+- 🏆 **Score Management** - View and manage quiz leaderboard
+- 💬 **Feedback Management** - View ratings and delete feedback
+- 🧪 **Database Testing** - Test all CRUD operations
 
 ## Tech Stack
 
@@ -208,10 +217,31 @@ Make sure to add these in your deployment platform:
 - Check if RLS policies are enabled (they should be)
 - Ensure you ran `sql/setup.sql`
 
+### Database Operations Not Working
+- If UPDATE or DELETE operations fail, run `sql/update-policies.sql` in Supabase
+- Test all operations at `/admin/test-db`
+- See `DATABASE_OPERATIONS.md` for detailed troubleshooting
+
 ### Build Errors
 - Clear `.next` folder: `rm -rf .next`
 - Reinstall dependencies: `rm -rf node_modules && npm install`
 - Check Node.js version: `node --version` (should be 20+)
+
+### Admin Login Issues
+- Check credentials in `.env.local`
+- Default: Username: `Admin_1234`, Password: `admin`
+- Clear browser cache and try again
+
+## Documentation
+
+📚 **Comprehensive guides available:**
+
+- **[SETUP_GUIDE.md](SETUP_GUIDE.md)** - Detailed setup instructions
+- **[QUICK_START.md](QUICK_START.md)** - Get started in 5 minutes
+- **[DATABASE_OPERATIONS.md](DATABASE_OPERATIONS.md)** - Database CRUD operations guide
+- **[VERIFICATION_COMPLETE.md](VERIFICATION_COMPLETE.md)** - Verification checklist
+- **[DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md)** - Production deployment guide
+- **[DOCUMENTATION_INDEX.md](DOCUMENTATION_INDEX.md)** - All documentation index
 
 ## Contributing
 

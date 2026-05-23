@@ -11,6 +11,8 @@ Complete guide to all documentation files in this project.
 | [README.md](#readmemd) | Main project overview | Start here |
 | [QUICK_START.md](#quick_startmd) | 5-minute setup | Want to get running fast |
 | [SETUP_GUIDE.md](#setup_guidemd) | Detailed setup | First-time setup |
+| [DATABASE_OPERATIONS.md](#database_operationsmd) | Database CRUD guide | Testing database operations |
+| [VERIFICATION_COMPLETE.md](#verification_completemd) | Verification checklist | Confirming everything works |
 | [PROJECT_SUMMARY.md](#project_summarymd) | Complete overview | Understanding the project |
 | [DEPLOYMENT_CHECKLIST.md](#deployment_checklistmd) | Pre-launch checklist | Before deploying |
 | [sql/README.md](#sqlreadmemd) | Database scripts | Setting up database |
@@ -65,6 +67,59 @@ Complete guide to all documentation files in this project.
 - Already familiar with Supabase
 
 **Perfect for**: Experienced developers
+
+---
+
+### DATABASE_OPERATIONS.md
+**Location**: Root directory  
+**Length**: ~200 lines  
+**Audience**: Developers testing database functionality
+
+**Contents**:
+- Current status of all CRUD operations
+- SQL files overview
+- Admin panel features table
+- Step-by-step testing guide
+- Troubleshooting database issues
+- Database schema reference
+- RLS policies explanation
+- Quick reference table
+
+**When to read**:
+- Need to verify database operations work
+- Testing UPDATE and DELETE operations
+- Troubleshooting RLS policy issues
+- Understanding admin panel capabilities
+- Before deploying to production
+
+**Perfect for**: Database operation verification
+
+---
+
+### VERIFICATION_COMPLETE.md
+**Location**: Root directory  
+**Length**: ~300 lines  
+**Audience**: Developers completing setup
+
+**Contents**:
+- Verification summary
+- Operations status by table
+- Step-by-step testing instructions
+- Files created/updated list
+- Configuration status
+- Application routes overview
+- Success criteria checklist
+- Common issues and fixes
+- Quick reference table
+
+**When to read**:
+- After completing initial setup
+- Before testing the application
+- Verifying all features work
+- Troubleshooting issues
+- Preparing for deployment
+
+**Perfect for**: Final verification before launch
 
 ---
 
@@ -210,8 +265,17 @@ Complete guide to all documentation files in this project.
 ### For Database Setup
 
 1. **sql/README.md** - Complete SQL guide
-2. **SETUP_GUIDE.md** - Database configuration section
-3. **PROJECT_SUMMARY.md** - Schema reference
+2. **DATABASE_OPERATIONS.md** - CRUD operations guide
+3. **SETUP_GUIDE.md** - Database configuration section
+4. **VERIFICATION_COMPLETE.md** - Testing checklist
+5. **PROJECT_SUMMARY.md** - Schema reference
+
+### For Testing & Verification
+
+1. **VERIFICATION_COMPLETE.md** - Complete checklist
+2. **DATABASE_OPERATIONS.md** - Test all operations
+3. **SETUP_GUIDE.md** - Reference for details
+4. **README.md** - Troubleshooting section
 
 ---
 
