@@ -112,24 +112,80 @@ body {
 
 /* ─── CARD STYLES ─── */
 .card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(201, 162, 39, 0.4);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.09) 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.07) 100%
+  );
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--radius);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(32px) saturate(200%) brightness(1.05);
+  -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.05);
   padding: 36px 40px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
-              inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1),
+    0 0 0 0.5px rgba(201, 162, 39, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Aurora shimmer top edge */
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(201, 162, 39, 0.6) 30%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(0, 180, 216, 0.6) 70%,
+    transparent 100%
+  );
+  opacity: 0.7;
+}
+
+/* Subtle inner glow */
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(255, 255, 255, 0.06) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
 }
 
 .card:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(201, 162, 39, 0.6);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4),
-              inset 0 1px 0 rgba(255, 255, 255, 0.15),
-              0 0 30px rgba(201, 162, 39, 0.15);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.13) 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.10) 100%
+  );
+  border-color: rgba(201, 162, 39, 0.55);
+  border-top-color: rgba(255, 255, 255, 0.25);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 4px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 40px rgba(201, 162, 39, 0.12),
+    0 0 80px rgba(201, 162, 39, 0.06);
+  transform: translateY(-2px);
 }
 
 /* ─── GOLD DIVIDER ─── */
@@ -169,10 +225,10 @@ body {
   align-items: center;
   gap: 8px;
   padding: 14px 32px;
-  background: linear-gradient(135deg, var(--accent-gold), #a07d18);
+  background: linear-gradient(135deg, var(--accent-gold) 0%, #d4a820 40%, #a07d18 100%);
   color: #0a0a0a;
   font-family: 'Montserrat', sans-serif;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.82rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -182,12 +238,42 @@ body {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   will-change: transform;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 4px 20px rgba(201, 162, 39, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+}
+
+.btn-gold::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 0.5s ease;
+}
+
+.btn-gold:hover::before {
+  left: 150%;
 }
 
 .btn-gold:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 12px 35px rgba(201, 162, 39, 0.5);
-  filter: brightness(1.15);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow:
+    0 16px 40px rgba(201, 162, 39, 0.55),
+    0 4px 12px rgba(201, 162, 39, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  filter: brightness(1.1);
 }
 
 .btn-gold:active {
@@ -205,7 +291,7 @@ body {
   align-items: center;
   gap: 8px;
   padding: 13px 30px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
   color: #ffffff;
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
@@ -213,20 +299,51 @@ body {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   border: 1px solid rgba(201, 162, 39, 0.4);
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   will-change: transform;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 4px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.btn-outline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(201, 162, 39, 0.15),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 0.5s ease;
+}
+
+.btn-outline:hover::before {
+  left: 150%;
 }
 
 .btn-outline:hover {
-  border-color: var(--accent-gold);
+  border-color: rgba(201, 162, 39, 0.7);
+  border-top-color: rgba(255, 255, 255, 0.25);
   color: var(--accent-gold-light);
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 8px 25px rgba(201, 162, 39, 0.3);
+  box-shadow:
+    0 12px 30px rgba(201, 162, 39, 0.25),
+    0 4px 12px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
   background: rgba(201, 162, 39, 0.1);
 }
 
@@ -252,22 +369,28 @@ body {
 .form-input {
   width: 100%;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(201, 162, 39, 0.3);
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-sm);
   padding: 13px 18px;
   color: #ffffff;
   font-family: 'Montserrat', sans-serif;
   font-size: 0.88rem;
   outline: none;
-  transition: all 0.3s;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .form-input:focus {
-  border-color: var(--accent-gold);
+  border-color: rgba(201, 162, 39, 0.7);
+  border-top-color: rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 20px rgba(201, 162, 39, 0.2);
+  box-shadow:
+    0 0 0 3px rgba(201, 162, 39, 0.12),
+    0 0 20px rgba(201, 162, 39, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .form-input::placeholder {
@@ -607,3 +730,76 @@ textarea.form-input {
    
    Import these files in your layout/page component.
 */
+
+/* ─── GLASS SHIMMER ─── */
+.glass-shimmer {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 40%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0.08) 60%,
+    transparent 100%
+  );
+  transform: skewX(-15deg);
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes shimmerSweep {
+  0%   { left: -100%; }
+  100% { left: 160%; }
+}
+
+/* ─── AURORA CANVAS ─── */
+#aurora-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 1;
+}
+
+/* ─── ENHANCED NAV DOTS ─── */
+.nav-dots-container {
+  z-index: 200;
+}
+
+.nav-dot {
+  position: relative;
+}
+
+.nav-dot.active::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 162, 39, 0.4);
+  animation: dotRipple 1.5s ease-out infinite;
+}
+
+@keyframes dotRipple {
+  0%   { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* ─── SECTION TRANSITION LAYER ─── */
+.home-section {
+  will-change: transform, opacity;
+}
+
+/* ─── ENHANCED BACKGROUND ─── */
+.bg-canvas {
+  background-attachment: fixed;
+}
+
+/* Richer overlay with vignette */
+.bg-canvas::after {
+  background:
+    radial-gradient(ellipse at center, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.85) 100%);
+}

@@ -1,22 +1,78 @@
 /* ============================================
-   Welcome 10th Batch — GSAP Animation Engine
+   GSAP Animation Engine — bundled by Next.js
    ============================================ */
 
-/* ── GSAP SCROLL SNAP ─────────────────────── */
-export async function initGSAPScrollSnap() {
-  const { gsap } = await import('/node_modules/gsap/dist/gsap.js').catch(() =>
-    import('gsap')
+import { gsap } from 'gsap';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+
+gsap.registerPlugin(ScrollToPlugin);
+
+/* ── Per-section staggered entrance ─────── */
+function animateSection(section: Element) {
+  if (!section || (section as any)._gsapDone) return;
+  (section as any)._gsapDone = true;
+
+  const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
+
+  const badge = section.querySelector('.hero-badge, .section-label');
+  if (badge)
+    tl.fromTo(badge,
+      { opacity: 0, y: -18 },
+      { opacity: 1, y: 0, duration: 0.75 }, 0);
+
+  const title = section.querySelector('.hero-title, .section-heading, .section-heading-mobile');
+  if (title)
+    tl.fromTo(title,
+      { opacity: 0, y: 45, skewY: 2 },
+      { opacity: 1, y: 0, skewY: 0, duration: 0.9 }, 0.12);
+
+  const sub = section.querySelector('.hero-subtitle, .hero-batch');
+  if (sub)
+    tl.fromTo(sub,
+      { opacity: 0, x: -28 },
+      { opacity: 1, x: 0, duration: 0.75 }, 0.28);
+
+  const desc = section.querySelector('.hero-description, .leaderboard-description');
+  if (desc)
+    tl.fromTo(desc,
+      { opacity: 0, y: 18 },
+      { opacity: 1, y: 0, duration: 0.65 }, 0.42);
+
+  const divider = section.querySelector('.gold-dot-line');
+  if (divider)
+    tl.fromTo(divider,
+      { scaleX: 0, opacity: 0 },
+      { scaleX: 1, opacity: 1, duration: 0.7, transformOrigin: 'center' }, 0.18);
+
+  const cards = section.querySelectorAll(
+    '.about-card-item, .faq-item, .leaderboard-entry, .feedback-feature-item, .about-stat-item'
   );
-  const { ScrollToPlugin } = await import(
-    '/node_modules/gsap/dist/ScrollToPlugin.js'
-  ).catch(() => import('gsap/ScrollToPlugin'));
+  if (cards.length)
+    tl.fromTo(cards,
+      { opacity: 0, y: 28, scale: 0.93 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.65, stagger: 0.07 }, 0.38);
 
-  gsap.registerPlugin(ScrollToPlugin);
+  const mainCard = section.querySelector('.card');
+  if (mainCard && !cards.length)
+    tl.fromTo(mainCard,
+      { opacity: 0, y: 48, scale: 0.95 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.85 }, 0.28);
 
+  const btns = section.querySelectorAll(
+    '.hero-buttons .btn-gold, .hero-buttons .btn-outline, .hero-icon-buttons .icon-btn'
+  );
+  if (btns.length)
+    tl.fromTo(btns,
+      { opacity: 0, y: 18, scale: 0.88 },
+      { opacity: 1, y: 0, scale: 1, duration: 0.55, stagger: 0.06 }, 0.55);
+}
+
+/* ── GSAP Scroll Snap ────────────────────── */
+export function initGSAPScrollSnap() {
   const sections = Array.from(document.querySelectorAll('.home-section'));
   if (!sections.length) return;
 
-  /* Kill native scroll snap & overflow so GSAP owns scrolling */
+  // Disable native scroll snap — GSAP owns it
   document.documentElement.style.scrollSnapType = 'none';
   document.documentElement.style.overflowY = 'hidden';
   document.body.style.overflowY = 'hidden';
@@ -25,37 +81,28 @@ export async function initGSAPScrollSnap() {
   let busy = false;
   const DUR = 1.05;
 
-  function snap(next, dir) {
+  function snap(next: number, dir: number) {
     if (busy || next < 0 || next >= sections.length || next === current) return;
     busy = true;
 
     const leaving = sections[current];
     const entering = sections[next];
 
-    /* Slide leaving section away */
     gsap.to(leaving, {
-      opacity: 0,
-      y: dir > 0 ? -50 : 50,
-      scale: 0.97,
-      duration: DUR * 0.45,
-      ease: 'power2.in',
+      opacity: 0, y: dir > 0 ? -50 : 50, scale: 0.97,
+      duration: DUR * 0.45, ease: 'power2.in',
     });
 
-    /* Scroll + reveal entering section */
     gsap.to(window, {
       scrollTo: { y: entering, autoKill: false },
       duration: DUR,
       ease: 'expo.inOut',
       onComplete() {
-        gsap.fromTo(
-          entering,
+        gsap.fromTo(entering,
           { opacity: 0, y: dir > 0 ? 70 : -70, scale: 0.96 },
           {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: DUR * 0.65,
-            ease: 'expo.out',
+            opacity: 1, y: 0, scale: 1,
+            duration: DUR * 0.65, ease: 'expo.out',
             onComplete() {
               busy = false;
               gsap.set(leaving, { opacity: 1, y: 0, scale: 1 });
@@ -63,19 +110,19 @@ export async function initGSAPScrollSnap() {
           }
         );
 
-        /* Update nav dots */
         document.querySelectorAll('.nav-dot').forEach((d, i) =>
           d.classList.toggle('active', i === next)
         );
 
         current = next;
-        animateSection(entering, gsap);
+        animateSection(entering);
       },
     });
   }
 
-  /* ── Input handlers ── */
-  let wDelta = 0, wTimer;
+  // Wheel
+  let wDelta = 0;
+  let wTimer: ReturnType<typeof setTimeout>;
   window.addEventListener('wheel', (e) => {
     e.preventDefault();
     if (busy) return;
@@ -87,6 +134,7 @@ export async function initGSAPScrollSnap() {
     }, 40);
   }, { passive: false });
 
+  // Touch
   let ty = 0;
   window.addEventListener('touchstart', (e) => { ty = e.touches[0].clientY; }, { passive: true });
   window.addEventListener('touchend', (e) => {
@@ -95,78 +143,26 @@ export async function initGSAPScrollSnap() {
     if (Math.abs(d) > 35) snap(current + (d > 0 ? 1 : -1), d > 0 ? 1 : -1);
   }, { passive: true });
 
+  // Keyboard
   window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowDown' || e.key === 'PageDown') snap(current + 1, 1);
     if (e.key === 'ArrowUp'   || e.key === 'PageUp')   snap(current - 1, -1);
   });
 
+  // Nav dots
   document.querySelectorAll('.nav-dot').forEach((dot, i) =>
     dot.addEventListener('click', () => snap(i, i > current ? 1 : -1))
   );
 
-  window._snapTo = snap;
-
-  /* Animate first section immediately */
-  animateSection(sections[0], gsap);
-}
-
-/* ── Per-section staggered entrance ─────────── */
-function animateSection(section, gsap) {
-  if (!section || section._gsapDone) return;
-  section._gsapDone = true;
-
-  const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-
-  const badge = section.querySelector('.hero-badge, .section-label');
-  if (badge) tl.fromTo(badge,
-    { opacity: 0, y: -18, letterSpacing: '0.5em' },
-    { opacity: 1, y: 0, letterSpacing: '', duration: 0.75 }, 0);
-
-  const title = section.querySelector('.hero-title, .section-heading, .section-heading-mobile');
-  if (title) tl.fromTo(title,
-    { opacity: 0, y: 45, skewY: 2 },
-    { opacity: 1, y: 0, skewY: 0, duration: 0.9 }, 0.12);
-
-  const sub = section.querySelector('.hero-subtitle, .hero-batch');
-  if (sub) tl.fromTo(sub,
-    { opacity: 0, x: -28 },
-    { opacity: 1, x: 0, duration: 0.75 }, 0.28);
-
-  const desc = section.querySelector('.hero-description, .leaderboard-description');
-  if (desc) tl.fromTo(desc,
-    { opacity: 0, y: 18 },
-    { opacity: 1, y: 0, duration: 0.65 }, 0.42);
-
-  const divider = section.querySelector('.gold-dot-line');
-  if (divider) tl.fromTo(divider,
-    { scaleX: 0, opacity: 0 },
-    { scaleX: 1, opacity: 1, duration: 0.7, transformOrigin: 'center' }, 0.18);
-
-  const cards = section.querySelectorAll(
-    '.about-card-item, .faq-item, .leaderboard-entry, .feedback-feature-item, .about-stat-item'
-  );
-  if (cards.length) tl.fromTo(cards,
-    { opacity: 0, y: 28, scale: 0.93 },
-    { opacity: 1, y: 0, scale: 1, duration: 0.65, stagger: 0.07 }, 0.38);
-
-  const mainCard = section.querySelector('.card');
-  if (mainCard && !cards.length) tl.fromTo(mainCard,
-    { opacity: 0, y: 48, scale: 0.95 },
-    { opacity: 1, y: 0, scale: 1, duration: 0.85 }, 0.28);
-
-  const btns = section.querySelectorAll(
-    '.hero-buttons .btn-gold, .hero-buttons .btn-outline, .hero-icon-buttons .icon-btn'
-  );
-  if (btns.length) tl.fromTo(btns,
-    { opacity: 0, y: 18, scale: 0.88 },
-    { opacity: 1, y: 0, scale: 1, duration: 0.55, stagger: 0.06 }, 0.55);
+  // Animate first section
+  animateSection(sections[0]);
 }
 
 /* ── Aurora particle canvas ──────────────── */
 export function initAuroraParticles() {
-  const canvas = document.getElementById('aurora-canvas');
+  const canvas = document.getElementById('aurora-canvas') as HTMLCanvasElement | null;
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext('2d')!;
 
   let W = (canvas.width = window.innerWidth);
   let H = (canvas.height = window.innerHeight);
@@ -238,7 +234,7 @@ export function initAuroraParticles() {
 
 /* ── 3-D tilt on hover ───────────────────── */
 export function initMagneticCards() {
-  document.querySelectorAll('.about-card-item, .faq-item, .feedback-feature-item').forEach((el) => {
+  document.querySelectorAll<HTMLElement>('.about-card-item, .faq-item, .feedback-feature-item').forEach((el) => {
     el.addEventListener('mousemove', (e) => {
       const r = el.getBoundingClientRect();
       const x = e.clientX - r.left - r.width / 2;
@@ -256,7 +252,7 @@ export function initMagneticCards() {
 
 /* ── Shimmer sweep on .card hover ────────── */
 export function initGlassShimmer() {
-  document.querySelectorAll('.card').forEach((card) => {
+  document.querySelectorAll<HTMLElement>('.card').forEach((card) => {
     if (card.querySelector('.glass-shimmer')) return;
     const s = document.createElement('div');
     s.className = 'glass-shimmer';
@@ -272,10 +268,10 @@ export function initGlassShimmer() {
 export function initNavDotPulse() {
   const obs = new MutationObserver((muts) => {
     muts.forEach((m) => {
-      if (m.attributeName === 'class' && m.target.classList.contains('active')) {
-        const d = m.target;
-        d.style.animation = 'none';
-        requestAnimationFrame(() => { d.style.animation = ''; });
+      const t = m.target as HTMLElement;
+      if (m.attributeName === 'class' && t.classList.contains('active')) {
+        t.style.animation = 'none';
+        requestAnimationFrame(() => { t.style.animation = ''; });
       }
     });
   });
@@ -285,45 +281,40 @@ export function initNavDotPulse() {
 }
 
 /* ── FAQ Modal ───────────────────────────── */
-export function initFaqModal(faqData) {
-  window.openFaqModal = (index) => {
-    const modal = document.getElementById('faq-modal');
-    const q = document.getElementById('modal-question');
-    const a = document.getElementById('modal-answer');
+export function initFaqModal(faqData: { question: string; answer: string }[]) {
+  (window as any).openFaqModal = (index: number) => {
+    const modal = document.getElementById('faq-modal')!;
+    const q = document.getElementById('modal-question')!;
+    const a = document.getElementById('modal-answer')!;
     if (!faqData[index]) return;
     q.textContent = faqData[index].question;
     a.textContent = faqData[index].answer;
     modal.classList.add('show');
     document.body.style.overflow = 'hidden';
 
-    import('gsap').then(({ gsap }) => {
-      const c = modal.querySelector('.faq-modal-content');
-      gsap.fromTo(c,
-        { opacity: 0, scale: 0.86, y: 36 },
-        { opacity: 1, scale: 1, y: 0, duration: 0.48, ease: 'back.out(1.5)' }
-      );
-    });
+    const c = modal.querySelector('.faq-modal-content') as HTMLElement;
+    gsap.fromTo(c,
+      { opacity: 0, scale: 0.86, y: 36 },
+      { opacity: 1, scale: 1, y: 0, duration: 0.48, ease: 'back.out(1.5)' }
+    );
   };
 
-  window.closeFaqModal = () => {
-    const modal = document.getElementById('faq-modal');
-    import('gsap').then(({ gsap }) => {
-      gsap.to(modal.querySelector('.faq-modal-content'), {
-        opacity: 0, scale: 0.9, y: 20, duration: 0.28, ease: 'power2.in',
-        onComplete() {
-          modal.classList.remove('show');
-          document.body.style.overflow = '';
-        },
-      });
+  (window as any).closeFaqModal = () => {
+    const modal = document.getElementById('faq-modal')!;
+    gsap.to(modal.querySelector('.faq-modal-content') as HTMLElement, {
+      opacity: 0, scale: 0.9, y: 20, duration: 0.28, ease: 'power2.in',
+      onComplete() {
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+      },
     });
   };
 
   const modal = document.getElementById('faq-modal');
-  if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) window.closeFaqModal(); });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') window.closeFaqModal?.(); });
+  if (modal) modal.addEventListener('click', (e) => {
+    if (e.target === modal) (window as any).closeFaqModal?.();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') (window as any).closeFaqModal?.();
+  });
 }
-
-/* ── Legacy stubs (kept for safety) ─────── */
-export function initPopupAnimations() {}
-export function initNavDots() {}
-export function initScrollSnap() {}
