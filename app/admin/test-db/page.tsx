@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import '../../styles/admin-common.css';
 import '../../styles/admin-test-db.css';
+import PageShell from '@/app/components/PageShell';
 
 interface TestResult {
   operation: string;
@@ -109,14 +110,13 @@ export default function TestDatabasePage() {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
       <link rel="stylesheet" href="/assets/styles.css" />
       <link rel="stylesheet" href="/assets/styles-tablet.css" />
       <link rel="stylesheet" href="/assets/styles-mobile.css" />
       <link rel="stylesheet" href="/assets/styles-mobile-small.css" />
       <link rel="stylesheet" href="/assets/styles-mobile-extra-small.css" />
 
-      <div className="bg-canvas"></div>
+      <PageShell>
 
       <div className="admin-page-wrapper">
         <div className="admin-page-container-sm">
@@ -198,6 +198,7 @@ export default function TestDatabasePage() {
 
         </div>
       </div>
+      </PageShell>
     </>
   );
 }

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import '../styles/feedback.css';
+import PageShell from '@/app/components/PageShell';
 
 export default function FeedbackPage() {
   const [name, setName] = useState('');
@@ -52,14 +53,13 @@ export default function FeedbackPage() {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
       <link rel="stylesheet" href="/assets/styles.css" />
       <link rel="stylesheet" href="/assets/styles-tablet.css" />
       <link rel="stylesheet" href="/assets/styles-mobile.css" />
       <link rel="stylesheet" href="/assets/styles-mobile-small.css" />
       <link rel="stylesheet" href="/assets/styles-mobile-extra-small.css" />
 
-      <div className="bg-canvas"></div>
+      <PageShell>
 
       <div className="feedback-page-wrapper">
         <div className="feedback-page-content">
@@ -153,6 +153,7 @@ export default function FeedbackPage() {
           </div>
         </div>
       </div>
+      </PageShell>
     </>
   );
 }
