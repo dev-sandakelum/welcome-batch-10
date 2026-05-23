@@ -1029,3 +1029,36 @@
     max-width: 240px;
   }
 }
+
+/* ============================================
+   Compact: max-width 360px AND max-height 800px
+   (small phones in portrait — tight vertical space)
+   ============================================ */
+
+@media (max-width: 360px) and (max-height: 800px) {
+
+  /* ── About section: hide emoji icons ── */
+  .about-card-icon {
+    display: none !important;
+  }
+
+  /* ── Feedback section: row layout for feature cards ── */
+  .feedback-features-grid {
+    grid-template-columns: 1fr 1fr !important;
+    flex-direction: row !important;
+    gap: 10px !important;
+  }
+
+  .feedback-feature-item {
+    padding: 12px 8px !important;
+  }
+
+  .feedback-feature-icon {
+    font-size: 1.4rem !important;
+    margin-bottom: 4px !important;
+  }
+
+  .feedback-feature-label {
+    font-size: 0.62rem !important;
+  }
+}
