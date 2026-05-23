@@ -1,0 +1,169 @@
+/* ============================================
+   Admin Login Page Styles
+   ============================================ */
+
+/* Page Wrapper */
+.admin-login-wrapper {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.admin-login-container {
+  max-width: 450px;
+  width: 100%;
+}
+
+/* Header */
+.admin-login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.admin-login-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.admin-login-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(2rem, 5vw, 2.5rem);
+  font-weight: 700;
+  color: var(--accent-gold-light);
+  margin-bottom: 8px;
+}
+
+.admin-login-description {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+/* Form Card */
+.admin-login-card {
+  padding: 32px;
+}
+
+/* Error Banner */
+.admin-login-error {
+  padding: 12px 16px;
+  background: rgba(255, 107, 107, 0.15);
+  border: 1px solid rgba(255, 107, 107, 0.4);
+  border-radius: var(--radius-sm);
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Submit Button */
+.admin-login-submit-btn {
+  width: 100%;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+/* Divider */
+.admin-login-divider {
+  margin: 24px 0;
+}
+
+/* Back Link */
+.admin-login-back {
+  text-align: center;
+}
+
+.admin-login-back-link {
+  color: var(--accent-gold);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: all 0.3s;
+}
+
+.admin-login-back-link:hover {
+  color: var(--accent-gold-light);
+}
+
+/* Security Note */
+.admin-login-security {
+  text-align: center;
+  margin-top: 24px;
+  padding: 16px;
+  background: rgba(201, 162, 39, 0.08);
+  border: 1px solid rgba(201, 162, 39, 0.2);
+  border-radius: var(--radius-sm);
+}
+
+.admin-login-security-text {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 768px) {
+  .admin-login-wrapper {
+    padding: 32px 16px;
+    align-items: flex-start;
+    padding-top: 60px;
+  }
+
+  .admin-login-title {
+    font-size: clamp(1.6rem, 5vw, 2.2rem);
+  }
+
+  .admin-login-card {
+    padding: 24px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-login-wrapper {
+    padding: 24px 14px;
+    padding-top: 48px;
+  }
+
+  .admin-login-title {
+    font-size: clamp(1.4rem, 6vw, 1.9rem);
+  }
+
+  .admin-login-icon {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+  }
+
+  .admin-login-description {
+    font-size: 0.82rem;
+  }
+
+  .admin-login-card {
+    padding: 20px 16px;
+  }
+
+  .admin-login-security {
+    padding: 12px;
+    margin-top: 16px;
+  }
+
+  .admin-login-security-text {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .admin-login-wrapper {
+    padding: 20px 12px;
+    padding-top: 40px;
+  }
+
+  .admin-login-card {
+    padding: 16px 12px;
+  }
+}

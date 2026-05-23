@@ -1,0 +1,146 @@
+/* ============================================
+   Questions Page Styles
+   ============================================ */
+
+/* Page Wrapper */
+.questions-page-wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.questions-page-content {
+  width: 100%;
+}
+
+/* Back Link */
+.questions-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-gold);
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+  transition: all 0.3s;
+}
+
+.questions-back-link:hover {
+  color: var(--accent-gold-light);
+  transform: translateX(-4px);
+}
+
+/* Card Header */
+.questions-card-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent-teal-light);
+  opacity: 0.8;
+}
+
+.questions-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 600;
+  color: var(--accent-gold-light);
+  margin-bottom: 10px;
+}
+
+.questions-card-description {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin-top: 12px;
+  line-height: 1.7;
+}
+
+/* Submit Button */
+.questions-submit-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Success State */
+.questions-success {
+  text-align: center;
+  padding: 24px;
+}
+
+.questions-success-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+.questions-success-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--accent-gold-light);
+  margin-bottom: 10px;
+}
+
+.questions-success-message {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.questions-success-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 768px) {
+  .questions-page-wrapper {
+    padding: 32px 16px;
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+
+  .questions-card-title {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .questions-page-wrapper {
+    padding: 24px 14px;
+    padding-top: 32px;
+  }
+
+  .questions-card-title {
+    font-size: clamp(1.3rem, 5vw, 1.8rem);
+  }
+
+  .questions-card-description {
+    font-size: 0.82rem;
+  }
+
+  .questions-success-icon {
+    font-size: 2.5rem;
+  }
+
+  .questions-success-title {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .questions-page-wrapper {
+    padding: 20px 12px;
+    padding-top: 28px;
+  }
+}

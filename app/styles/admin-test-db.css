@@ -1,0 +1,247 @@
+/* ============================================
+   Admin Test DB Page Styles
+   ============================================ */
+
+/* Run Button Card */
+.admin-test-run-card {
+  padding: 24px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.admin-test-run-btn {
+  font-size: 1rem;
+  padding: 16px 48px;
+}
+
+.admin-test-run-description {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 12px;
+}
+
+/* Results Card */
+.admin-test-results-card {
+  padding: 24px;
+}
+
+.admin-test-results-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--accent-gold-light);
+  margin-bottom: 20px;
+}
+
+.admin-test-results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Individual Result Row */
+.admin-test-result-row {
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.admin-test-result-row.success {
+  background: rgba(61, 220, 132, 0.1);
+  border: 1px solid rgba(61, 220, 132, 0.3);
+}
+
+.admin-test-result-row.error {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.admin-test-result-icon {
+  font-size: 1.5rem;
+}
+
+.admin-test-result-body {
+  flex: 1;
+}
+
+.admin-test-result-badges {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.admin-test-badge {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.admin-test-badge.operation {
+  background: rgba(201, 162, 39, 0.2);
+  color: var(--accent-gold-light);
+}
+
+.admin-test-badge.table {
+  background: rgba(0, 180, 216, 0.2);
+  color: var(--accent-teal-light);
+}
+
+.admin-test-result-message {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+
+/* Summary */
+.admin-test-summary-divider {
+  margin: 24px 0;
+}
+
+.admin-test-summary {
+  text-align: center;
+}
+
+.admin-test-summary-line {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.admin-test-summary-passed {
+  color: #3ddc84;
+  font-weight: 600;
+}
+
+.admin-test-summary-total {
+  color: var(--text-muted);
+}
+
+.admin-test-summary-all-pass {
+  color: #3ddc84;
+  font-size: 0.9rem;
+}
+
+/* Instructions Card */
+.admin-test-instructions-card {
+  padding: 24px;
+  margin-top: 24px;
+  background: rgba(0, 180, 216, 0.08);
+  border: 1px solid rgba(0, 180, 216, 0.3);
+}
+
+.admin-test-instructions-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--accent-teal-light);
+  margin-bottom: 12px;
+}
+
+.admin-test-instructions-list {
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  line-height: 1.8;
+  padding-left: 20px;
+}
+
+.admin-test-code {
+  background: rgba(201, 162, 39, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 768px) {
+  .admin-test-run-card {
+    padding: 18px 16px;
+  }
+
+  .admin-test-results-card {
+    padding: 18px 16px;
+  }
+
+  .admin-test-result-row {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .admin-test-instructions-card {
+    padding: 18px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-test-run-card {
+    padding: 16px 14px;
+    margin-bottom: 16px;
+  }
+
+  .admin-test-run-btn {
+    font-size: 0.88rem;
+    padding: 12px 32px;
+  }
+
+  .admin-test-run-description {
+    font-size: 0.78rem;
+  }
+
+  .admin-test-results-card {
+    padding: 14px 12px;
+  }
+
+  .admin-test-results-title {
+    font-size: 1.3rem;
+    margin-bottom: 14px;
+  }
+
+  .admin-test-result-row {
+    padding: 10px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .admin-test-result-icon {
+    font-size: 1.2rem;
+  }
+
+  .admin-test-result-message {
+    font-size: 0.82rem;
+  }
+
+  .admin-test-badge {
+    font-size: 0.68rem;
+  }
+
+  .admin-test-summary-line {
+    font-size: 1rem;
+  }
+
+  .admin-test-instructions-card {
+    padding: 14px 12px;
+    margin-top: 16px;
+  }
+
+  .admin-test-instructions-title {
+    font-size: 1.1rem;
+  }
+
+  .admin-test-instructions-list {
+    font-size: 0.78rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .admin-test-run-btn {
+    padding: 10px 24px;
+    font-size: 0.82rem;
+  }
+
+  .admin-test-result-row {
+    padding: 8px;
+  }
+}

@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase, Question } from '@/lib/supabase';
 import { isAdminAuthenticated } from '@/lib/adminAuth';
+import '../../styles/admin-common.css';
+import '../../styles/admin-questions.css';
 
 export default function AdminQuestionsPage() {
   const router = useRouter();
@@ -16,12 +18,10 @@ export default function AdminQuestionsPage() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    // Check authentication
     if (!isAdminAuthenticated()) {
       router.push('/admin/login');
       return;
     }
-    
     loadQuestions();
   }, [router]);
 
@@ -42,24 +42,16 @@ export default function AdminQuestionsPage() {
   };
 
   const handleSaveAnswer = async (id: string) => {
-    if (!editAnswer.trim()) {
-      alert('Please enter an answer');
-      return;
-    }
+    if (!editAnswer.trim()) { alert('Please enter an answer'); return; }
 
     setSaving(true);
     try {
       const { error } = await supabase
         .from('questions')
-        .update({
-          answer: editAnswer.trim(),
-          answered: true,
-          updated_at: new Date().toISOString()
-        })
+        .update({ answer: editAnswer.trim(), answered: true, updated_at: new Date().toISOString() })
         .eq('id', id);
 
       if (error) throw error;
-
       await loadQuestions();
       setEditingId(null);
       setEditAnswer('');
@@ -81,13 +73,8 @@ export default function AdminQuestionsPage() {
     if (!confirm('Are you sure you want to delete this question?')) return;
 
     try {
-      const { error } = await supabase
-        .from('questions')
-        .delete()
-        .eq('id', id);
-
+      const { error } = await supabase.from('questions').delete().eq('id', id);
       if (error) throw error;
-
       await loadQuestions();
       alert('Question deleted successfully!');
     } catch (error) {
@@ -102,57 +89,45 @@ export default function AdminQuestionsPage() {
     return true;
   });
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
     });
-  };
 
   return (
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
       <link rel="stylesheet" href="/assets/styles.css" />
+      <link rel="stylesheet" href="/assets/styles-tablet.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile-small.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile-extra-small.css" />
 
       <div className="bg-canvas"></div>
 
-      <div style={{position: 'relative', zIndex: 1, minHeight: '100vh', padding: '40px 20px'}}>
-        <div style={{maxWidth: '1200px', margin: '0 auto'}}>
+      <div className="admin-page-wrapper">
+        <div className="admin-page-container">
+
           {/* Header */}
-          <div style={{marginBottom: '32px'}}>
-            <Link href="/admin" style={{display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--accent-gold)', textDecoration: 'none', fontSize: '0.85rem', marginBottom: '20px', transition: 'all 0.3s'}}>
-              ← Back to Dashboard
-            </Link>
-            
-            <h1 style={{fontFamily: "'Cinzel Decorative', serif", fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 700, color: 'var(--accent-gold-light)', marginBottom: '12px'}}>
-              Manage Questions
-            </h1>
-            <p style={{color: 'var(--text-muted)', fontSize: '0.9rem'}}>
-              Answer student questions and manage Q&A content
-            </p>
+          <div className="admin-header">
+            <Link href="/admin" className="admin-back-link">← Back to Dashboard</Link>
+            <h1 className="admin-page-title">Manage Questions</h1>
+            <p className="admin-page-description">Answer student questions and manage Q&A content</p>
           </div>
 
           {/* Filters */}
-          <div className="card" style={{padding: '20px', marginBottom: '24px'}}>
-            <div style={{display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
-              {(['all', 'answered', 'pending'] as const).map((filterOption) => (
+          <div className="card admin-filter-bar">
+            <div className="admin-filter-tabs">
+              {(['all', 'answered', 'pending'] as const).map((opt) => (
                 <button
-                  key={filterOption}
-                  onClick={() => setFilter(filterOption)}
-                  className="btn-outline"
-                  style={{
-                    padding: '10px 24px',
-                    background: filter === filterOption ? 'rgba(201,162,39,0.2)' : 'transparent',
-                    borderColor: filter === filterOption ? 'var(--accent-gold)' : 'rgba(245,240,232,0.35)',
-                    color: filter === filterOption ? 'var(--accent-gold-light)' : 'var(--text-primary)'
-                  }}
+                  key={opt}
+                  onClick={() => setFilter(opt)}
+                  className={`btn-outline admin-filter-btn${filter === opt ? ' active' : ''}`}
                 >
-                  {filterOption.charAt(0).toUpperCase() + filterOption.slice(1)} ({
-                    filterOption === 'all' ? questions.length :
-                    filterOption === 'answered' ? questions.filter(q => q.answered).length :
+                  {opt.charAt(0).toUpperCase() + opt.slice(1)} ({
+                    opt === 'all' ? questions.length :
+                    opt === 'answered' ? questions.filter(q => q.answered).length :
                     questions.filter(q => !q.answered).length
                   })
                 </button>
@@ -162,52 +137,35 @@ export default function AdminQuestionsPage() {
 
           {/* Questions List */}
           {loading ? (
-            <div className="card" style={{padding: '60px', textAlign: 'center'}}>
-              <div style={{color: 'var(--text-muted)'}}>Loading questions...</div>
+            <div className="card admin-state-card">
+              <div className="admin-state-text">Loading questions...</div>
             </div>
           ) : filteredQuestions.length === 0 ? (
-            <div className="card" style={{padding: '60px', textAlign: 'center'}}>
-              <div style={{fontSize: '3rem', marginBottom: '16px'}}>📭</div>
-              <div style={{color: 'var(--text-muted)'}}>No questions found</div>
+            <div className="card admin-state-card">
+              <div className="admin-state-icon">📭</div>
+              <div className="admin-state-text">No questions found</div>
             </div>
           ) : (
-            <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+            <div className="admin-item-list">
               {filteredQuestions.map((question) => (
-                <div key={question.id} className="card" style={{padding: '24px'}}>
-                  {/* Question Header */}
-                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px', flexWrap: 'wrap', gap: '12px'}}>
+                <div key={question.id} className="card">
+                  <div className="admin-item-header">
                     <div>
-                      <div style={{fontWeight: 600, color: 'var(--accent-gold-light)', marginBottom: '4px'}}>
-                        {question.name}
-                      </div>
-                      <div style={{fontSize: '0.75rem', color: 'var(--text-muted)'}}>
+                      <div className="admin-item-author">{question.name}</div>
+                      <div className="admin-item-date">
                         {formatDate(question.created_at)}
                         {question.email && ` • ${question.email}`}
                       </div>
                     </div>
-                    <span style={{
-                      padding: '4px 12px',
-                      borderRadius: '50px',
-                      fontSize: '0.7rem',
-                      letterSpacing: '0.08em',
-                      textTransform: 'uppercase',
-                      fontWeight: 600,
-                      background: question.answered ? 'rgba(61,220,132,0.15)' : 'rgba(255,193,7,0.15)',
-                      border: `1px solid ${question.answered ? 'rgba(61,220,132,0.4)' : 'rgba(255,193,7,0.4)'}`,
-                      color: question.answered ? '#3ddc84' : '#ffc107'
-                    }}>
+                    <span className={`admin-status-badge ${question.answered ? 'answered' : 'pending'}`}>
                       {question.answered ? '✓ Answered' : '⏳ Pending'}
                     </span>
                   </div>
 
-                  {/* Question Text */}
-                  <div style={{fontFamily: "'Cormorant Garamond', serif", fontSize: '1.2rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '16px', lineHeight: 1.5}}>
-                    {question.question}
-                  </div>
+                  <div className="admin-question-text">{question.question}</div>
 
-                  <div className="gold-line" style={{margin: '16px 0'}}></div>
+                  <div className="gold-line admin-question-divider"></div>
 
-                  {/* Answer Section */}
                   {editingId === question.id ? (
                     <div>
                       <label className="form-label">Your Answer</label>
@@ -218,22 +176,17 @@ export default function AdminQuestionsPage() {
                         rows={4}
                         placeholder="Type your answer here..."
                       />
-                      <div style={{display: 'flex', gap: '12px', marginTop: '12px'}}>
+                      <div className="admin-edit-actions">
                         <button
                           onClick={() => handleSaveAnswer(question.id)}
                           className="btn-gold"
                           disabled={saving}
-                          style={{flex: 1}}
                         >
                           {saving ? 'Saving...' : 'Save Answer'}
                         </button>
                         <button
-                          onClick={() => {
-                            setEditingId(null);
-                            setEditAnswer('');
-                          }}
+                          onClick={() => { setEditingId(null); setEditAnswer(''); }}
                           className="btn-outline"
-                          style={{flex: 1}}
                         >
                           Cancel
                         </button>
@@ -242,32 +195,20 @@ export default function AdminQuestionsPage() {
                   ) : (
                     <div>
                       {question.answered && question.answer ? (
-                        <div style={{background: 'rgba(0,180,216,0.08)', borderLeft: '3px solid var(--accent-teal)', padding: '16px', borderRadius: 'var(--radius-sm)', marginBottom: '12px'}}>
-                          <div style={{fontSize: '0.7rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--accent-teal-light)', marginBottom: '8px', fontWeight: 600}}>
-                            Current Answer
-                          </div>
-                          <div style={{color: 'var(--text-primary)', fontSize: '0.9rem', lineHeight: 1.7}}>
-                            {question.answer}
-                          </div>
+                        <div className="admin-answer-block">
+                          <div className="admin-answer-block-label">Current Answer</div>
+                          <div className="admin-answer-block-text">{question.answer}</div>
                         </div>
                       ) : (
-                        <div style={{color: 'var(--text-muted)', fontSize: '0.9rem', fontStyle: 'italic', marginBottom: '12px'}}>
-                          No answer yet
-                        </div>
+                        <div className="admin-no-answer">No answer yet</div>
                       )}
-                      
-                      <div style={{display: 'flex', gap: '12px'}}>
-                        <button
-                          onClick={() => handleEdit(question)}
-                          className="btn-gold"
-                          style={{flex: 1}}
-                        >
+                      <div className="admin-action-row">
+                        <button onClick={() => handleEdit(question)} className="btn-gold">
                           {question.answered ? 'Edit Answer' : 'Add Answer'}
                         </button>
                         <button
                           onClick={() => handleDelete(question.id)}
-                          className="btn-outline"
-                          style={{flex: 1, borderColor: '#ff6b6b', color: '#ff6b6b'}}
+                          className="btn-outline admin-delete-btn"
                         >
                           Delete
                         </button>
@@ -278,6 +219,7 @@ export default function AdminQuestionsPage() {
               ))}
             </div>
           )}
+
         </div>
       </div>
     </>

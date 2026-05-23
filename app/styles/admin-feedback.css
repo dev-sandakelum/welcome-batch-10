@@ -1,0 +1,182 @@
+/* ============================================
+   Admin Feedback Page Styles
+   ============================================ */
+
+/* Stats Card */
+.admin-feedback-stats-card {
+  padding: 28px;
+  margin-bottom: 24px;
+}
+
+.admin-feedback-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 24px;
+  align-items: center;
+}
+
+/* Average Rating Block */
+.admin-feedback-avg {
+  text-align: center;
+}
+
+.admin-feedback-avg-value {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 3rem;
+  color: var(--accent-gold-light);
+  margin-bottom: 8px;
+}
+
+.admin-feedback-avg-stars {
+  margin-bottom: 8px;
+}
+
+.admin-feedback-avg-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* Rating Breakdown */
+.admin-feedback-breakdown-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.admin-feedback-breakdown-label {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  min-width: 60px;
+}
+
+.admin-feedback-bar-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(201, 162, 39, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.admin-feedback-bar-fill {
+  height: 100%;
+  background: var(--accent-gold);
+  transition: width 0.3s;
+}
+
+.admin-feedback-breakdown-count {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  min-width: 30px;
+  text-align: right;
+}
+
+/* Star display */
+.admin-star {
+  font-size: 1.2rem;
+}
+
+.admin-star.filled { color: var(--accent-gold-light); }
+.admin-star.empty  { color: rgba(201, 162, 39, 0.25); }
+
+/* Feedback Item */
+.admin-feedback-item-card {
+  padding: 24px;
+}
+
+.admin-feedback-item-text {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+.admin-feedback-divider {
+  margin: 16px 0;
+}
+
+.admin-feedback-delete-btn {
+  border-color: #ff6b6b;
+  color: #ff6b6b;
+  width: 100%;
+  justify-content: center;
+}
+
+.admin-feedback-delete-btn:hover {
+  background: rgba(255, 107, 107, 0.1) !important;
+  border-color: #ff6b6b !important;
+  color: #ff6b6b !important;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 768px) {
+  .admin-feedback-stats-card {
+    padding: 20px 16px;
+  }
+
+  .admin-feedback-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .admin-feedback-avg-value {
+    font-size: 2.4rem;
+  }
+
+  .admin-feedback-item-card {
+    padding: 18px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-feedback-stats-card {
+    padding: 16px 14px;
+    margin-bottom: 16px;
+  }
+
+  .admin-feedback-avg-value {
+    font-size: 2rem;
+  }
+
+  .admin-feedback-breakdown-row {
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .admin-feedback-breakdown-label {
+    font-size: 0.78rem;
+    min-width: 50px;
+  }
+
+  .admin-feedback-breakdown-count {
+    font-size: 0.78rem;
+    min-width: 24px;
+  }
+
+  .admin-feedback-item-card {
+    padding: 14px 12px;
+  }
+
+  .admin-feedback-item-text {
+    font-size: 0.88rem;
+  }
+
+  .admin-star {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .admin-feedback-stats-card {
+    padding: 14px 12px;
+  }
+
+  .admin-feedback-item-card {
+    padding: 12px 10px;
+  }
+}

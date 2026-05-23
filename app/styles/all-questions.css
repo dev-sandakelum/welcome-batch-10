@@ -1,0 +1,347 @@
+/* ============================================
+   All Questions Page Styles
+   ============================================ */
+
+/* Page Wrapper */
+.all-questions-wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Back Link */
+.all-questions-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-gold);
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+  transition: all 0.3s;
+}
+
+.all-questions-back-link:hover {
+  color: var(--accent-gold-light);
+  transform: translateX(-4px);
+}
+
+/* Card Header */
+.all-questions-card-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent-teal-light);
+  opacity: 0.8;
+}
+
+.all-questions-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 600;
+  color: var(--accent-gold-light);
+  margin-bottom: 10px;
+}
+
+.all-questions-card-description {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin-top: 12px;
+  line-height: 1.7;
+}
+
+/* Search Bar */
+.all-questions-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(20, 8, 60, 0.7);
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  border-radius: 50px;
+  padding: 12px 24px;
+  margin-bottom: 20px;
+}
+
+.all-questions-search-icon {
+  color: var(--accent-gold);
+  font-size: 1.1rem;
+}
+
+.all-questions-search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.all-questions-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Filter Tabs */
+.all-questions-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.all-questions-filter-btn {
+  padding: 10px 20px;
+  background: rgba(20, 8, 60, 0.65);
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  border-radius: 50px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.all-questions-filter-btn.active {
+  background: rgba(201, 162, 39, 0.2);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold-light);
+}
+
+/* Question Item */
+.all-questions-item {
+  background: rgba(20, 8, 60, 0.4);
+  border: 1px solid rgba(201, 162, 39, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 24px;
+  margin-bottom: 16px;
+  transition: all 0.3s;
+}
+
+.all-questions-item:hover {
+  border-color: var(--accent-gold);
+  background: rgba(201, 162, 39, 0.06);
+  transform: translateX(5px);
+}
+
+.all-questions-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.all-questions-item-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.all-questions-item-author {
+  font-weight: 600;
+  color: var(--accent-gold-light);
+  font-size: 0.9rem;
+}
+
+.all-questions-item-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Status Badge */
+.all-questions-status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.all-questions-status-badge.answered {
+  background: rgba(61, 220, 132, 0.15);
+  border: 1px solid rgba(61, 220, 132, 0.4);
+  color: #3ddc84;
+}
+
+.all-questions-status-badge.pending {
+  background: rgba(255, 193, 7, 0.15);
+  border: 1px solid rgba(255, 193, 7, 0.4);
+  color: #ffc107;
+}
+
+/* Question Text */
+.all-questions-item-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+/* Answer Block */
+.all-questions-answer-block {
+  background: rgba(0, 180, 216, 0.08);
+  border-left: 3px solid var(--accent-teal);
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  margin-top: 12px;
+}
+
+.all-questions-answer-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-teal-light);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.all-questions-answer-text {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* Loading / Empty States */
+.all-questions-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+
+.all-questions-state-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.all-questions-state-title {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.all-questions-state-message {
+  font-size: 0.85rem;
+}
+
+/* CTA */
+.all-questions-cta {
+  text-align: center;
+}
+
+.all-questions-cta-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 768px) {
+  .all-questions-wrapper {
+    padding: 32px 16px;
+  }
+
+  .all-questions-card-title {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+  }
+
+  .all-questions-search {
+    padding: 10px 18px;
+  }
+
+  .all-questions-item {
+    padding: 18px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .all-questions-wrapper {
+    padding: 24px 14px;
+  }
+
+  .all-questions-card-title {
+    font-size: clamp(1.3rem, 5vw, 1.8rem);
+  }
+
+  .all-questions-card-description {
+    font-size: 0.82rem;
+  }
+
+  .all-questions-search {
+    padding: 9px 14px;
+    border-radius: 14px;
+  }
+
+  .all-questions-search-input {
+    font-size: 0.84rem;
+  }
+
+  .all-questions-filter-btn {
+    padding: 8px 14px;
+    font-size: 0.72rem;
+  }
+
+  .all-questions-item {
+    padding: 14px 12px;
+    margin-bottom: 12px;
+  }
+
+  .all-questions-item-text {
+    font-size: 1rem;
+  }
+
+  .all-questions-item-author {
+    font-size: 0.82rem;
+  }
+
+  .all-questions-item-date {
+    font-size: 0.7rem;
+  }
+
+  .all-questions-answer-block {
+    padding: 12px;
+  }
+
+  .all-questions-answer-text {
+    font-size: 0.84rem;
+  }
+
+  .all-questions-item-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .all-questions-item-meta {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .all-questions-wrapper {
+    padding: 20px 12px;
+  }
+
+  .all-questions-item {
+    padding: 12px 10px;
+  }
+
+  .all-questions-filter-btn {
+    padding: 7px 12px;
+    font-size: 0.68rem;
+  }
+}

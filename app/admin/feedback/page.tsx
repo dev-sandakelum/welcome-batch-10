@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase, Feedback } from '@/lib/supabase';
 import { isAdminAuthenticated } from '@/lib/adminAuth';
+import '../../styles/admin-common.css';
+import '../../styles/admin-feedback.css';
 
 export default function AdminFeedbackPage() {
   const router = useRouter();
@@ -13,12 +15,10 @@ export default function AdminFeedbackPage() {
   const [ratingFilter, setRatingFilter] = useState<number | 'all'>('all');
 
   useEffect(() => {
-    // Check authentication
     if (!isAdminAuthenticated()) {
       router.push('/admin/login');
       return;
     }
-    
     loadFeedback();
   }, [router]);
 
@@ -42,13 +42,8 @@ export default function AdminFeedbackPage() {
     if (!confirm('Are you sure you want to delete this feedback?')) return;
 
     try {
-      const { error } = await supabase
-        .from('feedback')
-        .delete()
-        .eq('id', id);
-
+      const { error } = await supabase.from('feedback').delete().eq('id', id);
       if (error) throw error;
-
       await loadFeedback();
       alert('Feedback deleted successfully!');
     } catch (error) {
@@ -61,23 +56,16 @@ export default function AdminFeedbackPage() {
     ? feedback
     : feedback.filter(f => f.rating === ratingFilter);
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+  const formatDate = (dateString: string) =>
+    new Date(dateString).toLocaleDateString('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
     });
-  };
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <span key={i} style={{color: i < rating ? 'var(--accent-gold-light)' : 'rgba(201,162,39,0.25)', fontSize: '1.2rem'}}>
-        ★
-      </span>
+  const renderStars = (rating: number) =>
+    Array.from({ length: 5 }, (_, i) => (
+      <span key={i} className={`admin-star ${i < rating ? 'filled' : 'empty'}`}>★</span>
     ));
-  };
 
   const averageRating = feedback.length > 0
     ? (feedback.reduce((sum, f) => sum + f.rating, 0) / feedback.length).toFixed(1)
@@ -92,55 +80,45 @@ export default function AdminFeedbackPage() {
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
       <link rel="stylesheet" href="/assets/styles.css" />
+      <link rel="stylesheet" href="/assets/styles-tablet.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile-small.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile-extra-small.css" />
 
       <div className="bg-canvas"></div>
 
-      <div style={{position: 'relative', zIndex: 1, minHeight: '100vh', padding: '40px 20px'}}>
-        <div style={{maxWidth: '1200px', margin: '0 auto'}}>
+      <div className="admin-page-wrapper">
+        <div className="admin-page-container">
+
           {/* Header */}
-          <div style={{marginBottom: '32px'}}>
-            <Link href="/admin" style={{display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--accent-gold)', textDecoration: 'none', fontSize: '0.85rem', marginBottom: '20px', transition: 'all 0.3s'}}>
-              ← Back to Dashboard
-            </Link>
-            
-            <h1 style={{fontFamily: "'Cinzel Decorative', serif", fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 700, color: 'var(--accent-gold-light)', marginBottom: '12px'}}>
-              Feedback & Ratings
-            </h1>
-            <p style={{color: 'var(--text-muted)', fontSize: '0.9rem'}}>
-              View and manage user feedback
-            </p>
+          <div className="admin-header">
+            <Link href="/admin" className="admin-back-link">← Back to Dashboard</Link>
+            <h1 className="admin-page-title">Feedback & Ratings</h1>
+            <p className="admin-page-description">View and manage user feedback</p>
           </div>
 
           {/* Stats */}
-          <div className="card" style={{padding: '28px', marginBottom: '24px'}}>
-            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px', alignItems: 'center'}}>
-              <div style={{textAlign: 'center'}}>
-                <div style={{fontFamily: "'Cinzel Decorative', serif", fontSize: '3rem', color: 'var(--accent-gold-light)', marginBottom: '8px'}}>
-                  {averageRating}
+          <div className="card admin-feedback-stats-card">
+            <div className="admin-feedback-stats-grid">
+              <div className="admin-feedback-avg">
+                <div className="admin-feedback-avg-value">{averageRating}</div>
+                <div className="admin-feedback-avg-stars">
+                  {renderStars(Math.round(parseFloat(averageRating)))}
                 </div>
-                <div style={{marginBottom: '8px'}}>{renderStars(Math.round(parseFloat(averageRating)))}</div>
-                <div style={{fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)'}}>
-                  Average Rating
-                </div>
+                <div className="admin-feedback-avg-label">Average Rating</div>
               </div>
 
               <div>
                 {ratingCounts.map(({ rating, count }) => (
-                  <div key={rating} style={{display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px'}}>
-                    <span style={{fontSize: '0.85rem', color: 'var(--text-primary)', minWidth: '60px'}}>
-                      {rating} stars
-                    </span>
-                    <div style={{flex: 1, height: '8px', background: 'rgba(201,162,39,0.15)', borderRadius: '4px', overflow: 'hidden'}}>
-                      <div style={{
-                        height: '100%',
-                        width: `${feedback.length > 0 ? (count / feedback.length) * 100 : 0}%`,
-                        background: 'var(--accent-gold)',
-                        transition: 'width 0.3s'
-                      }}></div>
+                  <div key={rating} className="admin-feedback-breakdown-row">
+                    <span className="admin-feedback-breakdown-label">{rating} stars</span>
+                    <div className="admin-feedback-bar-track">
+                      <div
+                        className="admin-feedback-bar-fill"
+                        style={{ width: `${feedback.length > 0 ? (count / feedback.length) * 100 : 0}%` }}
+                      ></div>
                     </div>
-                    <span style={{fontSize: '0.85rem', color: 'var(--text-muted)', minWidth: '30px', textAlign: 'right'}}>
-                      {count}
-                    </span>
+                    <span className="admin-feedback-breakdown-count">{count}</span>
                   </div>
                 ))}
               </div>
@@ -148,17 +126,11 @@ export default function AdminFeedbackPage() {
           </div>
 
           {/* Filters */}
-          <div className="card" style={{padding: '20px', marginBottom: '24px'}}>
-            <div style={{display: 'flex', gap: '12px', flexWrap: 'wrap'}}>
+          <div className="card admin-filter-bar">
+            <div className="admin-filter-tabs">
               <button
                 onClick={() => setRatingFilter('all')}
-                className="btn-outline"
-                style={{
-                  padding: '10px 24px',
-                  background: ratingFilter === 'all' ? 'rgba(201,162,39,0.2)' : 'transparent',
-                  borderColor: ratingFilter === 'all' ? 'var(--accent-gold)' : 'rgba(245,240,232,0.35)',
-                  color: ratingFilter === 'all' ? 'var(--accent-gold-light)' : 'var(--text-primary)'
-                }}
+                className={`btn-outline admin-filter-btn${ratingFilter === 'all' ? ' active' : ''}`}
               >
                 All ({feedback.length})
               </button>
@@ -166,13 +138,7 @@ export default function AdminFeedbackPage() {
                 <button
                   key={rating}
                   onClick={() => setRatingFilter(rating)}
-                  className="btn-outline"
-                  style={{
-                    padding: '10px 24px',
-                    background: ratingFilter === rating ? 'rgba(201,162,39,0.2)' : 'transparent',
-                    borderColor: ratingFilter === rating ? 'var(--accent-gold)' : 'rgba(245,240,232,0.35)',
-                    color: ratingFilter === rating ? 'var(--accent-gold-light)' : 'var(--text-primary)'
-                  }}
+                  className={`btn-outline admin-filter-btn${ratingFilter === rating ? ' active' : ''}`}
                 >
                   {rating} ★ ({feedback.filter(f => f.rating === rating).length})
                 </button>
@@ -182,25 +148,22 @@ export default function AdminFeedbackPage() {
 
           {/* Feedback List */}
           {loading ? (
-            <div className="card" style={{padding: '60px', textAlign: 'center'}}>
-              <div style={{color: 'var(--text-muted)'}}>Loading feedback...</div>
+            <div className="card admin-state-card">
+              <div className="admin-state-text">Loading feedback...</div>
             </div>
           ) : filteredFeedback.length === 0 ? (
-            <div className="card" style={{padding: '60px', textAlign: 'center'}}>
-              <div style={{fontSize: '3rem', marginBottom: '16px'}}>💌</div>
-              <div style={{color: 'var(--text-muted)'}}>No feedback found</div>
+            <div className="card admin-state-card">
+              <div className="admin-state-icon">💌</div>
+              <div className="admin-state-text">No feedback found</div>
             </div>
           ) : (
-            <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
+            <div className="admin-item-list">
               {filteredFeedback.map((item) => (
-                <div key={item.id} className="card" style={{padding: '24px'}}>
-                  {/* Header */}
-                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px', flexWrap: 'wrap', gap: '12px'}}>
+                <div key={item.id} className="card admin-feedback-item-card">
+                  <div className="admin-item-header">
                     <div>
-                      <div style={{fontWeight: 600, color: 'var(--accent-gold-light)', marginBottom: '4px'}}>
-                        {item.name}
-                      </div>
-                      <div style={{fontSize: '0.75rem', color: 'var(--text-muted)'}}>
+                      <div className="admin-item-author">{item.name}</div>
+                      <div className="admin-item-date">
                         {formatDate(item.created_at)}
                         {item.email && ` • ${item.email}`}
                       </div>
@@ -208,17 +171,12 @@ export default function AdminFeedbackPage() {
                     <div>{renderStars(item.rating)}</div>
                   </div>
 
-                  {/* Feedback Text */}
-                  <div style={{color: 'var(--text-primary)', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '16px'}}>
-                    {item.feedback_text}
-                  </div>
+                  <div className="admin-feedback-item-text">{item.feedback_text}</div>
 
-                  {/* Actions */}
-                  <div className="gold-line" style={{margin: '16px 0'}}></div>
+                  <div className="gold-line admin-feedback-divider"></div>
                   <button
                     onClick={() => handleDelete(item.id)}
-                    className="btn-outline"
-                    style={{borderColor: '#ff6b6b', color: '#ff6b6b', width: '100%', justifyContent: 'center'}}
+                    className="btn-outline admin-feedback-delete-btn"
                   >
                     Delete Feedback
                   </button>
@@ -226,6 +184,7 @@ export default function AdminFeedbackPage() {
               ))}
             </div>
           )}
+
         </div>
       </div>
     </>

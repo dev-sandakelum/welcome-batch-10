@@ -32,6 +32,9 @@ html {
   overflow-y: scroll;
   overflow-x: hidden;
   scroll-padding-top: 0;
+  /* Prevent font size inflation on mobile */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 * {

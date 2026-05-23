@@ -8,7 +8,7 @@
     --radius: 16px;
     --radius-sm: 10px;
   }
-  
+
   /* Cards and containers */
   .card {
     padding: 20px 16px;
@@ -16,7 +16,7 @@
     backdrop-filter: blur(15px) saturate(180%);
     -webkit-backdrop-filter: blur(15px) saturate(180%);
   }
-  
+
   /* Buttons */
   .btn-gold,
   .btn-outline {
@@ -25,122 +25,122 @@
     letter-spacing: 0.08em;
     border-radius: 40px;
   }
-  
+
   .btn-gold:hover,
   .btn-outline:hover {
     transform: translateY(-2px) scale(1.01);
   }
-  
+
   /* Form elements */
   .form-input {
     font-size: 0.8rem;
     padding: 10px 14px;
     border-radius: 10px;
   }
-  
+
   textarea.form-input {
     min-height: 100px;
   }
-  
+
   .form-label {
     font-size: 0.7rem;
     margin-bottom: 6px;
   }
-  
+
   /* Loading screen */
   .loading-logo {
     font-size: clamp(1.5rem, 8vw, 2rem);
     margin-bottom: 24px;
     padding: 0 16px;
   }
-  
+
   .loading-spinner {
     width: 40px;
     height: 40px;
     border-width: 3px;
     margin-bottom: 20px;
   }
-  
+
   .loading-text {
     font-size: 0.75rem;
     letter-spacing: 0.15em;
   }
-  
+
   .loading-dots span {
     width: 3px;
     height: 3px;
   }
-  
+
   /* Scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
-  
+
   ::-webkit-scrollbar-thumb {
     border-radius: 4px;
     border: 1px solid rgba(0, 0, 0, 0.3);
   }
-  
+
   /* Stat cards */
   .stat-card {
     padding: 14px 12px;
     border-radius: 10px;
   }
-  
+
   /* Glass elements */
   .glass-element,
   .info-box-glass {
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
-  
+
   .modal-glass {
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     padding: 24px 16px;
   }
-  
+
   /* Badges */
   .badge {
     padding: 3px 10px;
     font-size: 0.65rem;
     border-radius: 40px;
   }
-  
+
   /* Gold divider */
   .gold-line {
     margin: 16px 0;
   }
-  
+
   .gold-dot-line {
     gap: 8px;
     margin: 12px 0;
   }
-  
+
   /* Text adjustments */
   body {
     font-size: 0.9rem;
   }
-  
+
   h1 {
     font-size: clamp(1.8rem, 6vw, 2.5rem) !important;
   }
-  
+
   h2 {
     font-size: clamp(1.4rem, 5vw, 2rem) !important;
   }
-  
+
   h3 {
     font-size: clamp(1.2rem, 4vw, 1.6rem) !important;
   }
-  
+
   /* Reduce blur for performance on small devices */
   .card:hover {
     backdrop-filter: blur(18px) saturate(180%);
     -webkit-backdrop-filter: blur(18px) saturate(180%);
   }
-  
+
   /* Section containers */
   .section-container {
     padding: 16px;
@@ -148,7 +148,7 @@
     backdrop-filter: blur(15px) saturate(180%);
     -webkit-backdrop-filter: blur(15px) saturate(180%);
   }
-  
+
   /* Utility adjustments */
   .glass-light,
   .glass-medium,
@@ -156,21 +156,26 @@
     backdrop-filter: blur(12px) !important;
     -webkit-backdrop-filter: blur(12px) !important;
   }
-  
+
   /* Icon buttons */
   .icon-btn-glass {
     width: 44px !important;
     height: 44px !important;
     font-size: 1.2rem !important;
   }
-  
+
   /* Spacing adjustments */
   section {
     padding: 40px 16px !important;
   }
-  
+
   /* Background adjustments */
   .bg-canvas::before {
     background-size: 300px 300px;
+  }
+
+  /* Background: disable fixed attachment on mobile for performance */
+  .bg-canvas {
+    background-attachment: scroll;
   }
 }

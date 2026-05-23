@@ -1,0 +1,140 @@
+/* ============================================
+   Common Page Styles (Shared across routes)
+   ============================================ */
+
+/* Page Container */
+.page-wrapper {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 20px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-content {
+  width: 100%;
+}
+
+/* Back Link */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-gold);
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+  transition: all 0.3s;
+}
+
+.back-link:hover {
+  color: var(--accent-gold-light);
+  transform: translateX(-4px);
+}
+
+/* Page Header */
+.page-header-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent-teal-light);
+  opacity: 0.8;
+}
+
+.page-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 600;
+  color: var(--accent-gold-light);
+  margin-bottom: 10px;
+}
+
+.page-description {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin-top: 12px;
+  line-height: 1.7;
+}
+
+/* Success State */
+.success-container {
+  text-align: center;
+  padding: 24px;
+}
+
+.success-icon {
+  font-size: 3rem;
+  margin-bottom: 12px;
+}
+
+.success-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--accent-gold-light);
+  margin-bottom: 10px;
+}
+
+.success-message {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.success-button {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 768px) {
+  .page-wrapper {
+    padding: 32px 16px;
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-wrapper {
+    padding: 24px 14px;
+    padding-top: 32px;
+  }
+
+  .page-title {
+    font-size: clamp(1.5rem, 5vw, 2rem);
+  }
+
+  .page-description {
+    font-size: 0.82rem;
+  }
+
+  .success-container {
+    padding: 16px;
+  }
+
+  .success-icon {
+    font-size: 2.5rem;
+  }
+
+  .success-title {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .page-wrapper {
+    padding: 20px 12px;
+    padding-top: 28px;
+  }
+}

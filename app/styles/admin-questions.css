@@ -1,0 +1,115 @@
+/* ============================================
+   Admin Questions Page Styles
+   ============================================ */
+
+/* Question Text */
+.admin-question-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.admin-question-divider {
+  margin: 16px 0;
+}
+
+/* Existing Answer Block */
+.admin-answer-block {
+  background: rgba(0, 180, 216, 0.08);
+  border-left: 3px solid var(--accent-teal);
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 12px;
+}
+
+.admin-answer-block-label {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-teal-light);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.admin-answer-block-text {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* No answer yet */
+.admin-no-answer {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-bottom: 12px;
+}
+
+/* Edit form action row */
+.admin-edit-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.admin-edit-actions .btn-gold,
+.admin-edit-actions .btn-outline {
+  flex: 1;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 768px) {
+  .admin-question-text {
+    font-size: 1.1rem;
+  }
+
+  .admin-answer-block {
+    padding: 12px;
+  }
+
+  .admin-edit-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .admin-edit-actions .btn-gold,
+  .admin-edit-actions .btn-outline {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-question-text {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+
+  .admin-answer-block {
+    padding: 10px;
+  }
+
+  .admin-answer-block-label {
+    font-size: 0.62rem;
+  }
+
+  .admin-answer-block-text {
+    font-size: 0.84rem;
+  }
+
+  .admin-no-answer {
+    font-size: 0.84rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .admin-question-text {
+    font-size: 0.95rem;
+  }
+}

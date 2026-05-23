@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import '../../styles/admin-login.css';
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -19,16 +20,13 @@ export default function AdminLoginPage() {
     try {
       const response = await fetch('/api/admin/login', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Store auth token in sessionStorage
         sessionStorage.setItem('adminAuth', data.token);
         router.push('/admin');
       } else {
@@ -46,38 +44,27 @@ export default function AdminLoginPage() {
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
       <link rel="stylesheet" href="/assets/styles.css" />
+      <link rel="stylesheet" href="/assets/styles-tablet.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile-small.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile-extra-small.css" />
 
       <div className="bg-canvas"></div>
 
-      <div style={{position: 'relative', zIndex: 1, minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px'}}>
-        <div style={{maxWidth: '450px', width: '100%'}}>
-          {/* Header */}
-          <div style={{textAlign: 'center', marginBottom: '32px'}}>
-            <div style={{fontSize: '3rem', marginBottom: '16px'}}>🔐</div>
-            <h1 style={{fontFamily: "'Cinzel Decorative', serif", fontSize: 'clamp(2rem, 5vw, 2.5rem)', fontWeight: 700, color: 'var(--accent-gold-light)', marginBottom: '8px'}}>
-              Admin Login
-            </h1>
-            <p style={{color: 'var(--text-muted)', fontSize: '0.9rem'}}>
+      <div className="admin-login-wrapper">
+        <div className="admin-login-container">
+          <div className="admin-login-header">
+            <div className="admin-login-icon">🔐</div>
+            <h1 className="admin-login-title">Admin Login</h1>
+            <p className="admin-login-description">
               Enter your credentials to access the admin panel
             </p>
           </div>
 
-          {/* Login Form */}
-          <div className="card" style={{padding: '32px'}}>
+          <div className="card admin-login-card">
             <form onSubmit={handleLogin}>
               {error && (
-                <div style={{
-                  padding: '12px 16px',
-                  background: 'rgba(255,107,107,0.15)',
-                  border: '1px solid rgba(255,107,107,0.4)',
-                  borderRadius: 'var(--radius-sm)',
-                  color: '#ff6b6b',
-                  fontSize: '0.85rem',
-                  marginBottom: '20px',
-                  textAlign: 'center'
-                }}>
-                  {error}
-                </div>
+                <div className="admin-login-error">{error}</div>
               )}
 
               <div className="form-group">
@@ -108,26 +95,24 @@ export default function AdminLoginPage() {
 
               <button
                 type="submit"
-                className="btn-gold"
-                style={{width: '100%', justifyContent: 'center', marginTop: '8px'}}
+                className="btn-gold admin-login-submit-btn"
                 disabled={loading}
               >
                 {loading ? 'Logging in...' : 'Login →'}
               </button>
             </form>
 
-            <div className="gold-line" style={{margin: '24px 0'}}></div>
+            <div className="gold-line admin-login-divider"></div>
 
-            <div style={{textAlign: 'center'}}>
-              <Link href="/" style={{color: 'var(--accent-gold)', textDecoration: 'none', fontSize: '0.85rem', transition: 'all 0.3s'}}>
+            <div className="admin-login-back">
+              <Link href="/" className="admin-login-back-link">
                 ← Back to Home
               </Link>
             </div>
           </div>
 
-          {/* Security Note */}
-          <div style={{textAlign: 'center', marginTop: '24px', padding: '16px', background: 'rgba(201,162,39,0.08)', border: '1px solid rgba(201,162,39,0.2)', borderRadius: 'var(--radius-sm)'}}>
-            <div style={{fontSize: '0.75rem', color: 'var(--text-muted)', lineHeight: 1.6}}>
+          <div className="admin-login-security">
+            <div className="admin-login-security-text">
               🔒 This is a secure admin area. Only authorized personnel should access this page.
             </div>
           </div>

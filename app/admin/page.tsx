@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { isAdminAuthenticated, logoutAdmin } from '@/lib/adminAuth';
+import '../styles/admin-common.css';
+import '../styles/admin-dashboard.css';
 
 interface Stats {
   totalQuestions: number;
@@ -28,36 +30,24 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check authentication
     if (!isAdminAuthenticated()) {
       router.push('/admin/login');
       return;
     }
-    
     loadStats();
   }, [router]);
 
   const loadStats = async () => {
     try {
-      // Get questions stats
-      const { data: questions } = await supabase
-        .from('questions')
-        .select('answered');
-      
+      const { data: questions } = await supabase.from('questions').select('answered');
       const totalQuestions = questions?.length || 0;
       const answeredQuestions = questions?.filter(q => q.answered).length || 0;
-      const pendingQuestions = totalQuestions - answeredQuestions;
 
-      // Get quiz scores count
       const { count: quizCount } = await supabase
         .from('quiz_scores')
         .select('*', { count: 'exact', head: true });
 
-      // Get feedback stats
-      const { data: feedback } = await supabase
-        .from('feedback')
-        .select('rating');
-      
+      const { data: feedback } = await supabase.from('feedback').select('rating');
       const totalFeedback = feedback?.length || 0;
       const averageRating = totalFeedback > 0 && feedback
         ? feedback.reduce((sum, f) => sum + f.rating, 0) / totalFeedback
@@ -66,7 +56,7 @@ export default function AdminDashboard() {
       setStats({
         totalQuestions,
         answeredQuestions,
-        pendingQuestions,
+        pendingQuestions: totalQuestions - answeredQuestions,
         totalQuizScores: quizCount || 0,
         totalFeedback,
         averageRating
@@ -87,127 +77,93 @@ export default function AdminDashboard() {
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
       <link rel="stylesheet" href="/assets/styles.css" />
+      <link rel="stylesheet" href="/assets/styles-tablet.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile-small.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile-extra-small.css" />
 
       <div className="bg-canvas"></div>
 
-      <div style={{position: 'relative', zIndex: 1, minHeight: '100vh', padding: '40px 20px'}}>
-        <div style={{maxWidth: '1200px', margin: '0 auto'}}>
+      <div className="admin-page-wrapper">
+        <div className="admin-page-container">
+
           {/* Header */}
-          <div style={{marginBottom: '40px'}}>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px'}}>
-              <div style={{fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--accent-teal-light)', opacity: 0.8}}>
-                Admin Panel
-              </div>
-              <button
-                onClick={handleLogout}
-                className="btn-outline"
-                style={{padding: '8px 20px', fontSize: '0.75rem', borderColor: '#ff6b6b', color: '#ff6b6b'}}
-              >
+          <div className="admin-header-lg">
+            <div className="admin-dashboard-topbar">
+              <div className="admin-dashboard-label">Admin Panel</div>
+              <button onClick={handleLogout} className="btn-outline admin-logout-btn">
                 🚪 Logout
               </button>
             </div>
-            <h1 style={{fontFamily: "'Cinzel Decorative', serif", fontSize: 'clamp(2rem, 5vw, 3rem)', fontWeight: 700, color: 'var(--accent-gold-light)', marginBottom: '12px', textAlign: 'center'}}>
-              Dashboard
-            </h1>
-            <p style={{color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'center'}}>
+            <h1 className="admin-page-title-center">Dashboard</h1>
+            <p className="admin-page-description-center">
               Manage questions, view feedback, and monitor quiz scores
             </p>
           </div>
 
           {/* Stats Grid */}
           {loading ? (
-            <div style={{textAlign: 'center', padding: '60px', color: 'var(--text-muted)'}}>
-              Loading statistics...
-            </div>
+            <div className="admin-dashboard-loading">Loading statistics...</div>
           ) : (
-            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '40px'}}>
-              <div className="card" style={{padding: '24px', textAlign: 'center', background: 'linear-gradient(135deg, rgba(201,162,39,0.15) 0%, rgba(201,162,39,0.05) 100%)', border: '1px solid rgba(201,162,39,0.3)'}}>
-                <div style={{fontSize: '2.5rem', marginBottom: '8px'}}>❓</div>
-                <div style={{fontFamily: "'Cinzel Decorative', serif", fontSize: '2rem', color: 'var(--accent-gold-light)', marginBottom: '4px'}}>
-                  {stats.totalQuestions}
-                </div>
-                <div style={{fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)'}}>
-                  Total Questions
-                </div>
+            <div className="admin-stats-grid">
+              <div className="card admin-stat-card gold">
+                <div className="admin-stat-icon">❓</div>
+                <div className="admin-stat-value gold">{stats.totalQuestions}</div>
+                <div className="admin-stat-label">Total Questions</div>
               </div>
 
-              <div className="card" style={{padding: '24px', textAlign: 'center', background: 'linear-gradient(135deg, rgba(61,220,132,0.15) 0%, rgba(61,220,132,0.05) 100%)', border: '1px solid rgba(61,220,132,0.3)'}}>
-                <div style={{fontSize: '2.5rem', marginBottom: '8px'}}>✅</div>
-                <div style={{fontFamily: "'Cinzel Decorative', serif", fontSize: '2rem', color: '#3ddc84', marginBottom: '4px'}}>
-                  {stats.answeredQuestions}
-                </div>
-                <div style={{fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)'}}>
-                  Answered
-                </div>
+              <div className="card admin-stat-card success">
+                <div className="admin-stat-icon">✅</div>
+                <div className="admin-stat-value success">{stats.answeredQuestions}</div>
+                <div className="admin-stat-label">Answered</div>
               </div>
 
-              <div className="card" style={{padding: '24px', textAlign: 'center', background: 'linear-gradient(135deg, rgba(255,193,7,0.15) 0%, rgba(255,193,7,0.05) 100%)', border: '1px solid rgba(255,193,7,0.3)'}}>
-                <div style={{fontSize: '2.5rem', marginBottom: '8px'}}>⏳</div>
-                <div style={{fontFamily: "'Cinzel Decorative', serif", fontSize: '2rem', color: '#ffc107', marginBottom: '4px'}}>
-                  {stats.pendingQuestions}
-                </div>
-                <div style={{fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)'}}>
-                  Pending
-                </div>
+              <div className="card admin-stat-card warning">
+                <div className="admin-stat-icon">⏳</div>
+                <div className="admin-stat-value warning">{stats.pendingQuestions}</div>
+                <div className="admin-stat-label">Pending</div>
               </div>
 
-              <div className="card" style={{padding: '24px', textAlign: 'center', background: 'linear-gradient(135deg, rgba(0,180,216,0.15) 0%, rgba(0,180,216,0.05) 100%)', border: '1px solid rgba(0,180,216,0.3)'}}>
-                <div style={{fontSize: '2.5rem', marginBottom: '8px'}}>🧠</div>
-                <div style={{fontFamily: "'Cinzel Decorative', serif", fontSize: '2rem', color: 'var(--accent-teal-light)', marginBottom: '4px'}}>
-                  {stats.totalQuizScores}
-                </div>
-                <div style={{fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)'}}>
-                  Quiz Attempts
-                </div>
+              <div className="card admin-stat-card teal">
+                <div className="admin-stat-icon">🧠</div>
+                <div className="admin-stat-value teal">{stats.totalQuizScores}</div>
+                <div className="admin-stat-label">Quiz Attempts</div>
               </div>
 
-              <div className="card" style={{padding: '24px', textAlign: 'center', background: 'linear-gradient(135deg, rgba(201,162,39,0.15) 0%, rgba(201,162,39,0.05) 100%)', border: '1px solid rgba(201,162,39,0.3)'}}>
-                <div style={{fontSize: '2.5rem', marginBottom: '8px'}}>💌</div>
-                <div style={{fontFamily: "'Cinzel Decorative', serif", fontSize: '2rem', color: 'var(--accent-gold-light)', marginBottom: '4px'}}>
-                  {stats.totalFeedback}
-                </div>
-                <div style={{fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)'}}>
-                  Feedback Received
-                </div>
+              <div className="card admin-stat-card gold">
+                <div className="admin-stat-icon">💌</div>
+                <div className="admin-stat-value gold">{stats.totalFeedback}</div>
+                <div className="admin-stat-label">Feedback Received</div>
               </div>
 
-              <div className="card" style={{padding: '24px', textAlign: 'center', background: 'linear-gradient(135deg, rgba(201,162,39,0.15) 0%, rgba(201,162,39,0.05) 100%)', border: '1px solid rgba(201,162,39,0.3)'}}>
-                <div style={{fontSize: '2.5rem', marginBottom: '8px'}}>⭐</div>
-                <div style={{fontFamily: "'Cinzel Decorative', serif", fontSize: '2rem', color: 'var(--accent-gold-light)', marginBottom: '4px'}}>
-                  {stats.averageRating.toFixed(1)}
-                </div>
-                <div style={{fontSize: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)'}}>
-                  Average Rating
-                </div>
+              <div className="card admin-stat-card gold">
+                <div className="admin-stat-icon">⭐</div>
+                <div className="admin-stat-value gold">{stats.averageRating.toFixed(1)}</div>
+                <div className="admin-stat-label">Average Rating</div>
               </div>
             </div>
           )}
 
           {/* Quick Actions */}
-          <div className="card" style={{padding: '32px'}}>
-            <h2 style={{fontFamily: "'Cormorant Garamond', serif", fontSize: '1.8rem', fontWeight: 600, color: 'var(--accent-gold-light)', marginBottom: '24px'}}>
-              Quick Actions
-            </h2>
-            
-            <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px'}}>
-              <Link href="/admin/questions" className="btn-gold" style={{justifyContent: 'center', padding: '16px 24px'}}>
+          <div className="card admin-quick-actions-card">
+            <h2 className="admin-quick-actions-title">Quick Actions</h2>
+            <div className="admin-quick-actions-grid">
+              <Link href="/admin/questions" className="btn-gold admin-quick-btn">
                 📝 Manage Questions
               </Link>
-              <Link href="/admin/feedback" className="btn-gold" style={{justifyContent: 'center', padding: '16px 24px', background: 'linear-gradient(135deg, var(--accent-teal), #0090b0)'}}>
+              <Link href="/admin/feedback" className="btn-gold admin-quick-btn teal">
                 💌 View Feedback
               </Link>
-              <Link href="/admin/scores" className="btn-gold" style={{justifyContent: 'center', padding: '16px 24px', background: 'linear-gradient(135deg, #9333ea, #7e22ce)'}}>
+              <Link href="/admin/scores" className="btn-gold admin-quick-btn purple">
                 🏆 Quiz Scores
               </Link>
             </div>
           </div>
 
-          {/* Back to Home */}
-          <div style={{textAlign: 'center', marginTop: '40px'}}>
-            <Link href="/" style={{color: 'var(--accent-gold)', textDecoration: 'none', fontSize: '0.85rem', transition: 'all 0.3s'}}>
-              ← Back to Home
-            </Link>
+          <div className="admin-back-home">
+            <Link href="/" className="admin-back-home-link">← Back to Home</Link>
           </div>
+
         </div>
       </div>
     </>

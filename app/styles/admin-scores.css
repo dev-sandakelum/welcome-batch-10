@@ -1,0 +1,190 @@
+/* ============================================
+   Admin Scores Page Styles
+   ============================================ */
+
+/* Sort Bar */
+.admin-scores-sort-bar {
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.admin-scores-sort-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.admin-scores-sort-label {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-right: 8px;
+}
+
+/* Score Entry Row */
+.admin-score-list-card {
+  padding: 24px;
+}
+
+.admin-score-entry {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  transition: background 0.2s;
+}
+
+.admin-score-entry:not(:last-child) {
+  border-bottom: 1px solid rgba(201, 162, 39, 0.1);
+}
+
+.admin-score-entry:hover {
+  background: rgba(201, 162, 39, 0.06);
+}
+
+.admin-score-medal {
+  font-size: 1.5rem;
+  min-width: 32px;
+  text-align: center;
+}
+
+.admin-score-rank {
+  min-width: 40px;
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.admin-score-rank.gold   { color: #ffd700; }
+.admin-score-rank.silver { color: #c0c0c0; }
+.admin-score-rank.bronze { color: #cd7f32; }
+
+.admin-score-info {
+  flex: 1;
+}
+
+.admin-score-name {
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.admin-score-date {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.admin-score-value {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--accent-gold-light);
+  min-width: 60px;
+  text-align: center;
+}
+
+.admin-score-delete-btn {
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  border-radius: var(--radius-sm);
+  color: #ff6b6b;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.admin-score-delete-btn:hover {
+  background: rgba(255, 107, 107, 0.1);
+  border-color: #ff6b6b;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+
+@media (max-width: 768px) {
+  .admin-scores-sort-bar {
+    padding: 14px 16px;
+  }
+
+  .admin-score-list-card {
+    padding: 18px 14px;
+  }
+
+  .admin-score-entry {
+    padding: 12px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-scores-sort-bar {
+    padding: 12px 14px;
+    margin-bottom: 16px;
+  }
+
+  .admin-scores-sort-row {
+    gap: 8px;
+  }
+
+  .admin-scores-sort-label {
+    font-size: 0.78rem;
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 4px;
+  }
+
+  .admin-score-list-card {
+    padding: 14px 12px;
+  }
+
+  .admin-score-entry {
+    padding: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .admin-score-medal {
+    font-size: 1.2rem;
+    min-width: 24px;
+  }
+
+  .admin-score-rank {
+    min-width: 30px;
+    font-size: 1.1rem;
+  }
+
+  .admin-score-name {
+    font-size: 0.88rem;
+  }
+
+  .admin-score-date {
+    font-size: 0.68rem;
+  }
+
+  .admin-score-value {
+    font-size: 1.2rem;
+    min-width: 50px;
+  }
+
+  .admin-score-delete-btn {
+    padding: 6px 12px;
+    font-size: 0.68rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .admin-score-entry {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .admin-score-value {
+    font-size: 1rem;
+  }
+}
