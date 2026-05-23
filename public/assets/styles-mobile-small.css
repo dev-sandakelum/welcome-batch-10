@@ -1,0 +1,73 @@
+/* ============================================
+   Responsive Styles - Small Mobile (max-width: 460px)
+   Compact for perfect 100vh fit
+   ============================================ */
+
+@media (max-width: 460px) {
+   :root {
+      --radius: 14px;
+      --radius-sm: 9px;
+   }
+
+   body {
+      font-size: 0.88rem;
+   }
+
+   h1 {
+      font-size: clamp(1.6rem, 7vw, 2.2rem) !important;
+   }
+
+   h2 {
+      font-size: clamp(1.25rem, 5.5vw, 1.8rem) !important;
+   }
+
+   h3 {
+      font-size: clamp(1.1rem, 4.5vw, 1.5rem) !important;
+   }
+
+   section {
+      padding: 32px 14px !important;
+   }
+
+   .card {
+      padding: 18px 14px;
+   }
+
+   .section-container {
+      padding: 14px;
+   }
+
+   .stat-card {
+      padding: 12px 10px;
+   }
+
+   .modal-glass {
+      padding: 20px 14px;
+   }
+
+   .btn-gold,
+   .btn-outline {
+      padding: 9px 18px;
+      font-size: 0.68rem;
+      letter-spacing: 0.07em;
+   }
+
+   .form-input {
+      font-size: 0.78rem;
+      padding: 9px 12px;
+   }
+
+   .form-label {
+      font-size: 0.68rem;
+      margin-bottom: 5px;
+   }
+
+   .gold-line {
+      margin: 12px 0;
+   }
+
+   .gold-dot-line {
+      gap: 6px;
+      margin: 10px 0;
+   }
+}

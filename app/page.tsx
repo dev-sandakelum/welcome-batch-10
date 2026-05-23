@@ -45,6 +45,11 @@ export default function Home() {
     <>
       <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
       <link rel="stylesheet" href="/assets/styles.css" />
+      {/* Responsive styles for different breakpoints */}
+      <link rel="stylesheet" href="/assets/styles-tablet.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile-small.css" />
+      <link rel="stylesheet" href="/assets/styles-mobile-extra-small.css" />
       
       {/* Background */}
       <div className="bg-canvas">
@@ -421,6 +426,58 @@ export default function Home() {
           background: rgba(201,162,39,0.7);
           transform: scale(1.3);
           box-shadow: 0 0 10px rgba(201,162,39,0.4);
+        }
+        
+        /* Mobile: Move nav dots to top */
+        @media (max-width: 768px) {
+          #nav-dots {
+            top: 20px !important;
+            right: 50% !important;
+            transform: translateX(50%) !important;
+            flex-direction: row !important;
+            gap: 12px !important;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            padding: 10px 16px;
+            border-radius: 50px;
+            border: 1px solid rgba(201, 162, 39, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+          }
+          .nav-dot {
+            width: 10px;
+            height: 10px;
+          }
+          .nav-dot.active {
+            transform: scale(1.3);
+          }
+          .nav-dot:hover {
+            transform: scale(1.2);
+          }
+        }
+        
+        @media (max-width: 480px) {
+          #nav-dots {
+            top: 16px !important;
+            padding: 8px 14px;
+            gap: 10px !important;
+          }
+          .nav-dot {
+            width: 8px;
+            height: 8px;
+          }
+        }
+        
+        @media (max-width: 360px) {
+          #nav-dots {
+            top: 12px !important;
+            padding: 6px 12px;
+            gap: 8px !important;
+          }
+          .nav-dot {
+            width: 7px;
+            height: 7px;
+          }
         }
         .icon-btn:hover {
           background: rgba(201,162,39,0.25) !important;

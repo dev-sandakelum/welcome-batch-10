@@ -1,0 +1,72 @@
+/* ============================================
+   Responsive Styles - Extra Small Mobile (max-width: 360px)
+   ============================================ */
+
+@media (max-width: 360px) {
+   :root {
+      --radius: 12px;
+      --radius-sm: 8px;
+   }
+
+   body {
+      font-size: 0.85rem;
+   }
+
+   h1 {
+      font-size: clamp(1.45rem, 7.5vw, 2rem) !important;
+   }
+
+   h2 {
+      font-size: clamp(1.15rem, 6vw, 1.6rem) !important;
+   }
+
+   h3 {
+      font-size: clamp(1rem, 5vw, 1.4rem) !important;
+   }
+
+   section {
+      padding: 28px 12px !important;
+   }
+
+   .card {
+      padding: 16px 12px;
+   }
+
+   .section-container {
+      padding: 12px;
+   }
+
+   .stat-card {
+      padding: 10px 8px;
+   }
+
+   .modal-glass {
+      padding: 18px 12px;
+   }
+
+   .btn-gold,
+   .btn-outline {
+      padding: 8px 16px;
+      font-size: 0.64rem;
+      letter-spacing: 0.06em;
+   }
+
+   .form-input {
+      font-size: 0.75rem;
+      padding: 8px 10px;
+   }
+
+   .form-label {
+      font-size: 0.66rem;
+      margin-bottom: 4px;
+   }
+
+   .gold-line {
+      margin: 10px 0;
+   }
+
+   .gold-dot-line {
+      gap: 5px;
+      margin: 8px 0;
+   }
+}
