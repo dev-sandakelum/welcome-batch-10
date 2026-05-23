@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Questions & Answers - Welcome 10th Batch</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --royal: #1a0e3d;
+    --deep: #120934;
+    --accent-gold: #c9a227;
+    --accent-gold-light: #f0c84a;
+    --accent-teal: #00b4d8;
+    --accent-teal-light: #48e0ff;
+    --card-bg: rgba(30,12,80,0.72);
+    --card-border: rgba(201,162,39,0.3);
+    --text-primary: #f5f0e8;
+    --text-muted: rgba(245,240,232,0.6);
+    --radius: 22px;
+    --radius-sm: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 40px 20px;
+    position: relative;
+  }
+
+  .bg-canvas {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(44,20,120,0.9) 0%, var(--deep) 70%);
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(18px);
+    padding: 36px 40px;
+    margin-bottom: 20px;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent-gold);
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+  }
+  .back-btn:hover { color: var(--accent-gold-light); transform: translateX(-5px); }
+
+  .section-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 600;
+    color: var(--accent-gold-light);
+    margin-bottom: 10px;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent-teal-light);
+    opacity: 0.8;
+  }
+
+  .gold-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    margin: 20px 0;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .filter-tab {
+    padding: 10px 20px;
+    background: rgba(20,8,60,0.65);
+    border: 1px solid rgba(201,162,39,0.25);
+    border-radius: 50px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .filter-tab:hover {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+  }
+  .filter-tab.active {
+    background: rgba(201,162,39,0.2);
+    border-color: var(--accent-gold);
+    color: var(--accent-gold-light);
+  }
+
+  .qa-item {
+    background: rgba(20,8,60,0.4);
+    border: 1px solid rgba(201,162,39,0.2);
+    border-radius: var(--radius-sm);
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: all 0.3s;
+  }
+  .qa-item:hover {
+    border-color: var(--accent-gold);
+    background: rgba(201,162,39,0.06);
+    transform: translateX(5px);
+  }
+
+  .qa-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .qa-meta {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .qa-name {
+    font-weight: 600;
+    color: var(--accent-gold-light);
+    font-size: 0.9rem;
+  }
+
+  .qa-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .qa-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .qa-status.answered {
+    background: rgba(61,220,132,0.15);
+    border: 1px solid rgba(61,220,132,0.4);
+    color: #3ddc84;
+  }
+  .qa-status.pending {
+    background: rgba(255,193,7,0.15);
+    border: 1px solid rgba(255,193,7,0.4);
+    color: #ffc107;
+  }
+
+  .qa-question {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .qa-answer {
+    background: rgba(0,180,216,0.08);
+    border-left: 3px solid var(--accent-teal);
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    margin-top: 12px;
+  }
+
+  .qa-answer-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-teal-light);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .qa-answer-text {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+  }
+  .empty-state-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  .btn-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--accent-gold), #a07d18);
+    color: var(--royal);
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,162,39,0.45); }
+
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(20,8,60,0.7);
+    border: 1px solid rgba(201,162,39,0.25);
+    border-radius: 50px;
+    padding: 12px 24px;
+    margin-bottom: 20px;
+  }
+  .search-bar input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text-primary);
+    font-size: 0.9rem;
+  }
+  .search-bar input::placeholder { color: rgba(245,240,232,0.35); }
+  .search-icon { color: var(--accent-gold); font-size: 1.1rem; }
+
+  @media (max-width: 768px) {
+    .card { padding: 24px 20px; }
+    .qa-item { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-canvas"></div>
+
+<div class="container">
+  <a href="index.html" class="back-btn">← Back to Home</a>
+  
+  <div class="card">
+    <div class="section-label">Community Q&A</div>
+    <div class="section-heading">All Questions & Answers</div>
+    <p style="color:var(--text-muted);font-size:0.88rem;margin-top:12px;line-height:1.7">
+      Browse through questions asked by fellow students and see the answers from our team.
+    </p>
+    <div class="gold-line"></div>
+
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-input" placeholder="Search questions..." onkeyup="filterQuestions()">
+    </div>
+
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="filterByStatus('all')">All</button>
+      <button class="filter-tab" onclick="filterByStatus('answered')">Answered</button>
+      <button class="filter-tab" onclick="filterByStatus('pending')">Pending</button>
+    </div>
+
+    <div id="qa-list">
+      <!-- Questions will be loaded here -->
+    </div>
+
+    <div class="gold-line"></div>
+    <div style="text-align:center">
+      <a href="questions.html" class="btn-gold">Ask Your Question →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentFilter = 'all';
+let allQuestions = [];
+
+// Sample data - in production this would come from a backend
+const sampleQuestions = [
+  {
+    id: 1,
+    name: "Alex Kumar",
+    email: "alex@example.com",
+    question: "What documents do I need to bring on the first day?",
+    answer: "You'll need to bring your admission letter, ID proof (Aadhar/Passport), passport-size photographs (4 copies), and any relevant certificates. Also bring a notebook and pen for orientation sessions.",
+    date: "2026-05-20T10:30:00",
+    answered: true
+  },
+  {
+    id: 2,
+    name: "Priya Sharma",
+    email: "priya@example.com",
+    question: "Is there accommodation available for outstation students?",
+    answer: "Yes! We have both on-campus hostels and a list of verified off-campus accommodations. The hostel application form is available on the student portal. Apply early as spots fill up quickly.",
+    date: "2026-05-21T14:15:00",
+    answered: true
+  },
+  {
+    id: 3,
+    name: "Rahul Verma",
+    email: "rahul@example.com",
+    question: "Can I change my elective subjects after registration?",
+    answer: "Yes, you can change electives within the first two weeks of the semester. Visit the academic office with your student ID and fill out the subject change form. Some subjects have limited seats, so act quickly!",
+    date: "2026-05-22T09:45:00",
+    answered: true
+  },
+  {
+    id: 4,
+    name: "Sneha Patel",
+    email: "sneha@example.com",
+    question: "Are there any scholarship opportunities for first-year students?",
+    answer: "",
+    date: "2026-05-22T16:20:00",
+    answered: false
+  },
+  {
+    id: 5,
+    name: "Arjun Singh",
+    email: "arjun@example.com",
+    question: "What is the dress code for regular classes?",
+    answer: "We follow a smart casual dress code. Formal attire is required only for presentations, seminars, and special events. Comfortable clothing is recommended for regular classes and lab sessions.",
+    date: "2026-05-23T11:00:00",
+    answered: true
+  }
+];
+
+function loadQuestions() {
+  // Load from localStorage and merge with sample data
+  const storedQuestions = JSON.parse(localStorage.getItem('questions') || '[]');
+  
+  // Convert stored questions to match format
+  const formattedStored = storedQuestions.map((q, index) => ({
+    id: 100 + index,
+    name: q.name,
+    email: q.email || '',
+    question: q.question,
+    answer: q.answer || '',
+    date: q.date,
+    answered: q.answered || false
+  }));
+
+  allQuestions = [...sampleQuestions, ...formattedStored];
+  displayQuestions(allQuestions);
+}
+
+function displayQuestions(questions) {
+  const container = document.getElementById('qa-list');
+  
+  if (questions.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">💬</div>
+        <p style="font-size:1.1rem;margin-bottom:8px">No questions found</p>
+        <p style="font-size:0.85rem">Be the first to ask a question!</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Sort by date (newest first)
+  questions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+  container.innerHTML = questions.map(q => {
+    const date = new Date(q.date);
+    const formattedDate = date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    return `
+      <div class="qa-item" data-status="${q.answered ? 'answered' : 'pending'}">
+        <div class="qa-header">
+          <div class="qa-meta">
+            <span class="qa-name">${q.name}</span>
+            <span class="qa-date">${formattedDate}</span>
+          </div>
+          <span class="qa-status ${q.answered ? 'answered' : 'pending'}">
+            ${q.answered ? '✓ Answered' : '⏳ Pending'}
+          </span>
+        </div>
+        <div class="qa-question">${q.question}</div>
+        ${q.answered ? `
+          <div class="qa-answer">
+            <div class="qa-answer-label">Answer from Admin</div>
+            <div class="qa-answer-text">${q.answer}</div>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function filterByStatus(status) {
+  currentFilter = status;
+  
+  // Update active tab
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+  event.target.classList.add('active');
+
+  // Filter questions
+  let filtered = allQuestions;
+  if (status === 'answered') {
+    filtered = allQuestions.filter(q => q.answered);
+  } else if (status === 'pending') {
+    filtered = allQuestions.filter(q => !q.answered);
+  }
+
+  displayQuestions(filtered);
+}
+
+function filterQuestions() {
+  const searchTerm = document.getElementById('search-input').value.toLowerCase();
+  
+  let filtered = allQuestions;
+  
+  // Apply status filter
+  if (currentFilter === 'answered') {
+    filtered = filtered.filter(q => q.answered);
+  } else if (currentFilter === 'pending') {
+    filtered = filtered.filter(q => !q.answered);
+  }
+
+  // Apply search filter
+  if (searchTerm) {
+    filtered = filtered.filter(q => 
+      q.question.toLowerCase().includes(searchTerm) ||
+      q.name.toLowerCase().includes(searchTerm) ||
+      (q.answer && q.answer.toLowerCase().includes(searchTerm))
+    );
+  }
+
+  displayQuestions(filtered);
+}
+
+// Load questions on page load
+loadQuestions();
+</script>
+
+</body>
+</html>

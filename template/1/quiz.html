@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz - Welcome 10th Batch</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --royal: #1a0e3d;
+    --deep: #120934;
+    --accent-gold: #c9a227;
+    --accent-gold-light: #f0c84a;
+    --accent-teal: #00b4d8;
+    --accent-teal-light: #48e0ff;
+    --card-bg: rgba(30,12,80,0.72);
+    --card-border: rgba(201,162,39,0.3);
+    --text-primary: #f5f0e8;
+    --text-muted: rgba(245,240,232,0.6);
+    --radius: 22px;
+    --radius-sm: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+  }
+
+  .bg-canvas {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(44,20,120,0.9) 0%, var(--deep) 70%);
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    width: 100%;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(18px);
+    padding: 36px 40px;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent-gold);
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+  }
+  .back-btn:hover { color: var(--accent-gold-light); transform: translateX(-5px); }
+
+  .section-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 600;
+    color: var(--accent-gold-light);
+    margin-bottom: 10px;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent-teal-light);
+    opacity: 0.8;
+  }
+
+  .gold-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    margin: 20px 0;
+  }
+
+  .quiz-progress-bar {
+    height: 4px;
+    background: rgba(201,162,39,0.15);
+    border-radius: 4px;
+    margin-bottom: 32px;
+  }
+  .quiz-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-gold), var(--accent-teal));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  .quiz-q-num {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--accent-teal-light);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .quiz-q-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 28px;
+    line-height: 1.4;
+  }
+
+  .quiz-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .quiz-opt {
+    padding: 14px 18px;
+    background: rgba(20,8,60,0.65);
+    border: 1px solid rgba(201,162,39,0.2);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.25s;
+    font-size: 0.88rem;
+    text-align: left;
+    line-height: 1.4;
+  }
+  .quiz-opt:hover { border-color: var(--accent-gold); background: rgba(201,162,39,0.1); }
+  .quiz-opt.correct { border-color: #3ddc84; background: rgba(61,220,132,0.12); color: #3ddc84; }
+  .quiz-opt.wrong { border-color: #ff6b6b; background: rgba(255,107,107,0.12); color: #ff6b6b; }
+  .quiz-opt.selected { border-color: var(--accent-teal); background: rgba(0,180,216,0.1); }
+  .quiz-opt:disabled { pointer-events: none; }
+
+  .quiz-feedback {
+    min-height: 48px;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .btn-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--accent-gold), #a07d18);
+    color: var(--royal);
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,162,39,0.45); }
+  .btn-gold:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .quiz-score-card {
+    text-align: center;
+  }
+  .quiz-score-num {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 4rem;
+    color: var(--accent-gold-light);
+  }
+  .quiz-score-label {
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+
+  .name-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 24px 0 0;
+  }
+  .name-row input {
+    flex: 1;
+    background: rgba(20,8,60,0.65);
+    border: 1px solid rgba(201,162,39,0.25);
+    border-radius: 50px;
+    padding: 12px 20px;
+    color: var(--text-primary);
+    font-size: 0.88rem;
+    outline: none;
+    min-width: 140px;
+  }
+  .name-row input:focus { border-color: var(--accent-gold); }
+  .name-row input::placeholder { color: rgba(245,240,232,0.35); }
+
+  @media (max-width: 768px) {
+    .quiz-options { grid-template-columns: 1fr; }
+    .card { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-canvas"></div>
+
+<div class="container">
+  <a href="index.html" class="back-btn">← Back to Home</a>
+  
+  <div class="card">
+    <div class="section-label">Test Your Knowledge</div>
+    <div class="section-heading">University Quiz</div>
+    <div class="gold-line"></div>
+
+    <div id="quiz-container">
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="progress-fill" style="width: 0%"></div>
+      </div>
+
+      <div id="quiz-question">
+        <div class="quiz-q-num" id="q-num">Question 1 of 5</div>
+        <div class="quiz-q-text" id="q-text">What year was the university founded?</div>
+        <div class="quiz-options" id="q-options">
+          <button class="quiz-opt" onclick="selectAnswer(0)">1985</button>
+          <button class="quiz-opt" onclick="selectAnswer(1)">1990</button>
+          <button class="quiz-opt" onclick="selectAnswer(2)">1995</button>
+          <button class="quiz-opt" onclick="selectAnswer(3)">2000</button>
+        </div>
+        <div class="quiz-feedback" id="feedback"></div>
+        <button class="btn-gold" id="next-btn" onclick="nextQuestion()" disabled>Next Question →</button>
+      </div>
+
+      <div id="quiz-result" style="display: none;">
+        <div class="quiz-score-card">
+          <div class="quiz-score-num" id="final-score">0</div>
+          <div class="quiz-score-label">Your Score</div>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:20px">Great job completing the quiz!</p>
+          
+          <div class="name-row">
+            <input type="text" id="player-name" placeholder="Enter your name">
+            <button class="btn-gold" onclick="submitScore()">Submit to Leaderboard</button>
+          </div>
+          
+          <div style="margin-top:20px">
+            <a href="leaderboard.html" class="btn-gold">View Leaderboard →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const quizData = [
+  {
+    question: "What year was the university founded?",
+    options: ["1985", "1990", "1995", "2000"],
+    correct: 1,
+    feedback: "The university was founded in 1990!"
+  },
+  {
+    question: "What is the university's motto?",
+    options: ["Knowledge is Power", "Excellence in Education", "Learn to Lead", "Wisdom and Growth"],
+    correct: 2,
+    feedback: "Our motto is 'Learn to Lead' - empowering students to become future leaders!"
+  },
+  {
+    question: "How many faculties does the university have?",
+    options: ["5", "7", "9", "11"],
+    correct: 1,
+    feedback: "We have 7 diverse faculties covering various fields of study!"
+  },
+  {
+    question: "What is the name of the main library?",
+    options: ["Central Library", "Knowledge Hub", "Heritage Library", "Scholar's Haven"],
+    correct: 2,
+    feedback: "The Heritage Library is our main library with over 100,000 books!"
+  },
+  {
+    question: "Which annual event is the most popular?",
+    options: ["Tech Fest", "Cultural Night", "Sports Week", "All of the above"],
+    correct: 3,
+    feedback: "All our events are equally popular and well-attended by students!"
+  }
+];
+
+let currentQuestion = 0;
+let score = 0;
+let selectedAnswer = null;
+
+function selectAnswer(index) {
+  selectedAnswer = index;
+  const options = document.querySelectorAll('.quiz-opt');
+  options.forEach((opt, i) => {
+    opt.classList.remove('selected', 'correct', 'wrong');
+    if (i === index) opt.classList.add('selected');
+  });
+  document.getElementById('next-btn').disabled = false;
+}
+
+function nextQuestion() {
+  const options = document.querySelectorAll('.quiz-opt');
+  const correctIndex = quizData[currentQuestion].correct;
+  
+  if (selectedAnswer === correctIndex) {
+    score++;
+    options[selectedAnswer].classList.add('correct');
+  } else {
+    options[selectedAnswer].classList.add('wrong');
+    options[correctIndex].classList.add('correct');
+  }
+  
+  document.getElementById('feedback').textContent = quizData[currentQuestion].feedback;
+  options.forEach(opt => opt.disabled = true);
+  
+  setTimeout(() => {
+    currentQuestion++;
+    if (currentQuestion < quizData.length) {
+      loadQuestion();
+    } else {
+      showResult();
+    }
+  }, 2000);
+}
+
+function loadQuestion() {
+  const q = quizData[currentQuestion];
+  document.getElementById('q-num').textContent = `Question ${currentQuestion + 1} of ${quizData.length}`;
+  document.getElementById('q-text').textContent = q.question;
+  document.getElementById('feedback').textContent = '';
+  
+  const optionsContainer = document.getElementById('q-options');
+  optionsContainer.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt';
+    btn.textContent = opt;
+    btn.onclick = () => selectAnswer(i);
+    optionsContainer.appendChild(btn);
+  });
+  
+  document.getElementById('next-btn').disabled = true;
+  selectedAnswer = null;
+  
+  const progress = ((currentQuestion + 1) / quizData.length) * 100;
+  document.getElementById('progress-fill').style.width = progress + '%';
+}
+
+function showResult() {
+  document.getElementById('quiz-question').style.display = 'none';
+  document.getElementById('quiz-result').style.display = 'block';
+  document.getElementById('final-score').textContent = score + ' / ' + quizData.length;
+  document.getElementById('progress-fill').style.width = '100%';
+}
+
+function submitScore() {
+  const name = document.getElementById('player-name').value.trim();
+  if (!name) {
+    alert('Please enter your name!');
+    return;
+  }
+  
+  // Save to localStorage
+  let leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+  leaderboard.push({ name, score, total: quizData.length, date: new Date().toISOString() });
+  leaderboard.sort((a, b) => b.score - a.score);
+  localStorage.setItem('leaderboard', JSON.stringify(leaderboard));
+  
+  alert('Score submitted successfully!');
+  window.location.href = 'leaderboard.html';
+}
+</script>
+
+</body>
+</html>

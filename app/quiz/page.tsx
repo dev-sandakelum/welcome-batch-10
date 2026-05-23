@@ -1,428 +1,247 @@
-'use client'
+'use client';
 
-import { motion, AnimatePresence } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
-import confetti from 'canvas-confetti'
+import { useState } from 'react';
+import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
-interface Question {
-  id: string
-  question_text: string
-  option_a: string
-  option_b: string
-  option_c: string
-  option_d: string
-  correct_answer: string
-  display_order?: number
-}
-
-type QuizStage = 'info' | 'quiz' | 'results'
+const quizData = [
+  {
+    question: "What year was the university founded?",
+    options: ["1985", "1990", "1995", "2000"],
+    correct: 1,
+    feedback: "The university was founded in 1990!"
+  },
+  {
+    question: "What is the university's motto?",
+    options: ["Knowledge is Power", "Excellence in Education", "Learn to Lead", "Wisdom and Growth"],
+    correct: 2,
+    feedback: "Our motto is 'Learn to Lead' - empowering students to become future leaders!"
+  },
+  {
+    question: "How many faculties does the university have?",
+    options: ["5", "7", "9", "11"],
+    correct: 1,
+    feedback: "We have 7 diverse faculties covering various fields of study!"
+  },
+  {
+    question: "What is the name of the main library?",
+    options: ["Central Library", "Knowledge Hub", "Heritage Library", "Scholar's Haven"],
+    correct: 2,
+    feedback: "The Heritage Library is our main library with over 100,000 books!"
+  },
+  {
+    question: "Which annual event is the most popular?",
+    options: ["Tech Fest", "Cultural Night", "Sports Week", "All of the above"],
+    correct: 3,
+    feedback: "All our events are equally popular and well-attended by students!"
+  }
+];
 
 export default function QuizPage() {
-  const [stage, setStage] = useState<QuizStage>('info')
-  const [questions, setQuestions] = useState<Question[]>([])
-  const [loading, setLoading] = useState(true)
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-  const [timeLeft, setTimeLeft] = useState(30)
-  const [score, setScore] = useState(0)
-  const [selectedAnswer, setSelectedAnswer] = useState('')
-  const [answered, setAnswered] = useState(false)
-  const [participantName, setParticipantName] = useState('')
-  const [participantEmail, setParticipantEmail] = useState('')
+  const router = useRouter();
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [quizComplete, setQuizComplete] = useState(false);
+  const [playerName, setPlayerName] = useState('');
+  const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    const fetchQuestions = async () => {
-      try {
-        const supabase = createClient()
-        const { data, error } = await supabase
-          .from('questions')
-          .select('*')
-          .order('display_order', { ascending: true })
-
-        if (error) throw error
-        setQuestions(data || [])
-      } catch (error) {
-        console.error('[v0] Error fetching questions:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchQuestions()
-  }, [])
-
-  // Timer logic
-  useEffect(() => {
-    if (stage !== 'quiz' || answered) return
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          handleTimeout()
-          return 0
-        }
-        return prev - 1
-      })
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [stage, answered])
-
-  const handleTimeout = () => {
-    setAnswered(true)
-  }
-
-  const handleAnswer = (answer: string) => {
-    if (answered) return
-
-    setSelectedAnswer(answer)
-    setAnswered(true)
-
-    const currentQuestion = questions[currentQuestionIndex]
-    if (answer === currentQuestion.correct_answer) {
-      setScore((prev) => prev + 1)
-      // Green flash animation for correct
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.6 },
-        colors: ['#22c55e', '#16a34a'],
-      })
-    }
-  }
+  const handleSelectAnswer = (index: number) => {
+    if (showFeedback) return;
+    setSelectedAnswer(index);
+  };
 
   const handleNextQuestion = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex((prev) => prev + 1)
-      setTimeLeft(30)
-      setSelectedAnswer('')
-      setAnswered(false)
-    } else {
-      handleQuizComplete()
-    }
-  }
+    if (selectedAnswer === null) return;
 
-  const handleQuizComplete = async () => {
-    if (!participantName) return
+    const isCorrect = selectedAnswer === quizData[currentQuestion].correct;
+    if (isCorrect) {
+      setScore(score + 1);
+    }
+
+    setShowFeedback(true);
+
+    setTimeout(() => {
+      if (currentQuestion < quizData.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+        setSelectedAnswer(null);
+        setShowFeedback(false);
+      } else {
+        setQuizComplete(true);
+      }
+    }, 2000);
+  };
+
+  const handleSubmitScore = async () => {
+    if (!playerName.trim()) {
+      alert('Please enter your name!');
+      return;
+    }
+
+    setSubmitting(true);
 
     try {
-      const supabase = createClient()
-      const percentage = (score / questions.length) * 100
+      const { error } = await supabase
+        .from('quiz_scores')
+        .insert([
+          {
+            player_name: playerName,
+            score: score,
+            total_questions: quizData.length
+          }
+        ]);
 
-      const { error } = await supabase.from('scores').insert({
-        participant_name: participantName,
-        participant_email: participantEmail || null,
-        score,
-        total_questions: questions.length,
-        percentage: Math.round(percentage * 100) / 100,
-      })
+      if (error) throw error;
 
-      if (error) throw error
-
-      // Celebration confetti
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-      })
-
-      setStage('results')
+      alert('Score submitted successfully!');
+      router.push('/leaderboard');
     } catch (error) {
-      console.error('[v0] Error saving score:', error)
-      setStage('results')
+      console.error('Error submitting score:', error);
+      alert('Failed to submit score. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
-  }
+  };
 
-  const handleStartQuiz = () => {
-    if (!participantName.trim()) return
-    setStage('quiz')
-    setScore(0)
-    setCurrentQuestionIndex(0)
-    setTimeLeft(30)
-    setSelectedAnswer('')
-    setAnswered(false)
-  }
-
-  if (loading) {
-    return (
-      <main className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-accent border-t-primary rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-foreground font-lora">Loading quiz questions...</p>
-        </div>
-      </main>
-    )
-  }
+  const progress = ((currentQuestion + 1) / quizData.length) * 100;
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="max-w-3xl mx-auto px-5 py-8">
-        <motion.header
-          className="mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <Link href="/">
-            <Button
-              variant="ghost"
-              className="text-primary hover:bg-card mb-4 rounded-xl"
-            >
-              ← Back
-            </Button>
+    <>
+      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+      <link rel="stylesheet" href="/assets/styles.css" />
+
+      <div className="bg-canvas"></div>
+
+      <div style={{position: 'relative', zIndex: 1, maxWidth: '700px', width: '100%', margin: '0 auto', padding: '40px 20px', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <div style={{width: '100%'}}>
+          <Link href="/" style={{display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--accent-gold)', textDecoration: 'none', fontSize: '0.85rem', marginBottom: '20px', transition: 'all 0.3s'}}>
+            ← Back to Home
           </Link>
-          <h1 className="font-playfair text-4xl md:text-5xl font-700 text-primary mb-2">
-            Knowledge Quiz
-          </h1>
-          <p className="text-foreground/70 font-lora text-lg">
-            30 seconds per question
-          </p>
-        </motion.header>
+          
+          <div className="card">
+            <div style={{fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--accent-teal-light)', opacity: 0.8}}>Test Your Knowledge</div>
+            <div style={{fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 600, color: 'var(--accent-gold-light)', marginBottom: '10px'}}>University Quiz</div>
+            <div className="gold-line"></div>
 
-        <AnimatePresence mode="wait">
-          {/* Info Stage */}
-          {stage === 'info' && (
-            <motion.div
-              key="info"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="bg-card backdrop-blur-md border-2 border-border rounded-3xl p-8 card-shadow"
-            >
-              <h2 className="font-playfair text-2xl font-600 text-primary mb-4">
-                Ready to test your knowledge?
-              </h2>
-              <p className="text-foreground/70 font-lora mb-6">
-                You&apos;ll have 30 seconds to answer each of {questions.length} questions.
-                Answer correctly to earn points!
-              </p>
-
-              <div className="space-y-4 mb-6">
-                <div>
-                  <label className="block text-sm font-playfair font-600 text-primary mb-2">
-                    Your Name (required)
-                  </label>
-                  <Input
-                    type="text"
-                    placeholder="Enter your name"
-                    value={participantName}
-                    onChange={(e) => setParticipantName(e.target.value)}
-                    className="rounded-xl text-base font-lora border-2"
-                  />
+            {!quizComplete ? (
+              <>
+                <div style={{height: '4px', background: 'rgba(201,162,39,0.15)', borderRadius: '4px', marginBottom: '32px'}}>
+                  <div style={{height: '100%', background: 'linear-gradient(90deg, var(--accent-gold), var(--accent-teal))', borderRadius: '4px', transition: 'width 0.5s ease', width: `${progress}%`}}></div>
                 </div>
-                <div>
-                  <label className="block text-sm font-playfair font-600 text-primary mb-2">
-                    Email (optional)
-                  </label>
-                  <Input
-                    type="email"
-                    placeholder="your@email.com"
-                    value={participantEmail}
-                    onChange={(e) => setParticipantEmail(e.target.value)}
-                    className="rounded-xl text-base font-lora border-2"
-                  />
+
+                <div style={{fontSize: '0.7rem', letterSpacing: '0.2em', color: 'var(--accent-teal-light)', textTransform: 'uppercase', marginBottom: '10px'}}>
+                  Question {currentQuestion + 1} of {quizData.length}
                 </div>
-              </div>
+                <div style={{fontFamily: "'Cormorant Garamond', serif", fontSize: '1.4rem', fontWeight: 600, marginBottom: '28px', lineHeight: 1.4}}>
+                  {quizData[currentQuestion].question}
+                </div>
 
-              <motion.div
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                <Button
-                  onClick={handleStartQuiz}
-                  disabled={!participantName.trim()}
-                  className="w-full bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground rounded-2xl font-playfair text-lg py-6 shadow-lg"
-                >
-                  Start Quiz! 🎮
-                </Button>
-              </motion.div>
-            </motion.div>
-          )}
+                <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '28px'}}>
+                  {quizData[currentQuestion].options.map((option, index) => {
+                    let className = 'quiz-opt';
+                    let style: React.CSSProperties = {
+                      padding: '14px 18px',
+                      background: 'rgba(20,8,60,0.65)',
+                      border: '1px solid rgba(201,162,39,0.2)',
+                      borderRadius: 'var(--radius-sm)',
+                      cursor: showFeedback ? 'default' : 'pointer',
+                      transition: 'all 0.25s',
+                      fontSize: '0.88rem',
+                      textAlign: 'left',
+                      lineHeight: 1.4,
+                      color: 'var(--text-primary)'
+                    };
 
-          {/* Quiz Stage */}
-          {stage === 'quiz' && (
-            <motion.div
-              key="quiz"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            >
-              {/* Progress */}
-              <motion.div
-                className="mb-6 bg-card backdrop-blur-md rounded-2xl p-4 border-2 border-border card-shadow"
-                animate={
-                  timeLeft === 0 && answered
-                    ? { x: [-8, 8, -8, 8, 0] }
-                    : timeLeft <= 10
-                      ? { borderColor: ['#ef4444', '#fca5a5', '#ef4444'] }
-                      : {}
-                }
-                transition={{
-                  duration: timeLeft === 0 && answered ? 0.4 : 1,
-                  repeat: timeLeft <= 10 && timeLeft > 0 && !answered ? Infinity : 0,
-                  repeatType: 'loop',
-                }}
-              >
-                <div className="flex justify-between items-center mb-2">
-                  <span className="font-playfair font-600 text-primary">
-                    Question {currentQuestionIndex + 1} of {questions.length}
-                  </span>
-                  <motion.span
-                    className={`font-playfair font-700 text-lg ${
-                      timeLeft <= 10 ? 'text-red-600' : 'text-accent'
-                    }`}
-                    animate={
-                      timeLeft <= 10
-                        ? { scale: [1, 1.1, 1] }
-                        : {}
+                    if (selectedAnswer === index) {
+                      if (showFeedback) {
+                        if (index === quizData[currentQuestion].correct) {
+                          style = {...style, borderColor: '#3ddc84', background: 'rgba(61,220,132,0.12)', color: '#3ddc84'};
+                        } else {
+                          style = {...style, borderColor: '#ff6b6b', background: 'rgba(255,107,107,0.12)', color: '#ff6b6b'};
+                        }
+                      } else {
+                        style = {...style, borderColor: 'var(--accent-teal)', background: 'rgba(0,180,216,0.1)'};
+                      }
+                    } else if (showFeedback && index === quizData[currentQuestion].correct) {
+                      style = {...style, borderColor: '#3ddc84', background: 'rgba(61,220,132,0.12)', color: '#3ddc84'};
                     }
-                    transition={{
-                      duration: 0.6,
-                      repeat: timeLeft <= 10 && timeLeft > 0 && !answered ? Infinity : 0,
-                    }}
-                  >
-                    {timeLeft}s
-                  </motion.span>
-                </div>
-                <div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
-                  <motion.div
-                    className={`h-full rounded-full ${
-                      timeLeft <= 10 ? 'bg-red-500' : 'bg-accent'
-                    }`}
-                    initial={{ width: '100%' }}
-                    animate={{ width: `${(timeLeft / 30) * 100}%` }}
-                    transition={{ duration: 0.3, ease: 'linear' }}
-                  />
-                </div>
-              </motion.div>
-
-              {/* Question */}
-              <motion.div
-                className="bg-card backdrop-blur-md border-2 border-border rounded-3xl p-6 mb-6 card-shadow"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                key={currentQuestionIndex}
-              >
-                <h3 className="font-playfair text-2xl font-600 text-primary mb-6">
-                  {questions[currentQuestionIndex]?.question_text}
-                </h3>
-
-                <div className="space-y-3">
-                  {[
-                    { key: 'A', text: questions[currentQuestionIndex]?.option_a },
-                    { key: 'B', text: questions[currentQuestionIndex]?.option_b },
-                    { key: 'C', text: questions[currentQuestionIndex]?.option_c },
-                    { key: 'D', text: questions[currentQuestionIndex]?.option_d },
-                  ].map(({ key, text }) => {
-                    const isSelected = selectedAnswer === key
-                    const isCorrect = key === questions[currentQuestionIndex]?.correct_answer
-                    const showCorrect = answered && isCorrect
-                    const showIncorrect =
-                      answered && isSelected && !isCorrect
 
                     return (
-                      <motion.button
-                        key={key}
-                        onClick={() => handleAnswer(key)}
-                        disabled={answered}
-                        className={`w-full p-4 text-left rounded-2xl font-lora transition-all ${
-                          showCorrect
-                            ? 'bg-green-500 text-white border-2 border-green-600'
-                            : showIncorrect
-                            ? 'bg-red-500 text-white border-2 border-red-600'
-                            : isSelected
-                            ? 'bg-accent text-accent-foreground border-2 border-accent'
-                            : 'bg-background hover:bg-muted/30 border-2 border-border'
-                        }`}
-                        whileHover={!answered ? { scale: 1.02 } : {}}
-                        whileTap={!answered ? { scale: 0.98 } : {}}
+                      <button
+                        key={index}
+                        style={style}
+                        onClick={() => handleSelectAnswer(index)}
+                        disabled={showFeedback}
                       >
-                        <span className="font-600">{key}.</span> {text}
-                      </motion.button>
-                    )
+                        {option}
+                      </button>
+                    );
                   })}
                 </div>
-              </motion.div>
 
-              {/* Next Button */}
-              {answered && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <Button
-                    onClick={handleNextQuestion}
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-playfair text-lg py-6 shadow-lg"
-                  >
-                    {currentQuestionIndex < questions.length - 1
-                      ? 'Next Question →'
-                      : 'See Results! 🏆'}
-                  </Button>
-                </motion.div>
-              )}
-            </motion.div>
-          )}
-
-          {/* Results Stage */}
-          {stage === 'results' && (
-            <motion.div
-              key="results"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              className="bg-card backdrop-blur-md border-2 border-border rounded-3xl p-8 text-center card-shadow"
-            >
-              <div className="mb-6">
-                <div className="text-6xl mb-4 font-playfair font-700 text-primary">
-                  {score}/{questions.length}
+                <div style={{minHeight: '48px', fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '20px', fontStyle: 'italic', lineHeight: 1.5}}>
+                  {showFeedback && quizData[currentQuestion].feedback}
                 </div>
-                <h2 className="font-playfair text-3xl font-600 text-primary mb-2">
-                  You&apos;re in! 🎉
-                </h2>
-                <p className="text-lg text-foreground/70 font-lora">
-                  Congratulations! You scored {Math.round((score / questions.length) * 100)}%
-                </p>
-              </div>
 
-              <div className="bg-accent/20 rounded-2xl p-6 mb-6 border-2 border-accent/40">
-                <p className="font-playfair font-600 text-primary mb-2">
-                  Thanks for participating! 🙏
+                <button
+                  className="btn-gold"
+                  onClick={handleNextQuestion}
+                  disabled={selectedAnswer === null}
+                  style={{width: '100%', justifyContent: 'center'}}
+                >
+                  {currentQuestion < quizData.length - 1 ? 'Next Question →' : 'Finish Quiz →'}
+                </button>
+              </>
+            ) : (
+              <div style={{textAlign: 'center'}}>
+                <div style={{fontFamily: "'Cinzel Decorative', serif", fontSize: '4rem', color: 'var(--accent-gold-light)'}}>
+                  {score} / {quizData.length}
+                </div>
+                <div style={{fontSize: '0.8rem', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '20px'}}>
+                  Your Score
+                </div>
+                <p style={{color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '20px'}}>
+                  Great job completing the quiz!
                 </p>
-                <p className="text-foreground/70 font-lora text-sm">
-                  Share your feedback to help us improve the ceremony.
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-4">
-                <Link href="/feedback" className="w-full">
-                  <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground rounded-2xl font-playfair text-lg py-6 shadow-lg">
-                    Share Feedback
-                  </Button>
-                </Link>
-                <Link href="/leaderboard" className="w-full">
-                  <Button
-                    variant="outline"
-                    className="w-full border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-2xl font-playfair text-lg py-6"
+                
+                <div style={{display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap', margin: '24px 0 0'}}>
+                  <input
+                    type="text"
+                    value={playerName}
+                    onChange={(e) => setPlayerName(e.target.value)}
+                    placeholder="Enter your name"
+                    className="form-input"
+                    style={{flex: 1, minWidth: '140px', borderRadius: '50px', padding: '12px 20px'}}
+                  />
+                  <button
+                    className="btn-gold"
+                    onClick={handleSubmitScore}
+                    disabled={submitting}
                   >
-                    View Leaderboard
-                  </Button>
-                </Link>
-                <Link href="/" className="w-full">
-                  <Button
-                    variant="ghost"
-                    className="w-full text-primary hover:bg-card rounded-2xl font-playfair text-lg py-6"
-                  >
-                    Back to Home
-                  </Button>
-                </Link>
+                    {submitting ? 'Submitting...' : 'Submit to Leaderboard'}
+                  </button>
+                </div>
+                
+                <div style={{marginTop: '20px'}}>
+                  <Link href="/leaderboard" className="btn-gold" style={{width: '100%', justifyContent: 'center'}}>
+                    View Leaderboard →
+                  </Link>
+                </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            )}
+          </div>
+        </div>
       </div>
-    </main>
-  )
+
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .quiz-opt {
+            grid-column: 1 / -1 !important;
+          }
+        }
+      `}</style>
+    </>
+  );
 }

@@ -1,219 +1,128 @@
-'use client'
+'use client';
 
-import { motion } from 'framer-motion'
-import { Button } from '@/components/ui/button'
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
-
-interface Score {
-  id: string
-  participant_name: string
-  score: number
-  total_questions: number
-  percentage: number
-  completed_at: string
-}
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { supabase, QuizScore } from '@/lib/supabase';
 
 export default function LeaderboardPage() {
-  const [scores, setScores] = useState<Score[]>([])
-  const [loading, setLoading] = useState(true)
+  const [scores, setScores] = useState<QuizScore[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchScores = async () => {
-      try {
-        const supabase = createClient()
-        const { data, error } = await supabase
-          .from('scores')
-          .select('*')
-          .order('score', { ascending: false })
-          .limit(50)
+    loadLeaderboard();
+  }, []);
 
-        if (error) throw error
-        setScores(data || [])
-      } catch (error) {
-        console.error('[v0] Error fetching leaderboard:', error)
-      } finally {
-        setLoading(false)
-      }
+  const loadLeaderboard = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('quiz_scores')
+        .select('*')
+        .order('score', { ascending: false })
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+
+      setScores(data || []);
+    } catch (error) {
+      console.error('Error loading leaderboard:', error);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    fetchScores()
+  const getMedalEmoji = (index: number) => {
+    if (index === 0) return '🥇';
+    if (index === 1) return '🥈';
+    if (index === 2) return '🥉';
+    return '';
+  };
 
-    // Auto-refresh every 10 seconds
-    const interval = setInterval(fetchScores, 10000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.05,
-        delayChildren: 0.2,
-      },
-    },
-  }
-
-  const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.3 },
-    },
-  }
+  const getRankClass = (index: number) => {
+    if (index === 0) return 'gold';
+    if (index === 1) return 'silver';
+    if (index === 2) return 'bronze';
+    return '';
+  };
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-5 py-8">
-        {/* Header */}
-        <motion.header
-          className="mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <Link href="/">
-            <Button
-              variant="ghost"
-              className="text-primary hover:bg-card mb-4 rounded-xl"
-            >
-              ← Back
-            </Button>
-          </Link>
-          <h1 className="font-playfair text-4xl md:text-5xl font-700 text-primary mb-2">
-            Leaderboard
-          </h1>
-          <p className="text-foreground/70 font-lora text-lg">
-            Top performers in the challenge
-          </p>
-        </motion.header>
+    <>
+      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+      <link rel="stylesheet" href="/assets/styles.css" />
 
-        {loading ? (
-          <div className="text-center py-12">
-            <div className="w-12 h-12 border-4 border-accent border-t-primary rounded-full animate-spin mx-auto mb-4" />
-            <p className="text-foreground font-lora">Loading leaderboard...</p>
-          </div>
-        ) : scores.length === 0 ? (
-          <motion.div
-            className="bg-card backdrop-blur-md border-2 border-border rounded-3xl p-8 text-center card-shadow"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <p className="text-foreground/70 font-lora text-lg mb-4">
-              No scores yet. Be the first to take the quiz! 🎯
+      <div className="bg-canvas"></div>
+
+      <div style={{position: 'relative', zIndex: 1, maxWidth: '700px', width: '100%', margin: '0 auto', padding: '40px 20px', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <div style={{width: '100%'}}>
+          <Link href="/" style={{display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'var(--accent-gold)', textDecoration: 'none', fontSize: '0.85rem', marginBottom: '20px', transition: 'all 0.3s'}}>
+            ← Back to Home
+          </Link>
+          
+          <div className="card">
+            <div style={{fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--accent-teal-light)', opacity: 0.8}}>Quiz Champions</div>
+            <div style={{fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 600, color: 'var(--accent-gold-light)', marginBottom: '10px'}}>Full Leaderboard</div>
+            <p style={{color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '12px', lineHeight: 1.7}}>
+              See all quiz participants and their scores!
             </p>
-            <Link href="/quiz">
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-playfair shadow-lg">
-                Take the Quiz
-              </Button>
-            </Link>
-          </motion.div>
-        ) : (
-          <motion.div
-            className="space-y-3"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {scores.map((score, index) => {
-              const isTopThree = index < 3
-              const medals = ['🥇', '🥈', '🥉']
+            <div className="gold-line"></div>
 
-              return (
-                <motion.div
-                  key={score.id}
-                  variants={itemVariants}
-                  className={`relative bg-card backdrop-blur-md border-2 rounded-3xl p-5 transition-all card-shadow ${
-                    isTopThree
-                      ? 'border-accent/60'
-                      : 'border-border hover:border-accent/40'
-                  }`}
-                  whileHover={{ scale: 1.01, x: 5 }}
-                >
-                  {/* Shimmer effect for rank 1 */}
-                  {index === 0 && (
+            <div>
+              {loading ? (
+                <div style={{textAlign: 'center', color: 'var(--text-muted)', fontStyle: 'italic', padding: '32px 0', fontSize: '0.9rem'}}>
+                  Loading leaderboard...
+                </div>
+              ) : scores.length === 0 ? (
+                <div style={{textAlign: 'center', color: 'var(--text-muted)', fontStyle: 'italic', padding: '32px 0', fontSize: '0.9rem'}}>
+                  No scores yet. Be the first to take the quiz!
+                </div>
+              ) : (
+                scores.map((entry, index) => (
+                  <div
+                    key={entry.id}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '16px',
+                      padding: '14px 20px',
+                      borderBottom: '1px solid rgba(201,162,39,0.1)',
+                      transition: 'background 0.2s',
+                      borderRadius: 'var(--radius-sm)'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(201,162,39,0.06)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
+                    {getMedalEmoji(index) && (
+                      <div style={{fontSize: '1.3rem'}}>{getMedalEmoji(index)}</div>
+                    )}
                     <div
-                      className="absolute inset-0 rounded-3xl opacity-20"
                       style={{
-                        background:
-                          'linear-gradient(45deg, transparent 30%, rgba(207,181,59,0.4) 50%, transparent 70%)',
-                        backgroundSize: '200% 200%',
-                        animation: 'shimmer 2s infinite',
+                        width: '32px',
+                        textAlign: 'center',
+                        fontFamily: "'Cormorant Garamond', serif",
+                        fontSize: '1.3rem',
+                        fontWeight: 700,
+                        color: getRankClass(index) === 'gold' ? '#ffd700' : getRankClass(index) === 'silver' ? '#c0c0c0' : getRankClass(index) === 'bronze' ? '#cd7f32' : 'var(--accent-gold)'
                       }}
-                    />
-                  )}
-
-                  <div className="relative flex items-center justify-between">
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className="text-3xl">
-                        {isTopThree ? medals[index] : `#${index + 1}`}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-playfair font-600 text-primary text-lg">
-                          {score.participant_name}
-                        </h3>
-                        <p className="text-sm text-foreground/60 font-lora">
-                          {new Date(score.completed_at).toLocaleDateString()}
-                        </p>
-                      </div>
+                    >
+                      {index + 1}
                     </div>
-
-                    <div className="text-right">
-                      <div className="font-playfair font-700 text-2xl text-accent">
-                        {score.score}/{score.total_questions}
-                      </div>
-                      <div className="text-sm font-lora text-foreground/70">
-                        {Math.round(score.percentage)}%
-                      </div>
+                    <div style={{flex: 1, fontWeight: 500, fontSize: '0.92rem'}}>
+                      {entry.player_name}
+                    </div>
+                    <div style={{fontFamily: "'Cormorant Garamond', serif", fontSize: '1.2rem', fontWeight: 600, color: 'var(--accent-gold-light)'}}>
+                      {entry.score}/{entry.total_questions}
                     </div>
                   </div>
+                ))
+              )}
+            </div>
 
-                  {/* Score bar */}
-                  <div className="mt-3 w-full bg-muted/30 rounded-full h-2 overflow-hidden">
-                    <motion.div
-                      className="gradient-maroon-gold h-full"
-                      initial={{ width: 0 }}
-                      animate={{
-                        width: `${score.percentage}%`,
-                      }}
-                      transition={{ delay: 0.3 + index * 0.05, duration: 0.6 }}
-                    />
-                  </div>
-                </motion.div>
-              )
-            })}
-          </motion.div>
-        )}
-
-        {/* CTA */}
-        <motion.div
-          className="mt-12 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-        >
-          <Link href="/quiz">
-            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl font-playfair text-lg px-8 py-6 shadow-lg">
-              Take the Quiz
-            </Button>
-          </Link>
-        </motion.div>
+            <div className="gold-line"></div>
+            <Link href="/quiz" className="btn-gold" style={{width: '100%', justifyContent: 'center'}}>
+              Take the Quiz 🧠
+            </Link>
+          </div>
+        </div>
       </div>
-
-      {/* Shimmer keyframe animation */}
-      <style jsx>{`
-        @keyframes shimmer {
-          0% {
-            backgroundPosition: -1000px 0;
-          }
-          100% {
-            backgroundPosition: 1000px 0;
-          }
-        }
-      `}</style>
-    </main>
-  )
+    </>
+  );
 }

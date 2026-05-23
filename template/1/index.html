@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome 10th Batch — By 9th Batch</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --royal: #1a0e3d;
+    --deep: #120934;
+    --mid: #241559;
+    --soft: #2d1a70;
+    --accent-gold: #c9a227;
+    --accent-gold-light: #f0c84a;
+    --accent-teal: #00b4d8;
+    --accent-teal-light: #48e0ff;
+    --feather-green: #1b6b3a;
+    --card-bg: rgba(30,12,80,0.72);
+    --card-border: rgba(201,162,39,0.3);
+    --text-primary: #f5f0e8;
+    --text-muted: rgba(245,240,232,0.6);
+    --radius: 22px;
+    --radius-sm: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { 
+    scroll-behavior: smooth;
+    scroll-snap-type: y proximity;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scroll-padding-top: 0;
+  }
+
+  /* ─── ULTRA SMOOTH SCROLLING ─── */
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--deep);
+    color: var(--text-primary);
+    overflow-x: hidden;
+  }
+
+  /* ─── SCROLL SNAP SECTIONS ─── */
+  .section {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    position: relative;
+    overflow: hidden;
+    will-change: transform;
+  }
+
+  /* ─── SMOOTH SCROLL SNAP ─── */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-snap-type: y mandatory;
+    }
+  }
+
+  /* ─── SMOOTH SCROLL POLYFILL ─── */
+  @supports (scroll-behavior: smooth) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  /* ─── ANIMATED BG PATTERN ─── */
+  .bg-canvas {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(44,20,120,0.9) 0%, var(--deep) 70%);
+    overflow: hidden;
+  }
+  .bg-canvas::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle 1.5px at 20% 30%, rgba(201,162,39,0.35) 0%, transparent 100%),
+      radial-gradient(circle 1px at 70% 60%, rgba(0,180,216,0.25) 0%, transparent 100%),
+      radial-gradient(circle 2px at 45% 80%, rgba(201,162,39,0.2) 0%, transparent 100%),
+      radial-gradient(circle 1px at 85% 15%, rgba(0,180,216,0.3) 0%, transparent 100%);
+    background-size: 400px 400px;
+    animation: twinkle 8s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+
+  .feather-bg {
+    position: fixed; top: 0; right: -80px;
+    width: 420px; opacity: 0.08; z-index: 0;
+    animation: featherSway 12s ease-in-out infinite alternate;
+    pointer-events: none;
+  }
+  @keyframes featherSway {
+    0% { transform: rotate(-5deg) translateY(0); }
+    100% { transform: rotate(5deg) translateY(-20px); }
+  }
+
+  /* ─── MAIN WRAPPER ─── */
+  .page { position: relative; z-index: 1; }
+
+  /* ─── CARD ─── */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    padding: 36px 40px;
+    max-width: 800px;
+    width: 100%;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+  }
+
+  /* ─── GOLD DIVIDER ─── */
+  .gold-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    margin: 20px 0;
+  }
+  .gold-dot-line {
+    display: flex; align-items: center; gap: 10px;
+    margin: 16px 0;
+  }
+  .gold-dot-line::before, .gold-dot-line::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold));
+  }
+  .gold-dot-line::after {
+    background: linear-gradient(90deg, var(--accent-gold), transparent);
+  }
+  .gold-dot-line span { color: var(--accent-gold); font-size: 18px; }
+
+  /* ─── TYPOGRAPHY ─── */
+  .display-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2.4rem, 7vw, 4.8rem);
+    font-weight: 700;
+    color: var(--accent-gold-light);
+    line-height: 1.1;
+    text-shadow: 0 0 40px rgba(201,162,39,0.4);
+    letter-spacing: 0.04em;
+  }
+  .italic-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(1.8rem, 5vw, 3.2rem);
+    color: var(--accent-gold);
+    font-weight: 400;
+  }
+  .section-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent-teal-light);
+    opacity: 0.8;
+  }
+  .section-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    font-weight: 600;
+    color: var(--accent-gold-light);
+  }
+
+  /* ─── BUTTONS ─── */
+  .btn-gold {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--accent-gold), #a07d18);
+    color: var(--royal);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600; font-size: 0.82rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    border: none; border-radius: 50px;
+    cursor: pointer; 
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    will-change: transform;
+  }
+  .btn-gold:hover { 
+    transform: translateY(-3px) scale(1.02); 
+    box-shadow: 0 12px 35px rgba(201,162,39,0.5); 
+    filter: brightness(1.15); 
+  }
+  .btn-gold:active {
+    transform: translateY(-1px) scale(0.98);
+    transition: all 0.1s ease;
+  }
+
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 30px;
+    background: transparent;
+    color: var(--text-primary);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500; font-size: 0.82rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    border: 1px solid rgba(245,240,232,0.35);
+    border-radius: 50px;
+    cursor: pointer; 
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    will-change: transform;
+  }
+  .btn-outline:hover { 
+    border-color: var(--accent-gold); 
+    color: var(--accent-gold); 
+    transform: translateY(-3px) scale(1.02); 
+    box-shadow: 0 8px 25px rgba(201,162,39,0.3);
+    background: rgba(201,162,39,0.05);
+  }
+  .btn-outline:active {
+    transform: translateY(-1px) scale(0.98);
+    transition: all 0.1s ease;
+  }
+
+  /* ─── NAV DOTS ─── */
+  #nav-dots {
+    position: fixed; right: 20px; top: 50%;
+    transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 10px;
+    z-index: 100;
+  }
+  .nav-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(201,162,39,0.3);
+    border: 1px solid rgba(201,162,39,0.5);
+    cursor: pointer; 
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform, background;
+  }
+  .nav-dot.active { 
+    background: var(--accent-gold); 
+    transform: scale(1.5); 
+    box-shadow: 0 0 15px rgba(201,162,39,0.6);
+  }
+  .nav-dot:hover { 
+    background: rgba(201,162,39,0.7); 
+    transform: scale(1.3);
+    box-shadow: 0 0 10px rgba(201,162,39,0.4);
+  }
+
+  /* ─── POPUP ANIMATION ─── */
+  .popup-animate {
+    opacity: 0;
+    transform: scale(0.9) translateY(40px);
+    transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform, opacity;
+  }
+  .popup-animate.visible {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+
+  /* ─── HERO SECTION ─── */
+  .batch-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    background: rgba(201,162,39,0.1);
+    border: 1px solid rgba(201,162,39,0.35);
+    border-radius: 50px;
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    margin-bottom: 20px;
+  }
+  .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 28px; justify-content: center; }
+  .nav-icons { display: flex; gap: 10px; margin-top: 28px; justify-content: center; flex-wrap: wrap; }
+  .icon-btn {
+    width: 52px; height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(201,162,39,0.12);
+    border: 1px solid rgba(201,162,39,0.3);
+    border-radius: var(--radius-sm);
+    color: var(--accent-gold-light);
+    font-size: 1.5rem;
+    cursor: pointer; 
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    will-change: transform;
+  }
+  .icon-btn:hover { 
+    background: rgba(201,162,39,0.25); 
+    transform: scale(1.1) rotate(5deg); 
+    box-shadow: 0 8px 20px rgba(201,162,39,0.3);
+  }
+  .icon-btn:active {
+    transform: scale(0.95);
+    transition: all 0.1s ease;
+  }
+
+  /* ─── FAQ SECTION ─── */
+  .faq-item {
+    border: 1px solid rgba(201,162,39,0.2);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: rgba(20,8,60,0.4);
+    will-change: transform;
+  }
+  .faq-item:hover {
+    border-color: var(--accent-gold);
+    background: rgba(201,162,39,0.08);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 10px 30px rgba(201,162,39,0.2);
+  }
+  .faq-q {
+    padding: 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    cursor: pointer;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    gap: 12px;
+    transition: all 0.3s ease;
+  }
+  .faq-q:hover { color: var(--accent-gold-light); }
+  .faq-q .faq-icon { 
+    color: var(--accent-gold); 
+    font-size: 1.4rem; 
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+    flex-shrink: 0; 
+  }
+  .faq-item:hover .faq-icon {
+    transform: translateX(5px);
+  }
+
+  /* ─── FAQ POPUP MODAL ─── */
+  .faq-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(8,4,25,0.92);
+    backdrop-filter: blur(12px);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .faq-modal.show {
+    display: flex;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; backdrop-filter: blur(0px); }
+    to { opacity: 1; backdrop-filter: blur(12px); }
+  }
+  .faq-modal-content {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(18px);
+    padding: 40px;
+    max-width: 600px;
+    width: 100%;
+    position: relative;
+    animation: popupSlide 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-height: 80vh;
+    overflow-y: auto;
+    will-change: transform, opacity;
+  }
+  @keyframes popupSlide {
+    from { 
+      opacity: 0;
+      transform: scale(0.85) translateY(50px) rotateX(10deg);
+    }
+    to { 
+      opacity: 1;
+      transform: scale(1) translateY(0) rotateX(0deg);
+    }
+  }
+  .faq-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 2rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    will-change: transform;
+  }
+  .faq-modal-close:hover {
+    color: var(--accent-gold);
+    background: rgba(201,162,39,0.15);
+    transform: rotate(90deg) scale(1.1);
+  }
+  .faq-modal-close:active {
+    transform: rotate(90deg) scale(0.9);
+    transition: all 0.1s ease;
+  }
+  .faq-modal-question {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--accent-gold-light);
+    margin-bottom: 20px;
+    padding-right: 40px;
+    line-height: 1.3;
+  }
+  .faq-modal-answer {
+    color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+  .faq-modal-content::-webkit-scrollbar { width: 6px; }
+  .faq-modal-content::-webkit-scrollbar-track { background: rgba(201,162,39,0.1); border-radius: 10px; }
+  .faq-modal-content::-webkit-scrollbar-thumb { background: rgba(201,162,39,0.4); border-radius: 10px; }
+  .faq-modal-content::-webkit-scrollbar-thumb:hover { background: rgba(201,162,39,0.6); }
+
+  /* ─── LEADERBOARD SECTION ─── */
+  .lb-row {
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(201,162,39,0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: var(--radius-sm);
+    will-change: transform;
+  }
+  .lb-row:hover { 
+    background: rgba(201,162,39,0.1); 
+    transform: translateX(8px) scale(1.02);
+    box-shadow: 0 4px 15px rgba(201,162,39,0.15);
+  }
+  .lb-rank { width: 32px; text-align: center; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: var(--accent-gold); }
+  .lb-rank.gold { color: #ffd700; }
+  .lb-rank.silver { color: #c0c0c0; }
+  .lb-rank.bronze { color: #cd7f32; }
+  .lb-name { flex: 1; font-weight: 500; font-size: 0.92rem; }
+  .lb-score { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 600; color: var(--accent-gold-light); }
+  .lb-medal { font-size: 1.3rem; }
+
+  /* ─── SCROLL INDICATOR ─── */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 30px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    opacity: 0.6;
+    animation: bobble 2.5s ease-in-out infinite;
+  }
+  @keyframes bobble {
+    0%, 100% { transform: translateY(0); opacity: 0.6; }
+    50% { transform: translateY(8px); opacity: 0.9; }
+  }
+  .scroll-indicator span { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent-gold); }
+  .scroll-arrow { width: 24px; height: 24px; border-right: 2px solid var(--accent-gold); border-bottom: 2px solid var(--accent-gold); transform: rotate(45deg); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .section { padding: 40px 20px; }
+    .card { padding: 24px 20px; }
+    #nav-dots { right: 10px; }
+    .display-title { font-size: clamp(2rem, 10vw, 3rem); }
+    .hero-actions { flex-direction: column; width: 100%; }
+    .btn-gold, .btn-outline { width: 100%; justify-content: center; }
+    #feedback .card > div[style*="grid-template-columns"] {
+      grid-template-columns: 1fr !important;
+    }
+    /* FAQ buttons stack on mobile */
+    #faq .card > div[style*="display:flex"] {
+      flex-direction: column !important;
+    }
+    #faq .card > div[style*="display:flex"] a {
+      flex: 1 !important;
+      width: 100% !important;
+      min-width: 100% !important;
+    }
+  }
+
+  /* ─── CONTENT WRAPPER ─── */
+  .content-wrapper {
+    max-width: 700px;
+    width: 100%;
+  }
+
+  /* ─── FAQ DESKTOP LAYOUT ─── */
+  @media (min-width: 769px) {
+    #faq .card {
+      max-width: 900px;
+    }
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    .faq-item.desktop-hidden {
+      display: none;
+    }
+  }
+
+  /* ─── FAQ MOBILE LAYOUT ─── */
+  @media (max-width: 768px) {
+    .faq-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .faq-item.mobile-hidden {
+      display: none;
+    }
+    .content-wrapper {
+      max-height: none;
+      overflow: visible;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-canvas">
+  <svg class="feather-bg" viewBox="0 0 200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="100" cy="300" rx="12" ry="280" fill="url(#fg1)" opacity="0.7"/>
+    <ellipse cx="100" cy="120" rx="60" ry="100" fill="url(#fg2)" opacity="0.6"/>
+    <circle cx="100" cy="100" r="22" fill="#1b6b3a" opacity="0.8"/>
+    <circle cx="100" cy="100" r="14" fill="#00b4d8" opacity="0.9"/>
+    <circle cx="100" cy="100" r="7" fill="#241559" opacity="1"/>
+    <defs>
+      <radialGradient id="fg1" cx="50%" cy="50%"><stop offset="0%" stop-color="#1b6b3a"/><stop offset="100%" stop-color="#241559"/></radialGradient>
+      <radialGradient id="fg2" cx="50%" cy="50%"><stop offset="0%" stop-color="#00b4d8"/><stop offset="100%" stop-color="#1b6b3a"/></radialGradient>
+    </defs>
+  </svg>
+</div>
+
+<!-- Nav Dots -->
+<div id="nav-dots">
+  <div class="nav-dot active" data-section="0" title="Home"></div>
+  <div class="nav-dot" data-section="1" title="FAQ"></div>
+  <div class="nav-dot" data-section="2" title="Leaderboard"></div>
+  <div class="nav-dot" data-section="3" title="Feedback"></div>
+</div>
+
+<div class="page">
+
+  <!-- ══════════════════════════════════════════
+       SECTION 1 — HERO WELCOME
+  ══════════════════════════════════════════ -->
+  <section class="section" id="hero" data-idx="0">
+    <div class="popup-animate" style="text-align: center;">
+      <div class="batch-badge">🦚 9th Batch Presents</div>
+      <div class="display-title">WELCOME</div>
+      <div class="italic-title" style="margin:-6px 0 4px 4px">to the Family</div>
+      <div class="display-title" style="font-size:clamp(1.4rem,4vw,2.6rem);color:var(--accent-teal-light);margin-top:2px">10<sup style="font-size:0.55em">th</sup> Batch</div>
+
+      <div class="gold-dot-line" style="margin:20px 0"><span>✦</span></div>
+
+      <p style="color:var(--text-muted);font-size:0.88rem;line-height:1.8;max-width:500px;margin:0 auto">
+        You are not just joining a university. You are joining a legacy, a family, a story that continues with you.
+        We are beyond excited to have you here.
+      </p>
+
+      <div class="hero-actions">
+        <a href="quiz.html" class="btn-gold">Take the Quiz 🧠</a>
+        <a href="questions.html" class="btn-outline">Ask Questions ❓</a>
+      </div>
+
+      <div class="nav-icons">
+        <a href="quiz.html" class="icon-btn" title="Quiz">🧠</a>
+        <a href="questions.html" class="icon-btn" title="Ask Questions">❓</a>
+        <a href="leaderboard.html" class="icon-btn" title="Full Leaderboard">🏆</a>
+        <a href="feedback.html" class="icon-btn" title="Feedback">💌</a>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 2 — FAQ
+  ══════════════════════════════════════════ -->
+  <section class="section" id="faq" data-idx="1">
+    <div class="popup-animate" style="text-align:center;margin-bottom:30px">
+      <div class="section-label">Got Questions?</div>
+      <div class="gold-dot-line"><span>✦</span></div>
+      <div class="section-heading">Frequently Asked Questions</div>
+      <p style="color:var(--text-muted);font-size:0.88rem;margin-top:12px;line-height:1.7">Everything you need to know about your university journey.</p>
+    </div>
+
+    <div class="card popup-animate content-wrapper">
+      <div class="faq-grid">
+        <div class="faq-item" onclick="openFaqModal(0)">
+          <div class="faq-q">
+            <span>When does orientation week begin?</span>
+            <span class="faq-icon">→</span>
+          </div>
+        </div>
+        <div class="faq-item" onclick="openFaqModal(1)">
+          <div class="faq-q">
+            <span>How do I join clubs and societies?</span>
+            <span class="faq-icon">→</span>
+          </div>
+        </div>
+        <div class="faq-item desktop-hidden" onclick="openFaqModal(2)">
+          <div class="faq-q">
+            <span>Where do I find my class schedule?</span>
+            <span class="faq-icon">→</span>
+          </div>
+        </div>
+        <div class="faq-item desktop-hidden mobile-hidden" onclick="openFaqModal(3)">
+          <div class="faq-q">
+            <span>What facilities are available on campus?</span>
+            <span class="faq-icon">→</span>
+          </div>
+        </div>
+        <div class="faq-item desktop-hidden mobile-hidden" onclick="openFaqModal(4)">
+          <div class="faq-q">
+            <span>How can I contact seniors for guidance?</span>
+            <span class="faq-icon">→</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="gold-line"></div>
+      <div style="text-align:center;margin-top:20px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center">
+        <a href="questions.html" class="btn-outline" style="flex:1;min-width:200px">Ask Your Own Question →</a>
+        <a href="all-questions.html" class="btn-outline" style="flex:1;min-width:200px">View All Q&A 💬</a>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 3 — TOP 3 LEADERBOARD
+  ══════════════════════════════════════════ -->
+  <section class="section" id="leaderboard" data-idx="2">
+    <div class="popup-animate" style="text-align:center;margin-bottom:30px">
+      <div class="section-label">Quiz Champions</div>
+      <div class="gold-dot-line"><span>✦</span></div>
+      <div class="section-heading">Top 3 Leaderboard</div>
+      <p style="color:var(--text-muted);font-size:0.88rem;margin-top:12px;line-height:1.7">See who's leading the pack!</p>
+    </div>
+
+    <div class="card popup-animate" style="max-width:600px">
+      <div id="top3-list">
+        <div class="lb-row">
+          <div class="lb-medal">🥇</div>
+          <div class="lb-rank gold">1</div>
+          <div class="lb-name">Sarah Johnson</div>
+          <div class="lb-score">95</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-medal">🥈</div>
+          <div class="lb-rank silver">2</div>
+          <div class="lb-name">Michael Chen</div>
+          <div class="lb-score">92</div>
+        </div>
+        <div class="lb-row">
+          <div class="lb-medal">🥉</div>
+          <div class="lb-rank bronze">3</div>
+          <div class="lb-name">Emma Williams</div>
+          <div class="lb-score">88</div>
+        </div>
+      </div>
+
+      <div class="gold-line"></div>
+      <div style="text-align:center;margin-top:20px">
+        <a href="leaderboard.html" class="btn-gold">View Full Leaderboard →</a>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECTION 4 — FEEDBACK
+  ══════════════════════════════════════════ -->
+  <section class="section" id="feedback" data-idx="3">
+    <div class="popup-animate" style="text-align:center;margin-bottom:30px">
+      <div class="section-label">We Value Your Opinion</div>
+      <div class="gold-dot-line"><span>✦</span></div>
+      <div class="section-heading">Share Your Feedback</div>
+      <p style="color:var(--text-muted);font-size:0.88rem;margin-top:12px;line-height:1.7">Help us improve the welcome experience!</p>
+    </div>
+
+    <div class="card popup-animate" style="max-width:600px;text-align:center">
+      <div style="font-size:3rem;margin-bottom:20px">💌</div>
+      
+      <p style="color:var(--text-primary);font-size:1rem;line-height:1.8;margin-bottom:30px">
+        Your thoughts and suggestions matter to us. Share your experience and help us make the welcome program even better for future batches.
+      </p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:30px">
+        <div style="background:rgba(201,162,39,0.1);border:1px solid rgba(201,162,39,0.3);border-radius:var(--radius-sm);padding:20px">
+          <div style="font-size:2rem;margin-bottom:8px">⭐</div>
+          <div style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">Rate Experience</div>
+        </div>
+        <div style="background:rgba(0,180,216,0.1);border:1px solid rgba(0,180,216,0.3);border-radius:var(--radius-sm);padding:20px">
+          <div style="font-size:2rem;margin-bottom:8px">💭</div>
+          <div style="font-size:0.75rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">Share Thoughts</div>
+        </div>
+      </div>
+
+      <div class="gold-line"></div>
+      
+      <a href="feedback.html" class="btn-gold">Give Feedback →</a>
+    </div>
+  </section>
+
+</div>
+
+<!-- FAQ Modal Popup -->
+<div class="faq-modal" id="faq-modal">
+  <div class="faq-modal-content">
+    <button class="faq-modal-close" onclick="closeFaqModal()">×</button>
+    <div class="faq-modal-question" id="modal-question"></div>
+    <div class="gold-line"></div>
+    <div class="faq-modal-answer" id="modal-answer"></div>
+  </div>
+</div>
+
+<script>
+// FAQ Data
+const faqData = [
+  {
+    question: "When does orientation week begin?",
+    answer: "Orientation week typically kicks off in the first week of your semester. Your official schedule will be shared via email and the student portal. Make sure to attend every session — it's where lifelong connections begin! You'll get to meet your peers, explore the campus, and learn about all the resources available to you. The week includes campus tours, meet-and-greet sessions with faculty, club fairs, and fun icebreaker activities designed to help you settle in comfortably."
+  },
+  {
+    question: "How do I join clubs and societies?",
+    answer: "Clubs and societies hold an annual fair during orientation week. You can browse, sign up, and even audition on the spot! There's something for every interest — sports, arts, tech, debate, and more! Each club has a booth where you can meet current members, learn about their activities, and sign up on the spot. Don't be shy to try multiple clubs — it's a great way to discover new passions and make friends who share your interests."
+  },
+  {
+    question: "Where do I find my class schedule?",
+    answer: "Your class schedule is accessible on the official student portal. You'll receive login credentials in your welcome email. If you have any trouble accessing the portal, the student services desk is always ready to help. The portal also includes information about your professors, classroom locations, and any required textbooks or materials. Make sure to check it regularly for updates and announcements."
+  },
+  {
+    question: "What facilities are available on campus?",
+    answer: "Our campus features modern libraries with extensive collections and study spaces, state-of-the-art sports complexes including gyms and courts, multiple cafeterias offering diverse cuisine options, comfortable study lounges with high-speed internet, recreational areas for relaxation, computer labs with the latest technology, and dedicated spaces for group projects and collaborative work. All facilities are designed with your comfort and academic success in mind."
+  },
+  {
+    question: "How can I contact seniors for guidance?",
+    answer: "We have a comprehensive mentorship program where you'll be paired with experienced seniors from your department. You can also reach out through our official student groups on social media, attend peer mentoring sessions held weekly, or visit the student support center where senior volunteers are available to answer questions. Many departments also have dedicated WhatsApp or Discord groups where you can connect with seniors and get advice on courses, campus life, and career planning."
+  }
+];
+
+// Open FAQ Modal
+function openFaqModal(index) {
+  const modal = document.getElementById('faq-modal');
+  const question = document.getElementById('modal-question');
+  const answer = document.getElementById('modal-answer');
+  
+  question.textContent = faqData[index].question;
+  answer.textContent = faqData[index].answer;
+  
+  modal.classList.add('show');
+  document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+// Close FAQ Modal
+function closeFaqModal() {
+  const modal = document.getElementById('faq-modal');
+  modal.classList.remove('show');
+  document.body.style.overflow = ''; // Restore scrolling
+}
+
+// Close modal when clicking outside
+document.getElementById('faq-modal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeFaqModal();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeFaqModal();
+  }
+});
+
+// Scroll Animation Observer
+const observerOptions = {
+  threshold: 0.3,
+  rootMargin: '0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, observerOptions);
+
+document.querySelectorAll('.popup-animate').forEach(el => observer.observe(el));
+
+// Nav Dots Active State
+const sections = document.querySelectorAll('.section');
+const navDots = document.querySelectorAll('.nav-dot');
+
+const sectionObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = entry.target.dataset.idx;
+      navDots.forEach(dot => dot.classList.remove('active'));
+      navDots[idx].classList.add('active');
+    }
+  });
+}, { threshold: 0.5 });
+
+sections.forEach(section => sectionObserver.observe(section));
+
+// Nav Dots Click
+navDots.forEach((dot, index) => {
+  dot.addEventListener('click', () => {
+    sections[index].scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+// Enhanced Scroll Snap - Ultra smooth lock sections on partial scroll
+let isScrolling;
+let currentSection = 0;
+let isSnapping = false;
+
+// Smooth scroll with easing
+function smoothScrollTo(element) {
+  if (isSnapping) return;
+  isSnapping = true;
+  
+  element.scrollIntoView({ 
+    behavior: 'smooth', 
+    block: 'start',
+    inline: 'nearest'
+  });
+  
+  setTimeout(() => {
+    isSnapping = false;
+  }, 800);
+}
+
+window.addEventListener('scroll', () => {
+  if (isSnapping) return;
+  
+  // Clear timeout if user is still scrolling
+  clearTimeout(isScrolling);
+  
+  // Set a timeout to run after scrolling ends
+  isScrolling = setTimeout(() => {
+    const scrollPosition = window.scrollY;
+    const windowHeight = window.innerHeight;
+    
+    // Calculate which section we're closest to
+    let closestSection = 0;
+    let minDistance = Infinity;
+    
+    sections.forEach((section, index) => {
+      const sectionTop = section.offsetTop;
+      const distance = Math.abs(scrollPosition - sectionTop);
+      
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestSection = index;
+      }
+    });
+    
+    // If we're more than 15% away from the section start, snap to it
+    const threshold = windowHeight * 0.15;
+    if (minDistance > threshold || minDistance > 30) {
+      smoothScrollTo(sections[closestSection]);
+      currentSection = closestSection;
+    }
+  }, 100); // Reduced from 150ms for faster response
+}, { passive: true });
+
+// Enhanced touch/swipe support with momentum
+let touchStartY = 0;
+let touchStartTime = 0;
+
+document.addEventListener('touchstart', (e) => {
+  touchStartY = e.touches[0].clientY;
+  touchStartTime = Date.now();
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+  if (isSnapping) return;
+  
+  const touchEndY = e.changedTouches[0].clientY;
+  const touchEndTime = Date.now();
+  const diff = touchStartY - touchEndY;
+  const timeDiff = touchEndTime - touchStartTime;
+  const velocity = Math.abs(diff) / timeDiff;
+  
+  // If swipe is significant enough or fast enough, snap to next/prev section
+  if (Math.abs(diff) > 30 || velocity > 0.5) {
+    if (diff > 0 && currentSection < sections.length - 1) {
+      // Swipe up - go to next section
+      currentSection++;
+      smoothScrollTo(sections[currentSection]);
+    } else if (diff < 0 && currentSection > 0) {
+      // Swipe down - go to previous section
+      currentSection--;
+      smoothScrollTo(sections[currentSection]);
+    }
+  }
+}, { passive: true });
+
+// Mousewheel smooth scrolling
+let wheelTimeout;
+let wheelDelta = 0;
+
+window.addEventListener('wheel', (e) => {
+  if (isSnapping) {
+    e.preventDefault();
+    return;
+  }
+  
+  wheelDelta += e.deltaY;
+  
+  clearTimeout(wheelTimeout);
+  wheelTimeout = setTimeout(() => {
+    if (Math.abs(wheelDelta) > 100) {
+      if (wheelDelta > 0 && currentSection < sections.length - 1) {
+        currentSection++;
+        smoothScrollTo(sections[currentSection]);
+      } else if (wheelDelta < 0 && currentSection > 0) {
+        currentSection--;
+        smoothScrollTo(sections[currentSection]);
+      }
+    }
+    wheelDelta = 0;
+  }, 50);
+}, { passive: false });
+</script>
+
+</body>
+</html>

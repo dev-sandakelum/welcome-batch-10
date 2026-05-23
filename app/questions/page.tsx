@@ -3,24 +3,21 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
-export default function FeedbackPage() {
+export default function QuestionsPage() {
+  const router = useRouter();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [rating, setRating] = useState(0);
-  const [feedbackText, setFeedbackText] = useState('');
+  const [question, setQuestion] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
-  const handleSetRating = (newRating: number) => {
-    setRating(newRating);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name.trim() || !feedbackText.trim() || rating === 0) {
-      alert('Please fill in all required fields and rate your experience!');
+    if (!name.trim() || !question.trim()) {
+      alert('Please fill in all required fields!');
       return;
     }
 
@@ -28,13 +25,13 @@ export default function FeedbackPage() {
 
     try {
       const { error } = await supabase
-        .from('feedback')
+        .from('questions')
         .insert([
           {
             name: name.trim(),
             email: email.trim() || null,
-            rating: rating,
-            feedback_text: feedbackText.trim()
+            question: question.trim(),
+            answered: false
           }
         ]);
 
@@ -42,8 +39,8 @@ export default function FeedbackPage() {
 
       setSubmitted(true);
     } catch (error) {
-      console.error('Error submitting feedback:', error);
-      alert('Failed to submit feedback. Please try again.');
+      console.error('Error submitting question:', error);
+      alert('Failed to submit question. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -63,10 +60,10 @@ export default function FeedbackPage() {
           </Link>
           
           <div className="card">
-            <div style={{fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--accent-teal-light)', opacity: 0.8}}>We Value Your Opinion</div>
-            <div style={{fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 600, color: 'var(--accent-gold-light)', marginBottom: '10px'}}>Share Your Feedback</div>
+            <div style={{fontSize: '0.65rem', fontWeight: 600, letterSpacing: '0.28em', textTransform: 'uppercase', color: 'var(--accent-teal-light)', opacity: 0.8}}>Need Help?</div>
+            <div style={{fontFamily: "'Cormorant Garamond', serif", fontSize: 'clamp(1.8rem, 4vw, 2.6rem)', fontWeight: 600, color: 'var(--accent-gold-light)', marginBottom: '10px'}}>Ask Your Question</div>
             <p style={{color: 'var(--text-muted)', fontSize: '0.88rem', marginTop: '12px', lineHeight: 1.7}}>
-              Help us improve! Share your thoughts about the welcome experience.
+              Have a question that's not in our FAQ? Ask away! Our seniors and admin team will get back to you soon.
             </p>
             <div className="gold-line"></div>
 
@@ -96,50 +93,26 @@ export default function FeedbackPage() {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Rate Your Experience</label>
-                  <div style={{display: 'flex', gap: '8px', justifyContent: 'center', margin: '10px 0'}}>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <span
-                        key={star}
-                        onClick={() => handleSetRating(star)}
-                        style={{
-                          fontSize: '2rem',
-                          cursor: 'pointer',
-                          color: star <= rating ? 'var(--accent-gold-light)' : 'rgba(201,162,39,0.25)',
-                          transition: 'color 0.2s, transform 0.2s',
-                          userSelect: 'none',
-                          transform: star <= rating ? 'scale(1.15)' : 'scale(1)'
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.15)'}
-                        onMouseLeave={(e) => e.currentTarget.style.transform = star <= rating ? 'scale(1.15)' : 'scale(1)'}
-                      >
-                        ★
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label className="form-label">Your Feedback</label>
+                  <label className="form-label">Your Question</label>
                   <textarea
                     className="form-input"
-                    value={feedbackText}
-                    onChange={(e) => setFeedbackText(e.target.value)}
-                    placeholder="Tell us what you think..."
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    placeholder="Type your question here..."
                     required
                   />
                 </div>
 
                 <button type="submit" className="btn-gold" style={{width: '100%', justifyContent: 'center'}} disabled={submitting}>
-                  {submitting ? 'Submitting...' : 'Submit Feedback 💌'}
+                  {submitting ? 'Submitting...' : 'Submit Question ✉️'}
                 </button>
               </form>
             ) : (
               <div style={{textAlign: 'center', padding: '24px'}}>
                 <div style={{fontSize: '3rem', marginBottom: '12px'}}>✓</div>
-                <div style={{fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', fontWeight: 600, color: 'var(--accent-gold-light)', marginBottom: '10px'}}>Thank You!</div>
+                <div style={{fontFamily: "'Cormorant Garamond', serif", fontSize: '1.5rem', fontWeight: 600, color: 'var(--accent-gold-light)', marginBottom: '10px'}}>Question Submitted!</div>
                 <p style={{color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '20px'}}>
-                  Your feedback has been submitted successfully.
+                  Thank you! We'll get back to you soon.
                 </p>
                 <Link href="/" className="btn-gold" style={{width: '100%', justifyContent: 'center'}}>
                   Back to Home

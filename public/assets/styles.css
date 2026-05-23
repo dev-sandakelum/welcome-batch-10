@@ -1,0 +1,257 @@
+/* ============================================
+   Welcome 10th Batch - Global Styles
+   ============================================ */
+
+:root {
+  --royal: #1a0e3d;
+  --deep: #120934;
+  --mid: #241559;
+  --soft: #2d1a70;
+  --accent-gold: #c9a227;
+  --accent-gold-light: #f0c84a;
+  --accent-teal: #00b4d8;
+  --accent-teal-light: #48e0ff;
+  --feather-green: #1b6b3a;
+  --card-bg: rgba(30, 12, 80, 0.72);
+  --card-border: rgba(201, 162, 39, 0.3);
+  --text-primary: #f5f0e8;
+  --text-muted: rgba(245, 240, 232, 0.6);
+  --radius: 22px;
+  --radius-sm: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  scroll-padding-top: 0;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: var(--deep);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* ─── ANIMATED BG PATTERN ─── */
+.bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 0%,
+    rgba(44, 20, 120, 0.9) 0%,
+    var(--deep) 70%
+  );
+  overflow: hidden;
+}
+
+.bg-canvas::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+      circle 1.5px at 20% 30%,
+      rgba(201, 162, 39, 0.35) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle 1px at 70% 60%,
+      rgba(0, 180, 216, 0.25) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle 2px at 45% 80%,
+      rgba(201, 162, 39, 0.2) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle 1px at 85% 15%,
+      rgba(0, 180, 216, 0.3) 0%,
+      transparent 100%
+    );
+  background-size: 400px 400px;
+  animation: twinkle 8s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ─── CARD STYLES ─── */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  padding: 36px 40px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+/* ─── GOLD DIVIDER ─── */
+.gold-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+  margin: 20px 0;
+}
+
+.gold-dot-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+.gold-dot-line::before,
+.gold-dot-line::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-gold));
+}
+
+.gold-dot-line::after {
+  background: linear-gradient(90deg, var(--accent-gold), transparent);
+}
+
+.gold-dot-line span {
+  color: var(--accent-gold);
+  font-size: 18px;
+}
+
+/* ─── BUTTONS ─── */
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--accent-gold), #a07d18);
+  color: var(--royal);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  will-change: transform;
+}
+
+.btn-gold:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(201, 162, 39, 0.5);
+  filter: brightness(1.15);
+}
+
+.btn-gold:active {
+  transform: translateY(-1px) scale(0.98);
+  transition: all 0.1s ease;
+}
+
+.btn-gold:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 30px;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 1px solid rgba(245, 240, 232, 0.35);
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  will-change: transform;
+}
+
+.btn-outline:hover {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(201, 162, 39, 0.3);
+  background: rgba(201, 162, 39, 0.05);
+}
+
+.btn-outline:active {
+  transform: translateY(-1px) scale(0.98);
+  transition: all 0.1s ease;
+}
+
+/* ─── FORM STYLES ─── */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.form-input {
+  width: 100%;
+  background: rgba(20, 8, 60, 0.65);
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 13px 18px;
+  color: var(--text-primary);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.88rem;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+.form-input:focus {
+  border-color: var(--accent-gold);
+}
+
+.form-input::placeholder {
+  color: rgba(245, 240, 232, 0.3);
+}
+
+textarea.form-input {
+  resize: vertical;
+  min-height: 120px;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 768px) {
+  .card {
+    padding: 24px 20px;
+  }
+}

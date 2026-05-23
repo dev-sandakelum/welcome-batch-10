@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leaderboard - Welcome 10th Batch</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --royal: #1a0e3d;
+    --deep: #120934;
+    --accent-gold: #c9a227;
+    --accent-gold-light: #f0c84a;
+    --accent-teal: #00b4d8;
+    --accent-teal-light: #48e0ff;
+    --card-bg: rgba(30,12,80,0.72);
+    --card-border: rgba(201,162,39,0.3);
+    --text-primary: #f5f0e8;
+    --text-muted: rgba(245,240,232,0.6);
+    --radius: 22px;
+    --radius-sm: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    background: var(--deep);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    position: relative;
+  }
+
+  .bg-canvas {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(44,20,120,0.9) 0%, var(--deep) 70%);
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 700px;
+    width: 100%;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    backdrop-filter: blur(18px);
+    padding: 36px 40px;
+  }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent-gold);
+    text-decoration: none;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+  }
+  .back-btn:hover { color: var(--accent-gold-light); transform: translateX(-5px); }
+
+  .section-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 600;
+    color: var(--accent-gold-light);
+    margin-bottom: 10px;
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent-teal-light);
+    opacity: 0.8;
+  }
+
+  .gold-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    margin: 20px 0;
+  }
+
+  .lb-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(201,162,39,0.1);
+    transition: background 0.2s;
+    border-radius: var(--radius-sm);
+  }
+  .lb-row:hover { background: rgba(201,162,39,0.06); }
+
+  .lb-rank {
+    width: 32px;
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+  }
+  .lb-rank.gold { color: #ffd700; }
+  .lb-rank.silver { color: #c0c0c0; }
+  .lb-rank.bronze { color: #cd7f32; }
+
+  .lb-medal {
+    font-size: 1.3rem;
+  }
+
+  .lb-name {
+    flex: 1;
+    font-weight: 500;
+    font-size: 0.92rem;
+  }
+
+  .lb-score {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--accent-gold-light);
+  }
+
+  .lb-empty {
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 32px 0;
+    font-size: 0.9rem;
+  }
+
+  .btn-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--accent-gold), #a07d18);
+    color: var(--royal);
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    width: 100%;
+    justify-content: center;
+  }
+  .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,162,39,0.45); }
+
+  @media (max-width: 768px) {
+    .card { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-canvas"></div>
+
+<div class="container">
+  <a href="index.html" class="back-btn">← Back to Home</a>
+  
+  <div class="card">
+    <div class="section-label">Quiz Champions</div>
+    <div class="section-heading">Full Leaderboard</div>
+    <p style="color:var(--text-muted);font-size:0.88rem;margin-top:12px;line-height:1.7">
+      See all quiz participants and their scores!
+    </p>
+    <div class="gold-line"></div>
+
+    <div id="leaderboard-list">
+      <!-- Leaderboard will be populated here -->
+    </div>
+
+    <div class="gold-line"></div>
+    <a href="quiz.html" class="btn-gold">Take the Quiz 🧠</a>
+  </div>
+</div>
+
+<script>
+function loadLeaderboard() {
+  const leaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+  const container = document.getElementById('leaderboard-list');
+  
+  if (leaderboard.length === 0) {
+    container.innerHTML = '<div class="lb-empty">No scores yet. Be the first to take the quiz!</div>';
+    return;
+  }
+  
+  // Sort by score
+  leaderboard.sort((a, b) => b.score - a.score);
+  
+  container.innerHTML = '';
+  leaderboard.forEach((entry, index) => {
+    const row = document.createElement('div');
+    row.className = 'lb-row';
+    
+    let medal = '';
+    let rankClass = '';
+    if (index === 0) {
+      medal = '<div class="lb-medal">🥇</div>';
+      rankClass = 'gold';
+    } else if (index === 1) {
+      medal = '<div class="lb-medal">🥈</div>';
+      rankClass = 'silver';
+    } else if (index === 2) {
+      medal = '<div class="lb-medal">🥉</div>';
+      rankClass = 'bronze';
+    }
+    
+    row.innerHTML = `
+      ${medal}
+      <div class="lb-rank ${rankClass}">${index + 1}</div>
+      <div class="lb-name">${entry.name}</div>
+      <div class="lb-score">${entry.score}/${entry.total}</div>
+    `;
+    
+    container.appendChild(row);
+  });
+}
+
+loadLeaderboard();
+</script>
+
+</body>
+</html>
