@@ -128,8 +128,6 @@ NEXT_PUBLIC_SUPABASE_URL=https://pghbvacsoalbricagghk.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_FFHGrHv9RFNtyK3HGLrOAQ_MsbcDXAs
 
 # Admin
-ADMIN_USERNAME=Admin_1234
-ADMIN_PASSWORD=admin
 ```
 
 ### Build Status ✓

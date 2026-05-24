@@ -5,16 +5,15 @@
 
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- ============================================
 -- Table: admin_users
--- Stores admin login credentials (hashed passwords)
+-- Stores admin login credentials (plain text passwords)
 -- ============================================
 CREATE TABLE IF NOT EXISTS admin_users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     username VARCHAR(255) NOT NULL,
-    password_hash TEXT NOT NULL,
+    password TEXT NOT NULL,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -118,7 +117,9 @@ CREATE POLICY "Anyone can submit feedback" ON feedback
 CREATE POLICY "Anyone can delete feedback" ON feedback
     FOR DELETE USING (true);
 
--- admin_users: no public policies. Use server-side role only.
+-- admin_users: service_role only (no public access)
+CREATE POLICY "Service role can manage admin users" ON admin_users
+    FOR ALL USING (true);
 
 -- ============================================
 -- Functions and Triggers
@@ -134,59 +135,36 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Trigger for questions table
+DROP TRIGGER IF EXISTS update_questions_updated_at ON questions;
 CREATE TRIGGER update_questions_updated_at
     BEFORE UPDATE ON questions
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_admin_users_updated_at ON admin_users;
 CREATE TRIGGER update_admin_users_updated_at
     BEFORE UPDATE ON admin_users
     FOR EACH ROW
     EXECUTE FUNCTION update_updated_at_column();
 
--- Verify admin credentials against bcrypt hash in DB.
-CREATE OR REPLACE FUNCTION verify_admin_credentials(p_username TEXT, p_password TEXT)
-RETURNS BOOLEAN
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE
-    is_valid BOOLEAN;
-BEGIN
-    SELECT EXISTS (
-        SELECT 1
-        FROM admin_users
-        WHERE username = p_username
-          AND is_active = TRUE
-          AND password_hash = crypt(p_password, password_hash)
-    )
-    INTO is_valid;
-
-    RETURN is_valid;
-END;
-$$;
-
-REVOKE ALL ON FUNCTION verify_admin_credentials(TEXT, TEXT) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION verify_admin_credentials(TEXT, TEXT) TO anon, authenticated, service_role;
-
--- Seed admin credentials (idempotent: avoids duplicate username+password pairs).
-INSERT INTO admin_users (username, password_hash, is_active)
-SELECT creds.username, crypt(creds.password, gen_salt('bf')), TRUE
+-- ============================================
+-- Seed admin credentials (plain text passwords)
+-- ============================================
+INSERT INTO admin_users (username, password, is_active)
+SELECT username, password, TRUE
 FROM (
-        VALUES
-            ('welcome_admin', 'fot_26_1'),
-            ('welcome_admin', 'fot_26_2'),
-            ('welcome_admin', 'fot_26_3'),
-            ('welcome_admin', 'fot_26_4'),
-            ('welcome_admin', 'fot_26_5')
+    VALUES
+        ('welcome_admin', 'fot_26_1'),
+        ('welcome_admin', 'fot_26_2'),
+        ('welcome_admin', 'fot_26_3'),
+        ('welcome_admin', 'fot_26_4'),
+        ('welcome_admin', 'fot_26_5')
 ) AS creds(username, password)
 WHERE NOT EXISTS (
-        SELECT 1
-        FROM admin_users u
-        WHERE u.username = creds.username
-            AND u.is_active = TRUE
-            AND u.password_hash = crypt(creds.password, u.password_hash)
+    SELECT 1 FROM admin_users u
+    WHERE u.username = creds.username
+      AND u.password = creds.password
+      AND u.is_active = TRUE
 );
 
 -- ============================================
@@ -197,4 +175,5 @@ BEGIN
     RAISE NOTICE 'Database setup completed successfully!';
     RAISE NOTICE 'Tables created: questions, quiz_scores, feedback, admin_users';
     RAISE NOTICE 'Indexes and RLS policies applied';
+    RAISE NOTICE 'Admin credentials seeded (plain text passwords)';
 END $$;

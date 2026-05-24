@@ -5,7 +5,7 @@ This folder contains SQL scripts for setting up and managing your Supabase datab
 ## Files
 
 ### 1. `setup.sql` - Initial Database Setup
-**Purpose**: Creates all tables, indexes, RLS policies, and functions.
+**Purpose**: Creates all tables, indexes, RLS policies, and seeds admin credentials.
 
 **When to use**: 
 - First time setting up the database
@@ -15,7 +15,7 @@ This folder contains SQL scripts for setting up and managing your Supabase datab
 - `questions` table - Stores student questions
 - `quiz_scores` table - Stores quiz results
 - `feedback` table - Stores user feedback
-- `admin_users` table - Stores admin login credentials (bcrypt hashes)
+- `admin_users` table - Stores admin login credentials (plain text passwords)
 - Indexes for better performance
 - Row Level Security (RLS) policies
 - Triggers for automatic timestamp updates
@@ -84,6 +84,15 @@ This folder contains SQL scripts for setting up and managing your Supabase datab
 
 ---
 
+### 4. `update-policies.sql` - Update RLS Policies
+**Purpose**: Adds missing UPDATE/DELETE policies and ensures `admin_users` table is ready.
+
+**When to use**:
+- If you already have the database set up but admin login isn't working
+- To add UPDATE/DELETE permissions for the admin panel
+
+---
+
 ## Typical Workflow
 
 ### First Time Setup
@@ -146,7 +155,7 @@ created_at      TIMESTAMP WITH TIME ZONE
 ```sql
 id              UUID PRIMARY KEY
 username        VARCHAR(255) NOT NULL
-password_hash   TEXT NOT NULL
+password        TEXT NOT NULL
 is_active       BOOLEAN DEFAULT TRUE
 created_at      TIMESTAMP WITH TIME ZONE
 updated_at      TIMESTAMP WITH TIME ZONE
@@ -160,42 +169,34 @@ All tables have RLS enabled with these policies:
 
 **SELECT (Read)**: ✅ Anyone can read all data  
 **INSERT (Create)**: ✅ Anyone can insert new records  
-**UPDATE (Modify)**: ❌ Not allowed via app (admin only via dashboard)  
-**DELETE (Remove)**: ❌ Not allowed via app (admin only via dashboard)
+**UPDATE (Modify)**: ✅ Anyone can update (admin panel uses this)  
+**DELETE (Remove)**: ✅ Anyone can delete (admin panel uses this)
 
-For `admin_users`, no public RLS policy is created. Admin login is validated via a database function (`verify_admin_credentials`) and server-side API route.
+For `admin_users`, access is handled server-side via the API route using the service role key.
 
 ---
 
 ## Admin Credentials
 
-Admin usernames/passwords are stored in Supabase table `admin_users`.
+Admin usernames/passwords are stored in the `admin_users` table as plain text.
 
-- Seeded users (from `setup.sql`):
-  - Username: `welcome_admin` / Password: `fot_26_1`
-  - Username: `welcome_admin` / Password: `fot_26_2`
-  - Username: `welcome_admin` / Password: `fot_26_3`
-  - Username: `welcome_admin` / Password: `fot_26_4`
-  - Username: `welcome_admin` / Password: `fot_26_5`
-- Change password immediately in production.
+Seeded users (from `setup.sql`):
+- Username: `welcome_admin` / Password: `fot_26_1`
+- Username: `welcome_admin` / Password: `fot_26_2`
+- Username: `welcome_admin` / Password: `fot_26_3`
+- Username: `welcome_admin` / Password: `fot_26_4`
+- Username: `welcome_admin` / Password: `fot_26_5`
 
-Set this in `.env.local` for API access:
+To add a new admin password:
+```sql
+INSERT INTO admin_users (username, password, is_active)
+VALUES ('welcome_admin', 'your-new-password', TRUE);
+```
 
+Make sure your `.env.local` has the service role key so the login API can query `admin_users`:
 ```env
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ```
-
-You can rotate or change admin passwords with SQL:
-
-```sql
-INSERT INTO admin_users (username, password_hash, is_active)
-VALUES ('welcome_admin', crypt('new-strong-password', gen_salt('bf')), TRUE);
-```
-
-This ensures:
-- Students can submit questions, quiz scores, and feedback
-- Everyone can view public data
-- Only admins can modify or delete data (via Supabase dashboard)
 
 ---
 
@@ -213,34 +214,16 @@ This ensures:
 **Cause**: Incomplete SQL copied  
 **Solution**: Make sure you copied the ENTIRE file contents
 
+### Admin login still fails after setup
+**Cause**: `admin_users` table may have old `password_hash` column from a previous setup  
+**Solution**: Run `reset.sql` then `setup.sql` to get a clean schema with the `password` column
+
 ### No data showing in app
 **Cause**: Tables empty or RLS blocking  
 **Solution**: 
 1. Run `test-data.sql` to add sample data
 2. Check RLS policies are set correctly
 3. Verify your Supabase credentials in `.env.local`
-
----
-
-## Backup and Restore
-
-### Manual Backup
-1. Go to Supabase Dashboard
-2. Click "Database" → "Backups"
-3. Click "Create backup"
-4. Download the backup file
-
-### Restore from Backup
-1. Go to Supabase Dashboard
-2. Click "Database" → "Backups"
-3. Find your backup
-4. Click "Restore"
-
-### Export Data as CSV
-1. Go to "Table Editor"
-2. Select a table
-3. Click the "..." menu
-4. Click "Download as CSV"
 
 ---
 
@@ -281,7 +264,6 @@ GROUP BY answered;
 
 - Check the main `SETUP_GUIDE.md` for detailed instructions
 - Visit [Supabase Documentation](https://supabase.com/docs)
-- Open an issue on GitHub
 
 ---
 

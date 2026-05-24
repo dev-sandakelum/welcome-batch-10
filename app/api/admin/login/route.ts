@@ -3,13 +3,15 @@ import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 function getServerSupabaseClient() {
-  if (!supabaseUrl || !supabaseServiceRoleKey) {
-    throw new Error('Missing Supabase server credentials: NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required.');
-  }
+  if (!supabaseUrl) return null;
 
-  return createClient(supabaseUrl, supabaseServiceRoleKey, {
+  const key = supabaseServiceRoleKey || supabaseAnonKey;
+  if (!key) return null;
+
+  return createClient(supabaseUrl, key, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
@@ -30,27 +32,37 @@ export async function POST(request: NextRequest) {
 
     const supabase = getServerSupabaseClient();
 
-    const { data, error } = await supabase.rpc('verify_admin_credentials', {
-      p_username: username,
-      p_password: password,
-    });
-
-    if (error) {
-      console.error('Admin login query error:', error);
+    if (!supabase) {
       return NextResponse.json(
-        { error: 'An error occurred during login' },
+        { error: 'Admin auth is not configured on server. Set Supabase environment variables.' },
         { status: 500 }
       );
     }
 
-    if (data === true) {
-      // Generate a simple token (in production, use JWT or similar)
+    // Plain text password comparison — no bcrypt/RPC needed
+    const { data, error } = await supabase
+      .from('admin_users')
+      .select('id')
+      .eq('username', username)
+      .eq('password', password)
+      .eq('is_active', true)
+      .limit(1);
+
+    if (error) {
+      console.error('Admin login query error:', error);
+      return NextResponse.json(
+        { error: 'Database error during login. Please check your Supabase setup.' },
+        { status: 500 }
+      );
+    }
+
+    if (data && data.length > 0) {
       const token = Buffer.from(`${username}:${Date.now()}`).toString('base64');
 
       return NextResponse.json({
         success: true,
         token,
-        message: 'Login successful'
+        message: 'Login successful',
       });
     }
 
