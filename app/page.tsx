@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import './styles/home.css';
+import { supabase, QuizScore } from '@/lib/supabase';
 import {
   initGSAPScrollSnap,
   initAuroraParticles,
@@ -13,6 +14,29 @@ import {
 } from '@/lib/gsap-animations';
 
 export default function Home() {
+  const [topScores, setTopScores] = useState<QuizScore[]>([]);
+  const [scoresLoading, setScoresLoading] = useState(true);
+
+  // Fetch top 3 from DB
+  useEffect(() => {
+    const loadTop3 = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('quiz_scores')
+          .select('*')
+          .order('score', { ascending: false })
+          .order('created_at', { ascending: true })
+          .limit(3);
+        if (error) throw error;
+        setTopScores(data || []);
+      } catch (err) {
+        console.error('Error loading top scores:', err);
+      } finally {
+        setScoresLoading(false);
+      }
+    };
+    loadTop3();
+  }, []);
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -237,22 +261,30 @@ export default function Home() {
             <div className="section-label">Quiz Champions</div>
             <div className="gold-dot-line"><span>✦</span></div>
             <div className="section-heading">Top 3 Leaderboard</div>
-            <p className="leaderboard-description">See who&apos;s leading the pack!</p>
+            <p className="leaderboard-description">Ranked by points — speed matters!</p>
           </div>
 
           <div className="card leaderboard-card-container">
-            {[
-              { medal: '🥇', rank: 1, name: 'Sarah Johnson', score: 95, rankClass: 'gold' },
-              { medal: '🥈', rank: 2, name: 'Michael Chen', score: 92, rankClass: 'silver' },
-              { medal: '🥉', rank: 3, name: 'Emma Williams', score: 88, rankClass: 'bronze' },
-            ].map((entry) => (
-              <div key={entry.rank} className="leaderboard-entry">
-                <div className="leaderboard-medal">{entry.medal}</div>
-                <div className={`leaderboard-rank ${entry.rankClass}`}>{entry.rank}</div>
-                <div className="leaderboard-name">{entry.name}</div>
-                <div className="leaderboard-score">{entry.score}</div>
-              </div>
-            ))}
+            {scoresLoading ? (
+              <div className="leaderboard-state">Loading...</div>
+            ) : topScores.length === 0 ? (
+              <div className="leaderboard-state">No scores yet — be the first! 🏆</div>
+            ) : (
+              topScores.map((entry, index) => {
+                const medals = ['🥇', '🥈', '🥉'];
+                const rankClasses = ['gold', 'silver', 'bronze'];
+                return (
+                  <div key={entry.id} className="leaderboard-entry">
+                    <div className="leaderboard-medal">{medals[index]}</div>
+                    <div className={`leaderboard-rank ${rankClasses[index]}`}>{index + 1}</div>
+                    <div className="leaderboard-name">{entry.player_name}</div>
+                    <div className="leaderboard-score">
+                      {entry.score} <span className="leaderboard-score-unit">pts</span>
+                    </div>
+                  </div>
+                );
+              })
+            )}
 
             <div className="gold-line" />
             <div className="leaderboard-action">
