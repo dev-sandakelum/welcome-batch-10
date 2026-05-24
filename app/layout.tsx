@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { Viewport } from "next";
 import "./globals.css";
+import PageTransition from "@/app/components/PageTransition";
 
 const sharedStylesheets = [
   "/assets/styles.css",
@@ -130,7 +131,10 @@ export default function RootLayout({
           </div>
         </div>
 
-        <div id="app-root-content">{children}</div>
+        <div id="app-root-content">
+          <PageTransition />
+          {children}
+        </div>
       </body>
     </html>
   );

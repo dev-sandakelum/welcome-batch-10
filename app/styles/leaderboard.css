@@ -21,7 +21,7 @@
   width: 100%;
 }
 
-/* Back Link */
+/* Back Link — pill style matching feedback page */
 .leaderboard-back-link {
   display: inline-flex;
   align-items: center;
@@ -30,12 +30,23 @@
   text-decoration: none;
   font-size: 0.85rem;
   margin-bottom: 20px;
-  transition: all 0.3s;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 8px 16px;
+  background: rgba(201, 162, 39, 0.08);
+  border: 1px solid rgba(201, 162, 39, 0.25);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50px;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .leaderboard-back-link:hover {
   color: var(--accent-gold-light);
   transform: translateX(-4px);
+  background: rgba(201, 162, 39, 0.15);
+  border-color: rgba(201, 162, 39, 0.4);
+  box-shadow: 0 8px 24px rgba(201, 162, 39, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 /* Card Header */

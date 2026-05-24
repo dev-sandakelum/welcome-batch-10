@@ -1,8 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
+import {
+  initAuroraParticles,
+  initMagneticCards,
+  initGlassShimmer,
+} from '@/lib/gsap-animations';
+import PageShell from '@/app/components/PageShell';
 import '../styles/questions.css';
 
 export default function QuestionsPage() {
@@ -11,6 +17,13 @@ export default function QuestionsPage() {
   const [question, setQuestion] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    initAuroraParticles();
+    initMagneticCards();
+    initGlassShimmer();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,8 +60,7 @@ export default function QuestionsPage() {
 
   return (
     <>
-      <div className="bg-canvas"></div>
-
+      <PageShell>
       <div className="questions-page-wrapper">
         <div className="questions-page-content">
           <Link href="/" className="questions-back-link">
@@ -122,6 +134,7 @@ export default function QuestionsPage() {
           </div>
         </div>
       </div>
+      </PageShell>
     </>
   );
 }
