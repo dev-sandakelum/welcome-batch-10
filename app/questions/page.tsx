@@ -67,10 +67,10 @@ export default function QuestionsPage() {
           </Link>
 
           <div className="card">
-            <div className="questions-card-label">Need Help?</div>
-            <div className="questions-card-title">Ask Your Question</div>
+            <div className="questions-card-label">Ask From Seniors</div>
+            <div className="questions-card-title">Got a Question for the Seniors?</div>
             <p className="questions-card-description">
-              Have a question that's not in our FAQ? Ask away! Our seniors and admin team will get back to you soon.
+              Curious about college life, academics, or anything in between? Drop your question here and our seniors will share their experience and advice with you.
             </p>
             <div className="gold-line"></div>
 
@@ -83,7 +83,7 @@ export default function QuestionsPage() {
                     className="form-input"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Enter your name"
+                    placeholder="Enter your full name"
                     required
                   />
                 </div>
@@ -100,12 +100,12 @@ export default function QuestionsPage() {
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Your Question</label>
+                  <label className="form-label">Your Question for the Seniors</label>
                   <textarea
                     className="form-input"
                     value={question}
                     onChange={(e) => setQuestion(e.target.value)}
-                    placeholder="Type your question here..."
+                    placeholder="What would you like to ask the seniors? (e.g. tips for first year, how to manage studies, club recommendations...)"
                     required
                   />
                 </div>
@@ -115,15 +115,15 @@ export default function QuestionsPage() {
                   className="btn-gold questions-submit-btn"
                   disabled={submitting}
                 >
-                  {submitting ? 'Submitting...' : 'Submit Question ✉️'}
+                  {submitting ? 'Submitting...' : 'Ask the Seniors ✉️'}
                 </button>
               </form>
             ) : (
               <div className="questions-success">
                 <div className="questions-success-icon">✓</div>
-                <div className="questions-success-title">Question Submitted!</div>
+                <div className="questions-success-title">Question Sent to Seniors!</div>
                 <p className="questions-success-message">
-                  Thank you! We'll get back to you soon.
+                  Thanks for reaching out! A senior will answer your question soon.
                 </p>
                 <Link href="/" className="btn-gold questions-success-btn">
                   Back to Home

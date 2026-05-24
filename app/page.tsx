@@ -205,7 +205,7 @@ export default function Home() {
         {/* ── SECTION 3 -FAQ ── */}
         <section className="home-section" id="faq" data-idx="2">
           <div className="faq-section-header">
-            <div className="section-label">Got Questions?</div>
+            <div className="section-label">Ask From Seniors</div>
             <div className="gold-dot-line"><span>✦</span></div>
             <div className="section-heading-mobile">Frequently Asked Questions</div>
           </div>
@@ -244,7 +244,7 @@ export default function Home() {
 
             <div className="gold-line" />
             <div className="faq-actions">
-              <Link href="/questions" className="btn-outline faq-action-button">Ask Question →</Link>
+              <Link href="/questions" className="btn-outline faq-action-button">Ask the Seniors →</Link>
               <Link href="/all-questions" className="btn-outline faq-action-button">View All Q&amp;A 💬</Link>
             </div>
           </div>
