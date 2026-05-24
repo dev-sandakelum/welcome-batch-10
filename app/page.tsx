@@ -43,23 +43,23 @@ export default function Home() {
     const faqData = [
       {
         question: "When does orientation week begin?",
-        answer: "Orientation week typically kicks off in the first week of your semester. Your official schedule will be shared via email and the student portal. Make sure to attend every session — it's where lifelong connections begin! You'll get to meet your peers, explore the campus, and learn about all the resources available to you. The week includes campus tours, meet-and-greet sessions with faculty, club fairs, and fun icebreaker activities designed to help you settle in comfortably."
+        answer: "Orientation week typically kicks off in the first week of your semester. Your official schedule will be shared via email and the student portal. Make sure to attend every session -it's where lifelong connections begin! You'll get to meet your peers, explore the campus, and learn about all the resources available to you. The week includes meet-and-greet sessions with faculty, club fairs designed to help you settle in comfortably."
       },
       {
         question: "How do I join clubs and societies?",
-        answer: "Clubs and societies hold an annual fair during orientation week. You can browse, sign up, and even audition on the spot! There's something for every interest — sports, arts, tech, debate, and more! Each club has a booth where you can meet current members, learn about their activities, and sign up on the spot. Don't be shy to try multiple clubs — it's a great way to discover new passions and make friends who share your interests."
+        answer: "Clubs and societies hold an annual fair during orientation week. You can browse, sign up, and even audition on the spot! There's something for every interest -sports, arts, tech, and more! Each club has a booth where you can meet current members, learn about their activities, and sign up on the spot. Don't be shy to try multiple clubs -it's a great way to discover new passions and make friends who share your interests."
       },
       {
         question: "Where do I find my class schedule?",
-        answer: "Your class schedule is accessible on the official student portal. You'll receive login credentials in your welcome email. If you have any trouble accessing the portal, the student services desk is always ready to help. The portal also includes information about your professors, classroom locations, and any required textbooks or materials. Make sure to check it regularly for updates and announcements."
+        answer: "Your class schedule is accessible on the official student portal. You'll receive login credentials in your welcome email. If you have any trouble accessing the portal, the Technical Officer is always ready to help. The portal also includes information about your professors, classroom locations, and any required textbooks or materials. Make sure to check it regularly for updates and announcements."
       },
       {
         question: "What facilities are available on campus?",
-        answer: "Our campus features modern libraries with extensive collections and study spaces, state-of-the-art sports complexes including gyms and courts, multiple cafeterias offering diverse cuisine options, comfortable study lounges with high-speed internet, recreational areas for relaxation, computer labs with the latest technology, and dedicated spaces for group projects and collaborative work. All facilities are designed with your comfort and academic success in mind."
+        answer: "Our campus features are library with extensive collections and study spaces, outdoor ground, multiple cafeterias offering diverse cuisine options, comfortable study lounges with high-speed internet, recreational areas for relaxation, computer labs with the latest technology, and dedicated spaces for group projects and collaborative work. All facilities are designed with your comfort and academic success in mind."
       },
       {
         question: "How can I contact seniors for guidance?",
-        answer: "We have a comprehensive mentorship program where you'll be paired with experienced seniors from your department. You can also reach out through our official student groups on social media, attend peer mentoring sessions held weekly, or visit the student support center where senior volunteers are available to answer questions. Many departments also have dedicated WhatsApp or Discord groups where you can connect with seniors and get advice on courses, campus life, and career planning."
+        answer: "We have a comprehensive mentorship program where you'll be paired with experienced seniors from your department. You can also reach out through our official student groups on social media, attend mentoring session. you can connect with seniors and get advice on courses, campus life, and career planning."
       }
     ];
 
@@ -84,7 +84,7 @@ export default function Home() {
 
   return (
     <>
-      {/* Aurora particle canvas — sits above bg, below content */}
+      {/* Aurora particle canvas -sits above bg, below content */}
       {/* <canvas id="aurora-canvas" aria-hidden="true" /> */}
 
       {/* Background image layer */}
@@ -103,7 +103,7 @@ export default function Home() {
 
       <div className="page-container">
 
-        {/* ── SECTION 1 — HERO ── */}
+        {/* ── SECTION 1 -HERO ── */}
         <section className="home-section" id="hero" data-idx="0">
           <div className="hero-section">
             <div className="hero-badge">🦚 9th Batch Presents</div>
@@ -139,7 +139,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── SECTION 2 — ABOUT ── */}
+        {/* ── SECTION 2 -ABOUT ── */}
         <section className="home-section" id="about" data-idx="1">
           <div className="about-section-header">
             <div className="section-label">Discover Your Campus</div>
@@ -202,7 +202,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── SECTION 3 — FAQ ── */}
+        {/* ── SECTION 3 -FAQ ── */}
         <section className="home-section" id="faq" data-idx="2">
           <div className="faq-section-header">
             <div className="section-label">Got Questions?</div>
@@ -255,20 +255,20 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── SECTION 4 — LEADERBOARD ── */}
+        {/* ── SECTION 4 -LEADERBOARD ── */}
         <section className="home-section" id="leaderboard" data-idx="3">
           <div className="leaderboard-section-header">
             <div className="section-label">Quiz Champions</div>
             <div className="gold-dot-line"><span>✦</span></div>
             <div className="section-heading">Top 3 Leaderboard</div>
-            <p className="leaderboard-description">Ranked by points — speed matters!</p>
+            <p className="leaderboard-description">Ranked by points -speed matters!</p>
           </div>
 
           <div className="card leaderboard-card-container">
             {scoresLoading ? (
               <div className="leaderboard-state">Loading...</div>
             ) : topScores.length === 0 ? (
-              <div className="leaderboard-state">No scores yet — be the first! 🏆</div>
+              <div className="leaderboard-state">No scores yet -be the first! 🏆</div>
             ) : (
               topScores.map((entry, index) => {
                 const medals = ['🥇', '🥈', '🥉'];
@@ -300,7 +300,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ── SECTION 5 — FEEDBACK ── */}
+        {/* ── SECTION 5 -FEEDBACK ── */}
         <section className="home-section" id="feedback" data-idx="4">
           <div className="feedback-section-header">
             <div className="section-label">We Value Your Opinion</div>

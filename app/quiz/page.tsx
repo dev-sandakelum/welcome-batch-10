@@ -18,35 +18,97 @@ const OVERDUE_PENALTY = 10;    // flat points awarded when overdue + correct
 
 const quizData = [
   {
-    question: "What year was the university founded?",
-    options: ["1985", "1990", "1995", "2000"],
-    correct: 1,
-    feedback: "The university was founded in 1990!"
+    question: "Where is the main campus complex of the University of Ruhuna located?",
+    options: ["Wellamadama Matara", "Karapitiya Galle", "Karagoda Uyangoda Kaburupitiya", "Hapugala Galle"],
+    correct: 0,
+    feedback: "The central administrative offices and main 72-acre complex are situated at Wellamadama in Matara."
   },
   {
-    question: "What is the university's motto?",
-    options: ["Knowledge is Power", "Excellence in Education", "Learn to Lead", "Wisdom and Growth"],
-    correct: 2,
-    feedback: "Our motto is 'Learn to Lead' - empowering students to become future leaders!"
-  },
-  {
-    question: "How many faculties does the university have?",
-    options: ["5", "7", "9", "11"],
-    correct: 1,
-    feedback: "We have 7 diverse faculties covering various fields of study!"
-  },
-  {
-    question: "What is the name of the main library?",
-    options: ["Central Library", "Knowledge Hub", "Heritage Library", "Scholar's Haven"],
-    correct: 2,
-    feedback: "The Heritage Library is our main library with over 100,000 books!"
-  },
-  {
-    question: "Which annual event is the most popular?",
-    options: ["Tech Fest", "Cultural Night", "Sports Week", "All of the above"],
+    question: "In what year was the Faculty of Technology officially established?",
+    options: ["1984", "2000", "2022", "2016"],
     correct: 3,
+    feedback: "The Faculty of Technology is a relatively young faculty, founded via official gazette on April 26, 2016."
+  },
+  {
+    question: "How many academic departments under the Faculty of Technology?",
+    options: ["2", "4", "6", "8"],
+    correct: 1,
+    feedback: "It comprises four departments:- Engineering Technology, ICT, Biosystems Technology, and Multidisciplinary Studies."
+  },
+  {
+    question: "Which nearest faculty is located right alongside the Faculty of Technology in the Kamburupitiya area?",
+    options: ["Faculty of Engineering", "Faculty of Medicine", "Faculty of Agriculture", "Faculty of Management and Finance"],
+    correct: 2,
+    feedback: "The Faculty of Agriculture is located in the Kaburupitiya district zone."
+  },
+  {
+    question: "Who was the world-renowned architect who designed the scenic main campus buildings?",
+    options: ["Minnette de Silva", "Valentine Gunasekara", "Geoffrey Bawa", "Oliver Weerasinghe"],
+    correct: 2,
     feedback: "All our events are equally popular and well-attended by students!"
+  },
+  {
+    question: "The University of Ruhuna is the _____ oldest university in Sri Lanka.",
+    options: ["6th", "5th", "4th", "3rd"],
+    correct: 0,
+    feedback: "The university, elevated to a fully-fledged university in 1984, is Sri Lanka's 6th oldest university."
+  },
+  {
+    question: "How many faculties does the University of Ruhuna currently have?",
+    options: ["7", "8", "10", "12"],
+    correct: 2,
+    feedback: "The University of Ruhuna comprises ten faculties, including Agriculture, Medicine, Engineering, Science, and Technology."
+  },
+  {
+    question: "What annual event is held specifically to display the artistic skills of the newest freshman batch?",
+    options: ["TechSprint", "Bhawa Talent Show", "RICIT", "HackTrail"],
+    correct: 1,
+    feedback: "Bhawa is the traditional freshers' welcome cultural show arranged by the technology students."
+  },
+  {
+    question: "Who serves as the ceremonial head of the university to preside over the convocation?",
+    options: ["The Vice-Chancellor", "The Dean", "The Registrar", "The Chancellor"],
+    correct: 3,
+    feedback: "The Chancellor serves as the ceremonial head of the university to officially preside over the convocation and confer degrees upon the graduates."
+  },
+  {
+    question: "Who serves as the Dean of the Faculty of Technology, entering a second consecutive tenure in early 2026?",
+    options: ["Prof. Subash Jayasinghe", "Dr. Kaushalya Wijesekara", "Dr. Wathsala Rajawatta", "Dr. Nissanka Wijeratne"],
+    correct: 0,
+    feedback: "Prof. Subash Jayasinghe formally assumed duties for his second tenure as Dean."
+  },
+  {
+    question: "How many books are held in the core collection of the university's Main Library?",
+    options: ["About 100,000", "Over 500,000", "Nearly 300,000", "Over 1 million"],
+    correct: 2,
+    feedback: "The Main Library's core collection contains nearly 300,000 books."
+  },
+  {
+    question: "What is the official motto of the University of Ruhuna?",
+    options: ["Knowledge is Power", "Learn, Lead, Serve", "Wisdom to mankind is a treasure", "To be the prime intellectual thrust"],
+    correct: 2,
+    feedback: "In keeping with its motto 'Wisdom to mankind is a treasure' the university strives for high academic standards."
+  },
+  {
+    question: "What type of degree does the Faculty of Technology offer?",
+    options: ["3-year pass degree", "4-year honours degree", "2-year diploma", "Postgraduate only"],
+    correct: 1,
+    feedback: "4-year honours degree."
+  },
+  {
+    question: "Which faculties are located at the Galle?",
+    options: ["Agriculture and Technology", "Science and Management", "Fisheries and Humanities", "Engineering and Medicine"],
+    correct: 3,
+    feedback: "The faculties of Engineering and Medicine are located in Galle."
+  },
+  
+  {
+    question: ". The University of Ruhuna offers degrees at which levels?",
+    options: ["Bachelor's only", "Bachelor's and Master's only", "Bachelor's, Master's, and PhD", "Diploma and Bachelor's only"],
+    correct: 2,
+    feedback: "The University of Ruhuna offers Bachelor's, Master's, and PhD degrees."
   }
+  
 ];
 
 // ─── Types ────────────────────────────────────────────────────────────────────
