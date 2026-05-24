@@ -10,6 +10,117 @@ import {
 } from '@/lib/gsap-animations';
 import '../styles/quiz.css';
 
+// ─── Particle burst on correct answer ────────────────────────────────────────
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  radius: number;
+  color: string;
+  alpha: number;
+  decay: number;
+  gravity: number;
+  rotation: number;
+  rotationSpeed: number;
+  shape: 'circle' | 'rect' | 'star';
+}
+
+const PARTICLE_COLORS = [
+  '#c9a227', '#f0d060', '#3ddc84', '#00b4d8',
+  '#a78bfa', '#fb923c', '#f472b6', '#ffffff',
+];
+
+function spawnParticles(canvas: HTMLCanvasElement, originX: number, originY: number) {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const particles: Particle[] = [];
+  const COUNT = 72;
+
+  for (let i = 0; i < COUNT; i++) {
+    const angle = (Math.PI * 2 * i) / COUNT + (Math.random() - 0.5) * 0.4;
+    const speed = 4 + Math.random() * 8;
+    particles.push({
+      x: originX,
+      y: originY,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - Math.random() * 4,
+      radius: 3 + Math.random() * 5,
+      color: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
+      alpha: 1,
+      decay: 0.012 + Math.random() * 0.01,
+      gravity: 0.18 + Math.random() * 0.12,
+      rotation: Math.random() * Math.PI * 2,
+      rotationSpeed: (Math.random() - 0.5) * 0.2,
+      shape: (['circle', 'rect', 'star'] as const)[Math.floor(Math.random() * 3)],
+    });
+  }
+
+  let rafId: number;
+
+  function drawStar(ctx: CanvasRenderingContext2D, x: number, y: number, r: number) {
+    const spikes = 5;
+    const inner  = r * 0.45;
+    ctx.beginPath();
+    for (let s = 0; s < spikes * 2; s++) {
+      const rad = s % 2 === 0 ? r : inner;
+      const a   = (Math.PI / spikes) * s - Math.PI / 2;
+      s === 0 ? ctx.moveTo(x + Math.cos(a) * rad, y + Math.sin(a) * rad)
+              : ctx.lineTo(x + Math.cos(a) * rad, y + Math.sin(a) * rad);
+    }
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function tick() {
+    ctx!.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+
+    for (const p of particles) {
+      if (p.alpha <= 0) continue;
+      alive = true;
+
+      p.x  += p.vx;
+      p.y  += p.vy;
+      p.vy += p.gravity;
+      p.vx *= 0.98;
+      p.alpha -= p.decay;
+      p.rotation += p.rotationSpeed;
+
+      ctx!.save();
+      ctx!.globalAlpha = Math.max(0, p.alpha);
+      ctx!.fillStyle   = p.color;
+      ctx!.translate(p.x, p.y);
+      ctx!.rotate(p.rotation);
+
+      if (p.shape === 'circle') {
+        ctx!.beginPath();
+        ctx!.arc(0, 0, p.radius, 0, Math.PI * 2);
+        ctx!.fill();
+      } else if (p.shape === 'rect') {
+        ctx!.fillRect(-p.radius, -p.radius * 0.5, p.radius * 2, p.radius);
+      } else {
+        drawStar(ctx!, 0, 0, p.radius);
+      }
+
+      ctx!.restore();
+    }
+
+    if (alive) {
+      rafId = requestAnimationFrame(tick);
+    } else {
+      ctx!.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+
+  rafId = requestAnimationFrame(tick);
+  return () => cancelAnimationFrame(rafId);
+}
+
 // ─── Scoring constants ────────────────────────────────────────────────────────
 const TIMER_SECONDS   = 30;
 const BASE_POINTS     = 100;   // points for a correct answer
@@ -155,6 +266,8 @@ export default function QuizPage() {
   // ── Refs ──────────────────────────────────────────────────────────────────
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const particleCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const particleCleanupRef = useRef<(() => void) | null>(null);
 
   // ─── Init animations ──────────────────────────────────────────────────────
   useEffect(() => {
@@ -207,6 +320,7 @@ export default function QuizPage() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+      if (particleCleanupRef.current) particleCleanupRef.current();
     };
   }, []);
 
@@ -260,6 +374,21 @@ export default function QuizPage() {
     setResults(prev => [...prev, result]);
     setTotalScore(prev => prev + pointsEarned);
     setSubmitted(true);
+
+    // ── Particle burst on correct answer ──────────────────────────────────
+    if (isCorrect && particleCanvasRef.current) {
+      // Find the clicked option button by its index
+      const optionButtons = document.querySelectorAll<HTMLButtonElement>('.quiz-option');
+      const btn = optionButtons[index];
+      if (btn) {
+        const rect = btn.getBoundingClientRect();
+        const originX = rect.left + rect.width  / 2;
+        const originY = rect.top  + rect.height / 2;
+        // Cancel any previous burst still running
+        if (particleCleanupRef.current) particleCleanupRef.current();
+        particleCleanupRef.current = spawnParticles(particleCanvasRef.current, originX, originY) ?? null;
+      }
+    }
 
     // Show toast
     setToastIsCorrect(isCorrect);
@@ -339,6 +468,18 @@ export default function QuizPage() {
   return (
     <>
       <canvas id="aurora-canvas" aria-hidden="true" />
+      <canvas
+        ref={particleCanvasRef}
+        aria-hidden="true"
+        style={{
+          position: 'fixed',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          zIndex: 9998,
+        }}
+      />
 
       <div className="bg-canvas">
         <svg
