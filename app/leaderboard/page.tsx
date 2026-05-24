@@ -99,6 +99,7 @@ export default function LeaderboardPage() {
             </Link>
           </div>
         </div>
+      </div>
       </PageShell>
     </>
   );

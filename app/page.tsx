@@ -44,7 +44,18 @@ export default function Home() {
     initMagneticCards();
     initGlassShimmer();
     initNavDotPulse();
-    initGSAPScrollSnap();
+    const cleanupScrollSnap = initGSAPScrollSnap();
+
+    // Cleanup function to restore scroll when leaving the page
+    return () => {
+      // Remove GSAP scroll snap event listeners
+      cleanupScrollSnap();
+      
+      // Restore scroll styles
+      document.documentElement.style.scrollSnapType = '';
+      document.documentElement.style.overflowY = '';
+      document.body.style.overflowY = '';
+    };
   }, []);
 
   return (
@@ -60,33 +71,11 @@ export default function Home() {
       <link rel="stylesheet" href="/assets/styles-mobile-extra-small.css" />
 
       {/* Aurora particle canvas — sits above bg, below content */}
-      <canvas id="aurora-canvas" aria-hidden="true" />
+      {/* <canvas id="aurora-canvas" aria-hidden="true" /> */}
 
       {/* Background image layer */}
       <div className="bg-canvas">
-        <svg
-          className="feather-bg"
-          viewBox="0 0 200 600"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          <ellipse cx="100" cy="300" rx="12" ry="280" fill="url(#fg1)" opacity="0.7" />
-          <ellipse cx="100" cy="120" rx="60" ry="100" fill="url(#fg2)" opacity="0.6" />
-          <circle cx="100" cy="100" r="22" fill="#1b6b3a" opacity="0.8" />
-          <circle cx="100" cy="100" r="14" fill="#00b4d8" opacity="0.9" />
-          <circle cx="100" cy="100" r="7" fill="#241559" opacity="1" />
-          <defs>
-            <radialGradient id="fg1" cx="50%" cy="50%">
-              <stop offset="0%" stopColor="#1b6b3a" />
-              <stop offset="100%" stopColor="#241559" />
-            </radialGradient>
-            <radialGradient id="fg2" cx="50%" cy="50%">
-              <stop offset="0%" stopColor="#00b4d8" />
-              <stop offset="100%" stopColor="#1b6b3a" />
-            </radialGradient>
-          </defs>
-        </svg>
+        
       </div>
 
       {/* Nav Dots */}

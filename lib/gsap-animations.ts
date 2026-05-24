@@ -70,7 +70,7 @@ function animateSection(section: Element) {
 /* ── GSAP Scroll Snap ────────────────────── */
 export function initGSAPScrollSnap() {
   const sections = Array.from(document.querySelectorAll('.home-section'));
-  if (!sections.length) return;
+  if (!sections.length) return () => {}; // Return empty cleanup if no sections
 
   // Disable native scroll snap — GSAP owns it
   document.documentElement.style.scrollSnapType = 'none';
@@ -123,7 +123,7 @@ export function initGSAPScrollSnap() {
   // Wheel
   let wDelta = 0;
   let wTimer: ReturnType<typeof setTimeout>;
-  window.addEventListener('wheel', (e) => {
+  const wheelHandler = (e: WheelEvent) => {
     e.preventDefault();
     if (busy) return;
     wDelta += e.deltaY;
@@ -132,30 +132,49 @@ export function initGSAPScrollSnap() {
       if (Math.abs(wDelta) > 20) snap(current + (wDelta > 0 ? 1 : -1), wDelta > 0 ? 1 : -1);
       wDelta = 0;
     }, 40);
-  }, { passive: false });
+  };
+  window.addEventListener('wheel', wheelHandler, { passive: false });
 
   // Touch
   let ty = 0;
-  window.addEventListener('touchstart', (e) => { ty = e.touches[0].clientY; }, { passive: true });
-  window.addEventListener('touchend', (e) => {
+  const touchStartHandler = (e: TouchEvent) => { ty = e.touches[0].clientY; };
+  const touchEndHandler = (e: TouchEvent) => {
     if (busy) return;
     const d = ty - e.changedTouches[0].clientY;
     if (Math.abs(d) > 35) snap(current + (d > 0 ? 1 : -1), d > 0 ? 1 : -1);
-  }, { passive: true });
+  };
+  window.addEventListener('touchstart', touchStartHandler, { passive: true });
+  window.addEventListener('touchend', touchEndHandler, { passive: true });
 
   // Keyboard
-  window.addEventListener('keydown', (e) => {
+  const keydownHandler = (e: KeyboardEvent) => {
     if (e.key === 'ArrowDown' || e.key === 'PageDown') snap(current + 1, 1);
     if (e.key === 'ArrowUp'   || e.key === 'PageUp')   snap(current - 1, -1);
-  });
+  };
+  window.addEventListener('keydown', keydownHandler);
 
   // Nav dots
-  document.querySelectorAll('.nav-dot').forEach((dot, i) =>
-    dot.addEventListener('click', () => snap(i, i > current ? 1 : -1))
-  );
+  const navDotHandlers: Array<{ element: Element; handler: () => void }> = [];
+  document.querySelectorAll('.nav-dot').forEach((dot, i) => {
+    const handler = () => snap(i, i > current ? 1 : -1);
+    dot.addEventListener('click', handler);
+    navDotHandlers.push({ element: dot, handler });
+  });
 
   // Animate first section
   animateSection(sections[0]);
+
+  // Return cleanup function
+  return () => {
+    window.removeEventListener('wheel', wheelHandler);
+    window.removeEventListener('touchstart', touchStartHandler);
+    window.removeEventListener('touchend', touchEndHandler);
+    window.removeEventListener('keydown', keydownHandler);
+    navDotHandlers.forEach(({ element, handler }) => {
+      element.removeEventListener('click', handler);
+    });
+    clearTimeout(wTimer);
+  };
 }
 
 /* ── Aurora particle canvas ──────────────── */

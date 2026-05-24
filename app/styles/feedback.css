@@ -2,6 +2,23 @@
    Feedback Page Styles
    ============================================ */
 
+/* Feather Background SVG */
+.feather-bg {
+  position: fixed;
+  top: 0;
+  right: -80px;
+  width: 420px;
+  opacity: 0.08;
+  z-index: 0;
+  animation: featherSway 12s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes featherSway {
+  0% { transform: rotate(-5deg) translateY(0); }
+  100% { transform: rotate(5deg) translateY(-20px); }
+}
+
 /* Page Wrapper */
 .feedback-page-wrapper {
   position: relative;
@@ -30,12 +47,23 @@
   text-decoration: none;
   font-size: 0.85rem;
   margin-bottom: 20px;
-  transition: all 0.3s;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 8px 16px;
+  background: rgba(201,162,39,0.08);
+  border: 1px solid rgba(201,162,39,0.25);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50px;
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
 }
 
 .feedback-back-link:hover {
   color: var(--accent-gold-light);
   transform: translateX(-4px);
+  background: rgba(201,162,39,0.15);
+  border-color: rgba(201,162,39,0.4);
+  box-shadow: 0 8px 24px rgba(201,162,39,0.2), inset 0 1px 0 rgba(255,255,255,0.12);
 }
 
 /* Card Header */
@@ -75,35 +103,70 @@
   gap: 8px;
   justify-content: center;
   margin: 10px 0;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(201,162,39,0.08) 0%, rgba(20,8,60,0.4) 100%);
+  border: 1px solid rgba(201,162,39,0.2);
+  border-top: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
 .star-rating-item {
   font-size: 2rem;
   cursor: pointer;
   color: rgba(201, 162, 39, 0.25);
-  transition: color 0.2s, transform 0.2s;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   user-select: none;
   transform: scale(1);
+  filter: drop-shadow(0 0 8px rgba(201,162,39,0.2));
 }
 
 .star-rating-item.active {
   color: var(--accent-gold-light);
   transform: scale(1.15);
+  filter: drop-shadow(0 0 12px rgba(201,162,39,0.6));
+  text-shadow: 0 0 20px rgba(201,162,39,0.4);
 }
 
 .star-rating-item:hover {
   transform: scale(1.15);
+  filter: drop-shadow(0 0 10px rgba(201,162,39,0.5));
 }
 
 /* Success State */
 .feedback-success {
   text-align: center;
   padding: 24px;
+  animation: successPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes successPop {
+  0% { opacity: 0; transform: scale(0.8) translateY(30px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .feedback-success-icon {
   font-size: 3rem;
   margin-bottom: 12px;
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  line-height: 80px;
+  background: linear-gradient(135deg, rgba(201,162,39,0.15) 0%, rgba(0,180,216,0.1) 100%);
+  border: 2px solid rgba(201,162,39,0.4);
+  border-top: 2px solid rgba(255,255,255,0.2);
+  border-radius: 50%;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  box-shadow: 0 8px 32px rgba(201,162,39,0.3), inset 0 2px 0 rgba(255,255,255,0.15);
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 8px 32px rgba(201,162,39,0.3), inset 0 2px 0 rgba(255,255,255,0.15); }
+  50% { transform: scale(1.05); box-shadow: 0 12px 40px rgba(201,162,39,0.4), inset 0 2px 0 rgba(255,255,255,0.2); }
 }
 
 .feedback-success-title {
@@ -112,6 +175,7 @@
   font-weight: 600;
   color: var(--accent-gold-light);
   margin-bottom: 10px;
+  text-shadow: 0 0 30px rgba(201,162,39,0.3);
 }
 
 .feedback-success-message {
@@ -143,6 +207,12 @@
   .star-rating-item {
     font-size: 1.8rem;
   }
+
+  /* Feather background: smaller on tablet */
+  .feather-bg {
+    width: 280px;
+    right: -40px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -165,14 +235,23 @@
 
   .star-rating-container {
     gap: 6px;
+    padding: 10px;
   }
 
   .feedback-success-icon {
     font-size: 2.5rem;
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
   }
 
   .feedback-success-title {
     font-size: 1.2rem;
+  }
+
+  /* Feather: hide on small phones */
+  .feather-bg {
+    display: none;
   }
 }
 
@@ -184,5 +263,17 @@
 
   .star-rating-item {
     font-size: 1.4rem;
+  }
+
+  .star-rating-container {
+    gap: 4px;
+    padding: 8px;
+  }
+
+  .feedback-success-icon {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    font-size: 2rem;
   }
 }

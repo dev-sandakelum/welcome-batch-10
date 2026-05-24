@@ -1,11 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import {
+  initAuroraParticles,
+  initMagneticCards,
+  initGlassShimmer,
+} from '@/lib/gsap-animations';
 import '../styles/quiz.css';
-import PageShell from '@/app/components/PageShell';
 
 const quizData = [
   {
@@ -49,39 +53,66 @@ export default function QuizPage() {
   const [quizComplete, setQuizComplete] = useState(false);
   const [playerName, setPlayerName] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [quizStarted, setQuizStarted] = useState(false);
+  const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    // Check if user has already completed the quiz
+    const completedQuiz = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('quiz_completed='));
+    
+    if (completedQuiz) {
+      setHasCompletedQuiz(true);
+    }
+
+    initAuroraParticles();
+    initMagneticCards();
+    initGlassShimmer();
+  }, []);
+
+  const handleStartQuiz = () => {
+    if (!playerName.trim()) {
+      alert('Please enter your name to start the quiz!');
+      return;
+    }
+    setQuizStarted(true);
+  };
 
   const handleSelectAnswer = (index: number) => {
     if (showFeedback) return;
+    
     setSelectedAnswer(index);
-  };
-
-  const handleNextQuestion = () => {
-    if (selectedAnswer === null) return;
-
-    const isCorrect = selectedAnswer === quizData[currentQuestion].correct;
+    
+    // Auto-check answer immediately
+    const isCorrect = index === quizData[currentQuestion].correct;
     if (isCorrect) {
       setScore(score + 1);
     }
-
+    
     setShowFeedback(true);
 
+    // Auto-hide toast after 8 seconds
     setTimeout(() => {
-      if (currentQuestion < quizData.length - 1) {
-        setCurrentQuestion(currentQuestion + 1);
-        setSelectedAnswer(null);
-        setShowFeedback(false);
-      } else {
-        setQuizComplete(true);
-      }
-    }, 2000);
+      setShowFeedback(false);
+    }, 8000);
+  };
+
+  const handleNextQuestion = () => {
+    if (currentQuestion < quizData.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setSelectedAnswer(null);
+      setShowFeedback(false);
+    } else {
+      setQuizComplete(true);
+      // Auto-submit score when quiz is completed
+      handleSubmitScore();
+    }
   };
 
   const handleSubmitScore = async () => {
-    if (!playerName.trim()) {
-      alert('Please enter your name!');
-      return;
-    }
-
     setSubmitting(true);
 
     try {
@@ -97,12 +128,18 @@ export default function QuizPage() {
 
       if (error) throw error;
 
-      alert('Score submitted successfully!');
-      router.push('/leaderboard');
+      // Set cookie to prevent retaking quiz (expires in 30 days)
+      const expiryDate = new Date();
+      expiryDate.setDate(expiryDate.getDate() + 30);
+      document.cookie = `quiz_completed=true; expires=${expiryDate.toUTCString()}; path=/`;
+
+      // Redirect to leaderboard after a short delay
+      setTimeout(() => {
+        router.push('/leaderboard');
+      }, 2000);
     } catch (error) {
       console.error('Error submitting score:', error);
       alert('Failed to submit score. Please try again.');
-    } finally {
       setSubmitting(false);
     }
   };
@@ -124,13 +161,42 @@ export default function QuizPage() {
 
   return (
     <>
+      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
       <link rel="stylesheet" href="/assets/styles.css" />
       <link rel="stylesheet" href="/assets/styles-tablet.css" />
       <link rel="stylesheet" href="/assets/styles-mobile.css" />
       <link rel="stylesheet" href="/assets/styles-mobile-small.css" />
       <link rel="stylesheet" href="/assets/styles-mobile-extra-small.css" />
 
-      <PageShell>
+      {/* Aurora particle canvas — sits above bg, below content */}
+      <canvas id="aurora-canvas" aria-hidden="true" />
+
+      {/* Background image layer */}
+      <div className="bg-canvas">
+        <svg
+          className="feather-bg"
+          viewBox="0 0 200 600"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          <ellipse cx="100" cy="300" rx="12" ry="280" fill="url(#fg1)" opacity="0.7" />
+          <ellipse cx="100" cy="120" rx="60" ry="100" fill="url(#fg2)" opacity="0.6" />
+          <circle cx="100" cy="100" r="22" fill="#1b6b3a" opacity="0.8" />
+          <circle cx="100" cy="100" r="14" fill="#00b4d8" opacity="0.9" />
+          <circle cx="100" cy="100" r="7" fill="#241559" opacity="1" />
+          <defs>
+            <radialGradient id="fg1" cx="50%" cy="50%">
+              <stop offset="0%" stopColor="#1b6b3a" />
+              <stop offset="100%" stopColor="#241559" />
+            </radialGradient>
+            <radialGradient id="fg2" cx="50%" cy="50%">
+              <stop offset="0%" stopColor="#00b4d8" />
+              <stop offset="100%" stopColor="#1b6b3a" />
+            </radialGradient>
+          </defs>
+        </svg>
+      </div>
 
       <div className="quiz-page-wrapper">
         <div className="quiz-page-content">
@@ -143,7 +209,53 @@ export default function QuizPage() {
             <div className="quiz-card-title">University Quiz</div>
             <div className="gold-line"></div>
 
-            {!quizComplete ? (
+            {hasCompletedQuiz ? (
+              <div className="quiz-already-completed">
+                <div className="quiz-completed-icon">🎓</div>
+                <div className="quiz-completed-title">Quiz Already Completed</div>
+                <p className="quiz-completed-message">
+                  You have already taken this quiz. Each person can only take the quiz once.
+                </p>
+                <div className="quiz-completed-actions">
+                  <Link href="/leaderboard" className="btn-gold">
+                    View Leaderboard 🏆
+                  </Link>
+                  <Link href="/" className="btn-outline">
+                    Back to Home
+                  </Link>
+                </div>
+              </div>
+            ) : !quizStarted ? (
+              <div className="quiz-start-screen">
+                <div className="quiz-start-icon">🧠</div>
+                <p className="quiz-start-description">
+                  Test your knowledge about our university! Answer {quizData.length} questions and see how you rank on the leaderboard.
+                </p>
+                
+                <div className="form-group">
+                  <label className="form-label">Enter Your Name</label>
+                  <input
+                    type="text"
+                    className="form-input"
+                    value={playerName}
+                    onChange={(e) => setPlayerName(e.target.value)}
+                    placeholder="Your name"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleStartQuiz();
+                      }
+                    }}
+                  />
+                </div>
+
+                <button
+                  className="btn-gold quiz-start-btn"
+                  onClick={handleStartQuiz}
+                >
+                  Start Quiz →
+                </button>
+              </div>
+            ) : !quizComplete ? (
               <>
                 <div className="quiz-progress-container">
                   <div className="quiz-progress-bar" style={{ width: `${progress}%` }}></div>
@@ -169,14 +281,10 @@ export default function QuizPage() {
                   ))}
                 </div>
 
-                <div className="quiz-feedback">
-                  {showFeedback && quizData[currentQuestion].feedback}
-                </div>
-
                 <button
                   className="btn-gold quiz-next-btn"
                   onClick={handleNextQuestion}
-                  disabled={selectedAnswer === null}
+                  disabled={!showFeedback}
                 >
                   {currentQuestion < quizData.length - 1 ? 'Next Question →' : 'Finish Quiz →'}
                 </button>
@@ -187,24 +295,19 @@ export default function QuizPage() {
                   {score} / {quizData.length}
                 </div>
                 <div className="quiz-score-label">Your Score</div>
-                <p className="quiz-score-message">Great job completing the quiz!</p>
+                <p className="quiz-score-message">Great job, {playerName}!</p>
 
-                <div className="quiz-submit-row">
-                  <input
-                    type="text"
-                    value={playerName}
-                    onChange={(e) => setPlayerName(e.target.value)}
-                    placeholder="Enter your name"
-                    className="form-input quiz-name-input"
-                  />
-                  <button
-                    className="btn-gold"
-                    onClick={handleSubmitScore}
-                    disabled={submitting}
-                  >
-                    {submitting ? 'Submitting...' : 'Submit to Leaderboard'}
-                  </button>
-                </div>
+                {submitting ? (
+                  <div className="quiz-submitting">
+                    <div className="quiz-submitting-spinner"></div>
+                    <p className="quiz-submitting-text">Submitting your score...</p>
+                  </div>
+                ) : (
+                  <div className="quiz-submitted">
+                    <div className="quiz-submitted-icon">✓</div>
+                    <p className="quiz-submitted-text">Score submitted! Redirecting to leaderboard...</p>
+                  </div>
+                )}
 
                 <div className="quiz-leaderboard-link">
                   <Link href="/leaderboard" className="btn-gold quiz-leaderboard-btn">
@@ -216,7 +319,23 @@ export default function QuizPage() {
           </div>
         </div>
       </div>
-      </PageShell>
+
+      {/* Toast Notification */}
+      {showFeedback && (
+        <div className={`quiz-toast ${selectedAnswer === quizData[currentQuestion].correct ? 'correct' : 'incorrect'}`}>
+          <div className="quiz-toast-icon">
+            {selectedAnswer === quizData[currentQuestion].correct ? '✓' : '✗'}
+          </div>
+          <div className="quiz-toast-content">
+            <div className="quiz-toast-title">
+              {selectedAnswer === quizData[currentQuestion].correct ? 'Correct!' : 'Incorrect'}
+            </div>
+            <div className="quiz-toast-text">
+              {quizData[currentQuestion].feedback}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

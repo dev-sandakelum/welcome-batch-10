@@ -64,6 +64,13 @@
 /* Page Container */
 .page-container {
   /* No specific styles needed, acts as wrapper */
+  /* Hide scrollbar on home page */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.page-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 /* Section Base */
