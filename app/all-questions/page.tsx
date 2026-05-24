@@ -119,18 +119,21 @@ export default function AllQuestionsPage() {
             ) : (
               filteredQuestions.map((q) => (
                 <div key={q.id} className="all-questions-item">
-                  <div className="all-questions-item-header">
-                    <div className="all-questions-item-meta">
-                      <span className="all-questions-item-author">{q.name}</span>
-                      <span className="all-questions-item-date">{formatDate(q.created_at)}</span>
+                  {/* Question bubble — right side (like a sent message) */}
+                  <div className="all-questions-item-question">
+                    <div className="all-questions-item-header">
+                      <div className="all-questions-item-meta">
+                        <span className="all-questions-item-author">{q.name}</span>
+                        <span className="all-questions-item-date">{formatDate(q.created_at)}</span>
+                      </div>
+                      <span className={`all-questions-status-badge ${q.answered ? 'answered' : 'pending'}`}>
+                        {q.answered ? '✓ Answered' : '⏳ Pending'}
+                      </span>
                     </div>
-                    <span className={`all-questions-status-badge ${q.answered ? 'answered' : 'pending'}`}>
-                      {q.answered ? '✓ Answered' : '⏳ Pending'}
-                    </span>
+                    <div className="all-questions-item-text">{q.question}</div>
                   </div>
 
-                  <div className="all-questions-item-text">{q.question}</div>
-
+                  {/* Answer bubble — left side (like a received reply) */}
                   {q.answered && q.answer && (
                     <div className="all-questions-answer-block">
                       <div className="all-questions-answer-label">Answer from Admin</div>
