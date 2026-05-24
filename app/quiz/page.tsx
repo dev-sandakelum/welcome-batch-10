@@ -1,15 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
 import {
   initAuroraParticles,
   initMagneticCards,
   initGlassShimmer,
 } from '@/lib/gsap-animations';
 import '../styles/quiz.css';
+
+// ─── Scoring constants ────────────────────────────────────────────────────────
+const TIMER_SECONDS   = 30;
+const BASE_POINTS     = 100;   // points for a correct answer
+const SPEED_BONUS     = 5;     // extra points per remaining second
+const OVERDUE_PENALTY = 10;    // flat points awarded when overdue + correct
 
 const quizData = [
   {
@@ -44,26 +49,57 @@ const quizData = [
   }
 ];
 
-export default function QuizPage() {
-  const router = useRouter();
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [score, setScore] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [quizComplete, setQuizComplete] = useState(false);
-  const [playerName, setPlayerName] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [quizStarted, setQuizStarted] = useState(false);
-  const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false);
+// ─── Types ────────────────────────────────────────────────────────────────────
+type Screen = 'instructions' | 'name-entry' | 'quiz' | 'results' | 'already-done';
 
+interface QuestionResult {
+  questionIndex: number;
+  selectedAnswer: number | null;
+  isCorrect: boolean;
+  isOverdue: boolean;
+  pointsEarned: number;
+  secondsRemaining: number;
+}
+
+export default function QuizPage() {
+
+  // ── Screen state ─────────────────────────────────────────────────────────
+  const [screen, setScreen] = useState<Screen>('instructions');
+
+  // ── Player ───────────────────────────────────────────────────────────────
+  const [playerName, setPlayerName] = useState('');
+
+  // ── Quiz progress ─────────────────────────────────────────────────────────
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [totalScore, setTotalScore] = useState(0);
+  const [results, setResults] = useState<QuestionResult[]>([]);
+
+  // ── Per-question state ────────────────────────────────────────────────────
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [submitted, setSubmitted] = useState(false);          // answer locked in
+  const [isOverdue, setIsOverdue] = useState(false);          // timer hit 0
+  const [timeLeft, setTimeLeft] = useState(TIMER_SECONDS);
+  const [questionStartTime, setQuestionStartTime] = useState<number>(0);
+
+  // ── Toast ─────────────────────────────────────────────────────────────────
+  const [showToast, setShowToast] = useState(false);
+  const [toastIsCorrect, setToastIsCorrect] = useState(false);
+  const [toastPoints, setToastPoints] = useState(0);
+
+  // ── DB submission ─────────────────────────────────────────────────────────
+  const [submitting, setSubmitting] = useState(false);
+
+  // ── Refs ──────────────────────────────────────────────────────────────────
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // ─── Init animations ──────────────────────────────────────────────────────
   useEffect(() => {
-    // Check if user has already completed the quiz
     const completedQuiz = document.cookie
       .split('; ')
       .find(row => row.startsWith('quiz_completed='));
-    
     if (completedQuiz) {
-      setHasCompletedQuiz(true);
+      setScreen('already-done');
     }
 
     initAuroraParticles();
@@ -71,98 +107,162 @@ export default function QuizPage() {
     initGlassShimmer();
   }, []);
 
+  // ─── Start countdown for a question ───────────────────────────────────────
+  const startTimer = useCallback(() => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setTimeLeft(TIMER_SECONDS);
+    setQuestionStartTime(Date.now());
+
+    timerRef.current = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current!);
+          setIsOverdue(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
+  // ─── Clean up timer on unmount ─────────────────────────────────────────────
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    };
+  }, []);
+
+  // ─── Start quiz ────────────────────────────────────────────────────────────
   const handleStartQuiz = () => {
     if (!playerName.trim()) {
       alert('Please enter your name to start the quiz!');
       return;
     }
-    setQuizStarted(true);
+    setScreen('quiz');
+    setCurrentQuestion(0);
+    setTotalScore(0);
+    setResults([]);
+    setSelectedAnswer(null);
+    setSubmitted(false);
+    setIsOverdue(false);
+    startTimer();
   };
 
+  // ─── Select an answer → immediately evaluate ──────────────────────────────
   const handleSelectAnswer = (index: number) => {
-    if (showFeedback) return;
-    
+    if (submitted) return;   // already locked
+
     setSelectedAnswer(index);
-    
-    // Auto-check answer immediately
+
+    // Stop timer
+    if (timerRef.current) clearInterval(timerRef.current);
+
+    const elapsed = (Date.now() - questionStartTime) / 1000;
+    const secondsRemaining = Math.max(0, TIMER_SECONDS - Math.floor(elapsed));
     const isCorrect = index === quizData[currentQuestion].correct;
+    const overdueNow = isOverdue || secondsRemaining === 0;
+
+    // Calculate points
+    let pointsEarned = 0;
     if (isCorrect) {
-      setScore(score + 1);
+      pointsEarned = overdueNow
+        ? OVERDUE_PENALTY
+        : BASE_POINTS + secondsRemaining * SPEED_BONUS;
     }
-    
-    setShowFeedback(true);
 
-    // Auto-hide toast after 8 seconds
-    setTimeout(() => {
-      setShowFeedback(false);
-    }, 8000);
+    const result: QuestionResult = {
+      questionIndex: currentQuestion,
+      selectedAnswer: index,
+      isCorrect,
+      isOverdue: overdueNow,
+      pointsEarned,
+      secondsRemaining,
+    };
+
+    setResults(prev => [...prev, result]);
+    setTotalScore(prev => prev + pointsEarned);
+    setSubmitted(true);
+
+    // Show toast
+    setToastIsCorrect(isCorrect);
+    setToastPoints(pointsEarned);
+    setShowToast(true);
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setShowToast(false), 8000);
   };
 
+  // ─── (submit button removed — evaluation happens on click) ────────────────
+
+  // ─── Next question / finish ────────────────────────────────────────────────
   const handleNextQuestion = () => {
+    setShowToast(false);
+
     if (currentQuestion < quizData.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
+      setCurrentQuestion(prev => prev + 1);
       setSelectedAnswer(null);
-      setShowFeedback(false);
+      setSubmitted(false);
+      setIsOverdue(false);
+      startTimer();
     } else {
-      setQuizComplete(true);
-      // Auto-submit score when quiz is completed
-      handleSubmitScore();
+      // Quiz complete — save to DB
+      setScreen('results');
+      saveScore(totalScore);
     }
   };
 
-  const handleSubmitScore = async () => {
+  // ─── Save score to Supabase ────────────────────────────────────────────────
+  const saveScore = async (finalScore: number) => {
     setSubmitting(true);
-
     try {
       const { error } = await supabase
         .from('quiz_scores')
-        .insert([
-          {
-            player_name: playerName,
-            score: score,
-            total_questions: quizData.length
-          }
-        ]);
+        .insert([{
+          player_name: playerName,
+          score: finalScore,
+          total_questions: quizData.length,
+        }]);
 
       if (error) throw error;
 
-      // Set cookie to prevent retaking quiz (expires in 30 days)
-      const expiryDate = new Date();
-      expiryDate.setDate(expiryDate.getDate() + 30);
-      document.cookie = `quiz_completed=true; expires=${expiryDate.toUTCString()}; path=/`;
-
-      // Redirect to leaderboard after a short delay
-      setTimeout(() => {
-        router.push('/leaderboard');
-      }, 2000);
-    } catch (error) {
-      console.error('Error submitting score:', error);
+      // Cookie to prevent retake (30 days)
+      const expiry = new Date();
+      expiry.setDate(expiry.getDate() + 30);
+      document.cookie = `quiz_completed=true; expires=${expiry.toUTCString()}; path=/`;
+    } catch (err) {
+      console.error('Error submitting score:', err);
       alert('Failed to submit score. Please try again.');
+    } finally {
       setSubmitting(false);
     }
   };
 
+  // ─── Option CSS class ──────────────────────────────────────────────────────
   const getOptionClass = (index: number): string => {
-    if (selectedAnswer === index) {
-      if (showFeedback) {
-        return index === quizData[currentQuestion].correct ? 'quiz-option correct' : 'quiz-option incorrect';
-      }
-      return 'quiz-option selected';
+    if (!submitted) {
+      return selectedAnswer === index ? 'quiz-option selected' : 'quiz-option';
     }
-    if (showFeedback && index === quizData[currentQuestion].correct) {
-      return 'quiz-option correct';
-    }
+    if (index === quizData[currentQuestion].correct) return 'quiz-option correct';
+    if (index === selectedAnswer) return 'quiz-option incorrect';
     return 'quiz-option';
   };
 
+  // ─── Timer colour ──────────────────────────────────────────────────────────
+  const timerClass = isOverdue
+    ? 'quiz-timer overdue'
+    : timeLeft <= 10
+    ? 'quiz-timer danger'
+    : timeLeft <= 20
+    ? 'quiz-timer warning'
+    : 'quiz-timer';
+
   const progress = ((currentQuestion + 1) / quizData.length) * 100;
 
+  // ─── Render ────────────────────────────────────────────────────────────────
   return (
     <>
-      {/* Aurora particle canvas — sits above bg, below content */}
       <canvas id="aurora-canvas" aria-hidden="true" />
 
-      {/* Background image layer */}
       <div className="bg-canvas">
         <svg
           className="feather-bg"
@@ -191,16 +291,15 @@ export default function QuizPage() {
 
       <div className="quiz-page-wrapper">
         <div className="quiz-page-content">
-          <Link href="/" className="quiz-back-link">
-            ← Back to Home
-          </Link>
+          <Link href="/" className="quiz-back-link">← Back to Home</Link>
 
           <div className="card">
             <div className="quiz-card-label">Test Your Knowledge</div>
             <div className="quiz-card-title">University Quiz</div>
             <div className="gold-line"></div>
 
-            {hasCompletedQuiz ? (
+            {/* ── Already completed ── */}
+            {screen === 'already-done' && (
               <div className="quiz-already-completed">
                 <div className="quiz-completed-icon">🎓</div>
                 <div className="quiz-completed-title">Quiz Already Completed</div>
@@ -208,21 +307,76 @@ export default function QuizPage() {
                   You have already taken this quiz. Each person can only take the quiz once.
                 </p>
                 <div className="quiz-completed-actions">
-                  <Link href="/leaderboard" className="btn-gold">
-                    View Leaderboard 🏆
-                  </Link>
-                  <Link href="/" className="btn-outline">
-                    Back to Home
-                  </Link>
+                  <Link href="/leaderboard" className="btn-gold">View Leaderboard 🏆</Link>
+                  <Link href="/" className="btn-outline">Back to Home</Link>
                 </div>
               </div>
-            ) : !quizStarted ? (
+            )}
+
+            {/* ── Instructions screen ── */}
+            {screen === 'instructions' && (
+              <div className="quiz-instructions-screen">
+                
+                <h2 className="quiz-instructions-title">Before You Begin</h2>
+                <p className="quiz-instructions-subtitle">
+                  Read these rules carefully — they apply for the entire quiz.
+                </p>
+
+                <ul className="quiz-rules-list">
+                  <li className="quiz-rule-item">
+                    <span className="quiz-rule-icon">🔒</span>
+                    <div>
+                      <strong>One-Time Attempt</strong>
+                      <p>This quiz is a one-time event. Once you click Start, you cannot restart, refresh, or retake it.</p>
+                    </div>
+                  </li>
+                  <li className="quiz-rule-item">
+                    <span className="quiz-rule-icon">⏱️</span>
+                    <div>
+                      <strong>30-Second Dynamic Timer</strong>
+                      <p>You have a maximum of 30 seconds to answer each question. The clock starts the moment the question appears.</p>
+                    </div>
+                  </li>
+                  <li className="quiz-rule-item">
+                    <span className="quiz-rule-icon">🚀</span>
+                    <div>
+                      <strong>Speed Bonus</strong>
+                      <p>Every single second counts! Correct answers submitted faster earn significantly higher extra points. </p>
+                    </div>
+                  </li>
+                  <li className="quiz-rule-item">
+                    <span className="quiz-rule-icon">⚠️</span>
+                    <div>
+                      <strong>Overdue Penalty</strong>
+                      <p>If the 30-second timer runs out, the quiz will <em>not</em> skip automatically. You can still submit your answer, but it will be marked <strong>Overdue</strong> and will receive only {OVERDUE_PENALTY} points even if correct.</p>
+                    </div>
+                  </li>
+                  <li className="quiz-rule-item">
+                    <span className="quiz-rule-icon">🏁</span>
+                    <div>
+                      <strong>Finality</strong>
+                      <p>Your score is locked immediately upon submission. Ensure your internet connection is stable before proceeding.</p>
+                    </div>
+                  </li>
+                </ul>
+
+                <button
+                  className="btn-gold quiz-start-btn"
+                  onClick={() => setScreen('name-entry')}
+                >
+                  I Understand &amp; Continue
+                </button>
+              </div>
+            )}
+
+            {/* ── Name entry ── */}
+            {screen === 'name-entry' && (
               <div className="quiz-start-screen">
                 <div className="quiz-start-icon">🧠</div>
                 <p className="quiz-start-description">
                   Test your knowledge about our university! Answer {quizData.length} questions and see how you rank on the leaderboard.
                 </p>
-                
+
                 <div className="form-group">
                   <label className="form-label">Enter Your Name</label>
                   <input
@@ -231,30 +385,55 @@ export default function QuizPage() {
                     value={playerName}
                     onChange={(e) => setPlayerName(e.target.value)}
                     placeholder="Your name"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
-                        handleStartQuiz();
-                      }
-                    }}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleStartQuiz(); }}
                   />
                 </div>
 
-                <button
-                  className="btn-gold quiz-start-btn"
-                  onClick={handleStartQuiz}
-                >
+                <button className="btn-gold quiz-start-btn" onClick={handleStartQuiz}>
                   Start Quiz →
                 </button>
               </div>
-            ) : !quizComplete ? (
+            )}
+
+            {/* ── Active quiz ── */}
+            {screen === 'quiz' && (
               <>
+                {/* Progress bar */}
                 <div className="quiz-progress-container">
                   <div className="quiz-progress-bar" style={{ width: `${progress}%` }}></div>
                 </div>
 
-                <div className="quiz-question-number">
-                  Question {currentQuestion + 1} of {quizData.length}
+                {/* Timer + question header */}
+                <div className="quiz-question-header">
+                  <div className="quiz-question-number">
+                    Question {currentQuestion + 1} of {quizData.length}
+                  </div>
+                  <div className={timerClass} aria-live="polite" aria-label={`Time remaining: ${timeLeft} seconds`}>
+                    {isOverdue ? (
+                      <span className="quiz-timer-overdue-label">⚠ OVERDUE</span>
+                    ) : (
+                      <>
+                        <svg className="quiz-timer-ring" viewBox="0 0 36 36" aria-hidden="true">
+                          <circle
+                            className="quiz-timer-ring-bg"
+                            cx="18" cy="18" r="15.9"
+                            fill="none" strokeWidth="2.5"
+                          />
+                          <circle
+                            className="quiz-timer-ring-fill"
+                            cx="18" cy="18" r="15.9"
+                            fill="none" strokeWidth="2.5"
+                            strokeDasharray={`${(timeLeft / TIMER_SECONDS) * 100} 100`}
+                            strokeLinecap="round"
+                            transform="rotate(-90 18 18)"
+                          />
+                        </svg>
+                        <span className="quiz-timer-number">{timeLeft}</span>
+                      </>
+                    )}
+                  </div>
                 </div>
+
                 <div className="quiz-question-text">
                   {quizData[currentQuestion].question}
                 </div>
@@ -265,28 +444,51 @@ export default function QuizPage() {
                       key={index}
                       className={getOptionClass(index)}
                       onClick={() => handleSelectAnswer(index)}
-                      disabled={showFeedback}
+                      disabled={submitted}
                     >
                       {option}
                     </button>
                   ))}
                 </div>
 
-                <button
-                  className="btn-gold quiz-next-btn"
-                  onClick={handleNextQuestion}
-                  disabled={!showFeedback}
-                >
-                  {currentQuestion < quizData.length - 1 ? 'Next Question →' : 'Finish Quiz →'}
-                </button>
+                {/* Next button — disabled until an answer is clicked */}
+                {!submitted ? (
+                  <button
+                    className="btn-gold quiz-next-btn"
+                    disabled
+                  >
+                    {isOverdue ? '⚠ Select an answer to continue' : 'Select an answer →'}
+                  </button>
+                ) : (
+                  <button className="btn-gold quiz-next-btn" onClick={handleNextQuestion}>
+                    {currentQuestion < quizData.length - 1 ? 'Next Question →' : 'Finish Quiz →'}
+                  </button>
+                )}
               </>
-            ) : (
+            )}
+
+            {/* ── Results ── */}
+            {screen === 'results' && (
               <div className="quiz-results">
-                <div className="quiz-score-display">
-                  {score} / {quizData.length}
+                <div className="quiz-score-display">{totalScore}</div>
+                <div className="quiz-score-label">Total Points</div>
+                <p className="quiz-score-message">
+                  {results.filter(r => r.isCorrect).length} / {quizData.length} correct — well done, {playerName}!
+                </p>
+
+                {/* Per-question breakdown */}
+                <div className="quiz-breakdown">
+                  {results.map((r, i) => (
+                    <div key={i} className={`quiz-breakdown-row ${r.isCorrect ? 'correct' : 'incorrect'}`}>
+                      <span className="quiz-breakdown-q">Q{i + 1}</span>
+                      <span className="quiz-breakdown-status">
+                        {r.isCorrect ? '✓' : '✗'}
+                        {r.isOverdue && <span className="quiz-overdue-tag"> Overdue</span>}
+                      </span>
+                      <span className="quiz-breakdown-pts">+{r.pointsEarned} pts</span>
+                    </div>
+                  ))}
                 </div>
-                <div className="quiz-score-label">Your Score</div>
-                <p className="quiz-score-message">Great job, {playerName}!</p>
 
                 {submitting ? (
                   <div className="quiz-submitting">
@@ -311,15 +513,17 @@ export default function QuizPage() {
         </div>
       </div>
 
-      {/* Toast Notification */}
-      {showFeedback && (
-        <div className={`quiz-toast ${selectedAnswer === quizData[currentQuestion].correct ? 'correct' : 'incorrect'}`}>
+      {/* ── Toast notification ── */}
+      {showToast && submitted && (
+        <div className={`quiz-toast ${toastIsCorrect ? 'correct' : 'incorrect'}`}>
           <div className="quiz-toast-icon">
-            {selectedAnswer === quizData[currentQuestion].correct ? '✓' : '✗'}
+            {toastIsCorrect ? '✓' : '✗'}
           </div>
           <div className="quiz-toast-content">
             <div className="quiz-toast-title">
-              {selectedAnswer === quizData[currentQuestion].correct ? 'Correct!' : 'Incorrect'}
+              {toastIsCorrect
+                ? `Correct! +${toastPoints} pts${results[results.length - 1]?.isOverdue ? ' (Overdue)' : ''}`
+                : 'Incorrect — 0 pts'}
             </div>
             <div className="quiz-toast-text">
               {quizData[currentQuestion].feedback}
