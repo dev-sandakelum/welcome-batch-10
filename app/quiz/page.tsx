@@ -147,6 +147,7 @@ export default function QuizPage() {
   const [showToast, setShowToast] = useState(false);
   const [toastIsCorrect, setToastIsCorrect] = useState(false);
   const [toastPoints, setToastPoints] = useState(0);
+  const [isHighDpi, setIsHighDpi] = useState(false);
 
   // ── DB submission ─────────────────────────────────────────────────────────
   const [submitting, setSubmitting] = useState(false);
@@ -167,6 +168,20 @@ export default function QuizPage() {
     initAuroraParticles();
     initMagneticCards();
     initGlassShimmer();
+  }, []);
+
+  // ─── Detect high-DPI display (>300 dpi) ───────────────────────────────────
+  useEffect(() => {
+    // window.devicePixelRatio maps CSS px → physical px.
+    // 300 DPI on a ~96 DPI baseline ≈ ratio > 3.
+    const checkDpi = () => {
+      setIsHighDpi(window.devicePixelRatio > 3);
+    };
+    checkDpi();
+    // Re-check if the user moves the window to a different monitor
+    const mq = window.matchMedia(`(resolution > 300dpi)`);
+    mq.addEventListener('change', checkDpi);
+    return () => mq.removeEventListener('change', checkDpi);
   }, []);
 
   // ─── Start countdown for a question ───────────────────────────────────────
@@ -251,7 +266,7 @@ export default function QuizPage() {
     setToastPoints(pointsEarned);
     setShowToast(true);
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-    toastTimerRef.current = setTimeout(() => setShowToast(false), 8000);
+    toastTimerRef.current = setTimeout(() => setShowToast(false), isHighDpi ? 5000 : 8000);
   };
 
   // ─── (submit button removed — evaluation happens on click) ────────────────
@@ -577,7 +592,7 @@ export default function QuizPage() {
 
       {/* ── Toast notification ── */}
       {showToast && submitted && (
-        <div className={`quiz-toast ${toastIsCorrect ? 'correct' : 'incorrect'}`}>
+        <div className={`quiz-toast ${toastIsCorrect ? 'correct' : 'incorrect'}${isHighDpi ? ' high-dpi' : ''}`}>
           <div className="quiz-toast-icon">
             {toastIsCorrect ? '✓' : '✗'}
           </div>
