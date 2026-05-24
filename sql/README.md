@@ -15,6 +15,7 @@ This folder contains SQL scripts for setting up and managing your Supabase datab
 - `questions` table - Stores student questions
 - `quiz_scores` table - Stores quiz results
 - `feedback` table - Stores user feedback
+- `admin_users` table - Stores admin login credentials (bcrypt hashes)
 - Indexes for better performance
 - Row Level Security (RLS) policies
 - Triggers for automatic timestamp updates
@@ -141,6 +142,16 @@ feedback_text   TEXT NOT NULL
 created_at      TIMESTAMP WITH TIME ZONE
 ```
 
+### admin_users
+```sql
+id              UUID PRIMARY KEY
+username        VARCHAR(255) NOT NULL
+password_hash   TEXT NOT NULL
+is_active       BOOLEAN DEFAULT TRUE
+created_at      TIMESTAMP WITH TIME ZONE
+updated_at      TIMESTAMP WITH TIME ZONE
+```
+
 ---
 
 ## Row Level Security (RLS)
@@ -151,6 +162,35 @@ All tables have RLS enabled with these policies:
 **INSERT (Create)**: ✅ Anyone can insert new records  
 **UPDATE (Modify)**: ❌ Not allowed via app (admin only via dashboard)  
 **DELETE (Remove)**: ❌ Not allowed via app (admin only via dashboard)
+
+For `admin_users`, no public RLS policy is created. Admin login is validated via a database function (`verify_admin_credentials`) and server-side API route.
+
+---
+
+## Admin Credentials
+
+Admin usernames/passwords are stored in Supabase table `admin_users`.
+
+- Seeded users (from `setup.sql`):
+  - Username: `welcome_admin` / Password: `fot_26_1`
+  - Username: `welcome_admin` / Password: `fot_26_2`
+  - Username: `welcome_admin` / Password: `fot_26_3`
+  - Username: `welcome_admin` / Password: `fot_26_4`
+  - Username: `welcome_admin` / Password: `fot_26_5`
+- Change password immediately in production.
+
+Set this in `.env.local` for API access:
+
+```env
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
+
+You can rotate or change admin passwords with SQL:
+
+```sql
+INSERT INTO admin_users (username, password_hash, is_active)
+VALUES ('welcome_admin', crypt('new-strong-password', gen_salt('bf')), TRUE);
+```
 
 This ensures:
 - Students can submit questions, quiz scores, and feedback

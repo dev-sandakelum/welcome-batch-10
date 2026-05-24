@@ -69,8 +69,8 @@ If you already have a database set up, you need to run the update script:
    ```
    http://localhost:3000/admin/login
    ```
-   - Username: `Admin_1234`
-   - Password: `admin`
+   - Username: `welcome_admin`
+   - Password: any one of `fot_26_1` ... `fot_26_5`
 
 2. Test each admin page:
 
@@ -121,8 +121,19 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
 **Solution:**
 Check your `.env.local` file has:
 ```env
-ADMIN_USERNAME=Admin_1234
-ADMIN_PASSWORD=admin
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+```
+
+And ensure `sql/setup.sql` has been executed so the `admin_users` table and `verify_admin_credentials` function exist.
+
+Default seeded admin account set:
+- Username: `welcome_admin`
+- Passwords: `fot_26_1`, `fot_26_2`, `fot_26_3`, `fot_26_4`, `fot_26_5`
+
+You can change password directly in Supabase SQL editor:
+```sql
+INSERT INTO admin_users (username, password_hash, is_active)
+VALUES ('welcome_admin', crypt('new-strong-password', gen_salt('bf')), TRUE);
 ```
 
 ---
@@ -156,6 +167,14 @@ ADMIN_PASSWORD=admin
 - `feedback_text` (TEXT)
 - `created_at` (TIMESTAMP)
 
+**admin_users**
+- `id` (UUID, Primary Key)
+- `username` (VARCHAR)
+- `password_hash` (TEXT, bcrypt)
+- `is_active` (BOOLEAN)
+- `created_at` (TIMESTAMP)
+- `updated_at` (TIMESTAMP)
+
 ### RLS Policies
 
 All tables have the following policies enabled:
@@ -186,7 +205,7 @@ Your application is **fully configured** for all database operations:
 
 | Task | URL | Credentials |
 |------|-----|-------------|
-| Admin Login | `/admin/login` | Username: `Admin_1234`<br>Password: `admin` |
+| Admin Login | `/admin/login` | Use credentials stored in `admin_users` table |
 | Test Database | `/admin/test-db` | (requires admin login) |
 | Manage Questions | `/admin/questions` | (requires admin login) |
 | Manage Scores | `/admin/scores` | (requires admin login) |
