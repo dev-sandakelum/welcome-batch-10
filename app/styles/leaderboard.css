@@ -117,6 +117,16 @@
   font-size: 1.2rem;
   font-weight: 600;
   color: var(--accent-gold-light);
+  white-space: nowrap;
+}
+
+.leaderboard-score-unit {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-left: 2px;
 }
 
 /* Empty / Loading States */

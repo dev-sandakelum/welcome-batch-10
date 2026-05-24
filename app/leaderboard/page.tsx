@@ -60,7 +60,7 @@ export default function LeaderboardPage() {
             <div className="leaderboard-card-label">Quiz Champions</div>
             <div className="leaderboard-card-title">Full Leaderboard</div>
             <p className="leaderboard-card-description">
-              See all quiz participants and their scores!
+              Ranked by total points — faster correct answers earn more!
             </p>
             <div className="gold-line"></div>
 
@@ -79,8 +79,8 @@ export default function LeaderboardPage() {
                       {index + 1}
                     </div>
                     <div className="leaderboard-name">{entry.player_name}</div>
-                    <div className="leaderboard-score">
-                      {entry.score}/{entry.total_questions}
+                  <div className="leaderboard-score">
+                      {entry.score} <span className="leaderboard-score-unit">pts</span>
                     </div>
                   </div>
                 ))
