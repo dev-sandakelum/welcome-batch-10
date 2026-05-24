@@ -57,8 +57,6 @@ export default function QuizPage() {
   const [hasCompletedQuiz, setHasCompletedQuiz] = useState(false);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-
     // Check if user has already completed the quiz
     const completedQuiz = document.cookie
       .split('; ')

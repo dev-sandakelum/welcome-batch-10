@@ -123,7 +123,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         <div id="app-loading-screen" aria-label="Loading application" role="status" aria-live="polite">
           <div id="app-loading-content">
             <div id="app-loading-spinner" />

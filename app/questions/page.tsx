@@ -19,7 +19,6 @@ export default function QuestionsPage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    if (typeof window === 'undefined') return;
     initAuroraParticles();
     initMagneticCards();
     initGlassShimmer();
