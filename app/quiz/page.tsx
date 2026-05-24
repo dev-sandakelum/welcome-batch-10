@@ -395,44 +395,34 @@ export default function QuizPage() {
               <div className="quiz-instructions-screen">
                 
                 <h2 className="quiz-instructions-title">Before You Begin</h2>
-                <p className="quiz-instructions-subtitle">
-                  Read these rules carefully — they apply for the entire quiz.
-                </p>
 
                 <ul className="quiz-rules-list">
                   <li className="quiz-rule-item">
                     <span className="quiz-rule-icon">🔒</span>
                     <div>
-                      <strong>One-Time Attempt</strong>
-                      <p>This quiz is a one-time event. Once you click Start, you cannot restart, refresh, or retake it.</p>
+                      <strong>One Attempt Only</strong>
+                      <p>You cannot restart or retake the quiz.</p>
                     </div>
                   </li>
                   <li className="quiz-rule-item">
                     <span className="quiz-rule-icon">⏱️</span>
                     <div>
-                      <strong>30-Second Dynamic Timer</strong>
-                      <p>You have a maximum of 30 seconds to answer each question. The clock starts the moment the question appears.</p>
+                      <strong>30-Second Timer</strong>
+                      <p>Each question has a 30-second countdown.</p>
                     </div>
                   </li>
                   <li className="quiz-rule-item">
                     <span className="quiz-rule-icon">🚀</span>
                     <div>
                       <strong>Speed Bonus</strong>
-                      <p>Every single second counts! Correct answers submitted faster earn significantly higher extra points. </p>
+                      <p>Faster correct answers earn more points.</p>
                     </div>
                   </li>
                   <li className="quiz-rule-item">
                     <span className="quiz-rule-icon">⚠️</span>
                     <div>
-                      <strong>Overdue Penalty</strong>
-                      <p>If the 30-second timer runs out, the quiz will <em>not</em> skip automatically. You can still submit your answer, but it will be marked <strong>Overdue</strong> and will receive only {OVERDUE_PENALTY} points even if correct.</p>
-                    </div>
-                  </li>
-                  <li className="quiz-rule-item">
-                    <span className="quiz-rule-icon">🏁</span>
-                    <div>
-                      <strong>Finality</strong>
-                      <p>Your score is locked immediately upon submission. Ensure your internet connection is stable before proceeding.</p>
+                      <strong>Overdue</strong>
+                      <p>After time runs out you can still answer, but only earn {OVERDUE_PENALTY} pts.</p>
                     </div>
                   </li>
                 </ul>
