@@ -110,12 +110,6 @@ export default function TestDatabasePage() {
 
   return (
     <>
-      <link rel="stylesheet" href="/assets/styles.css" />
-      <link rel="stylesheet" href="/assets/styles-tablet.css" />
-      <link rel="stylesheet" href="/assets/styles-mobile.css" />
-      <link rel="stylesheet" href="/assets/styles-mobile-small.css" />
-      <link rel="stylesheet" href="/assets/styles-mobile-extra-small.css" />
-
       <PageShell>
 
       <div className="admin-page-wrapper">
