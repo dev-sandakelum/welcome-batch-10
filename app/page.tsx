@@ -43,7 +43,7 @@ export default function Home() {
     const faqData = [
       {
         question: "When does orientation week begin?",
-        answer: "Orientation week typically kicks off in the first week of your semester. Your official schedule will be shared via email and the student portal. Make sure to attend every session -it's where lifelong connections begin! You'll get to meet your peers, explore the campus, and learn about all the resources available to you. The week includes meet-and-greet sessions with faculty, club fairs designed to help you settle in comfortably."
+        answer: "Orientation typically spans two to three months at the start of your semester. Your official schedule will be shared via email and the student portal. Make sure to attend every session — it's where lifelong connections begin! You'll get to meet your peers, explore the campus, and learn about all the resources available to you. The program includes meet-and-greet sessions with faculty, club fairs, and activities designed to help you settle in comfortably over the coming months."
       },
       {
         question: "How do I join clubs and societies?",
@@ -74,7 +74,7 @@ export default function Home() {
     return () => {
       // Remove GSAP scroll snap event listeners
       cleanupScrollSnap();
-      
+
       // Restore scroll styles
       document.documentElement.style.scrollSnapType = '';
       document.documentElement.style.overflowY = '';
@@ -89,7 +89,7 @@ export default function Home() {
 
       {/* Background image layer */}
       <div className="bg-canvas">
-        
+
       </div>
 
       {/* Nav Dots */}
